@@ -28,6 +28,8 @@ a {
   font-weight: normal;
   font-style: normal;
 } */
+
+
 .list {
   width: 100%;
   height: auto;
@@ -131,7 +133,7 @@ a {
   -moz-animation-name: shake;
 }
 .text {
-  width: 300px;
+  width: auto;
   height: auto;
   float: left;
   margin-top: 24px;
