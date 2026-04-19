@@ -1,133 +1,20 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>归档 · 知识库</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    :root{--bg:#0d0d0d;--bg-card:#161616;--border:#2a2a2a;--border-hover:#404040;--text-primary:#f0f0f0;--text-secondary:#999;--text-muted:#555;--accent:#6ee7b7;--accent-2:#818cf8}
-    *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
-    body{background:var(--bg);color:var(--text-primary);font-family:'Inter','Noto Sans SC',sans-serif;font-size:16px;line-height:1.8}
-    header{position:sticky;top:0;z-index:100;background:rgba(13,13,13,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
-    .header-inner{max-width:1100px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-    .logo{font-size:18px;font-weight:700;color:var(--text-primary);text-decoration:none;display:flex;align-items:center;gap:8px}
-    .logo span{background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    nav{display:flex;gap:8px}
-    nav a{color:var(--text-secondary);text-decoration:none;font-size:14px;padding:6px 12px;border-radius:6px;transition:all .2s}
-    nav a:hover{color:var(--text-primary);background:var(--bg-card)}
-    nav a.active{color:var(--accent)}
-    .page-hero{max-width:760px;margin:0 auto;padding:64px 24px 40px}
-    .page-hero h1{font-size:36px;font-weight:700;letter-spacing:-1px;margin-bottom:8px}
-    .page-hero p{color:var(--text-secondary);font-size:15px}
-    .archive-body{max-width:760px;margin:0 auto;padding:0 24px 80px}
-    .year-group{margin-bottom:48px}
-    .year-label{font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
-    .archive-list{display:flex;flex-direction:column;gap:0}
-    .archive-item{display:flex;align-items:flex-start;gap:20px;padding:16px 0;border-bottom:1px solid var(--border);text-decoration:none;transition:all .2s}
-    .archive-item:last-child{border-bottom:none}
-    .archive-item:hover .archive-title{color:var(--accent)}
-    .archive-date{font-size:13px;color:var(--text-muted);width:80px;flex-shrink:0;padding-top:2px}
-    .archive-info{flex:1}
-    .archive-title{font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:4px;transition:color .2s}
-    .archive-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-    .archive-cat{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
-    .archive-time{font-size:12px;color:var(--text-muted)}
-    .cat-tech{background:rgba(96,165,250,.1);color:#60a5fa}
-    .cat-finance{background:rgba(110,231,183,.1);color:#6ee7b7}
-    .cat-game{background:rgba(244,114,182,.1);color:#f472b6}
-    .cat-life{background:rgba(251,191,36,.1);color:#fbbf24}
-    .cat-share{background:rgba(167,139,250,.1);color:#a78bfa}
-    footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--text-muted);font-size:13px}
-    footer a{color:var(--accent);text-decoration:none}
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-  </style>
-</head>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>归档 · 知识库</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet"/><style>:root{--bg:#0d0d0d;--bg-card:#161616;--border:#2a2a2a;--border-hover:#404040;--text-primary:#f0f0f0;--text-secondary:#999;--text-muted:#555;--accent:#6ee7b7;--accent-2:#818cf8}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text-primary);font-family:'Inter','Noto Sans SC',sans-serif;font-size:16px;line-height:1.8}header{position:sticky;top:0;z-index:100;background:rgba(13,13,13,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}.header-inner{max-width:1100px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}.logo{font-size:18px;font-weight:700;color:var(--text-primary);text-decoration:none;display:flex;align-items:center;gap:8px}.logo span{background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}nav{display:flex;gap:8px}nav a{color:var(--text-secondary);text-decoration:none;font-size:14px;padding:6px 12px;border-radius:6px;transition:all .2s}nav a:hover{color:var(--text-primary);background:var(--bg-card)}nav a.active{color:var(--accent)}.page-hero{max-width:760px;margin:0 auto;padding:64px 24px 40px}.page-hero h1{font-size:36px;font-weight:700;letter-spacing:-1px;margin-bottom:8px}.page-hero p{color:var(--text-secondary);font-size:15px}.archive-body{max-width:760px;margin:0 auto;padding:0 24px 80px}.archive-list{display:flex;flex-direction:column;gap:0}.archive-item{display:flex;align-items:flex-start;gap:20px;padding:20px 0;border-bottom:1px solid var(--border);text-decoration:none;transition:all .2s}.archive-item:last-child{border-bottom:none}.archive-item:hover .archive-title{color:var(--accent)}.archive-date{font-size:13px;color:var(--text-muted);width:80px;flex-shrink:0;padding-top:3px}.archive-info{flex:1}.archive-title{font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:8px;transition:color .2s}.archive-tags{display:flex;gap:6px;flex-wrap:wrap}.archive-tag{font-size:11px;color:var(--text-muted);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:2px 8px;border-radius:4px}footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--text-muted);font-size:13px}footer a{color:var(--accent);text-decoration:none}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}</style></head>
 <body>
-<header>
-  <div class="header-inner">
-    <a href="index.html" class="logo">✦ <span>知识库</span></a>
-    <nav>
-      <a href="index.html">首页</a>
-      <a href="archive.html" class="active">归档</a>
-      <a href="about.html">关于</a>
-    </nav>
-  </div>
-</header>
-
-<div class="page-hero">
-  <h1>全部文章</h1>
-  <p>按时间倒序排列，共 6 篇</p>
-</div>
-
+<header><div class="header-inner"><a href="index.html" class="logo">✦ <span>知识库</span></a><nav><a href="index.html">首页</a><a href="archive.html" class="active">归档</a><a href="about.html">关于</a></nav></div></header>
+<div class="page-hero"><h1>全部文章</h1><p>按时间倒序排列，共 9 篇</p></div>
 <div class="archive-body">
-  <div class="year-group">
-    <div class="year-label">2026</div>
-    <div class="archive-list">
-      <a href="posts/post-1.html" class="archive-item">
-        <span class="archive-date">04-19</span>
-        <div class="archive-info">
-          <div class="archive-title">如何建立自己的知识体系——从混乱到清晰</div>
-          <div class="archive-meta">
-            <span class="archive-cat cat-life">生活</span>
-            <span class="archive-time">8 分钟</span>
-          </div>
-        </div>
-      </a>
-      <a href="posts/post-2.html" class="archive-item">
-        <span class="archive-date">04-15</span>
-        <div class="archive-info">
-          <div class="archive-title">Dota 2 游廊地图入门：从零开始制作自定义地图</div>
-          <div class="archive-meta">
-            <span class="archive-cat cat-game">游戏</span>
-            <span class="archive-time">12 分钟</span>
-          </div>
-        </div>
-      </a>
-      <a href="posts/post-3.html" class="archive-item">
-        <span class="archive-date">04-10</span>
-        <div class="archive-info">
-          <div class="archive-title">A 股量化入门：用 Python 获取和分析股票数据</div>
-          <div class="archive-meta">
-            <span class="archive-cat cat-finance">金融</span>
-            <span class="archive-time">10 分钟</span>
-          </div>
-        </div>
-      </a>
-      <a href="posts/post-4.html" class="archive-item">
-        <span class="archive-date">04-08</span>
-        <div class="archive-info">
-          <div class="archive-title">【转】费曼学习法：学会输出才是真正的学会</div>
-          <div class="archive-meta">
-            <span class="archive-cat cat-share">转发精选</span>
-            <span class="archive-time">6 分钟</span>
-          </div>
-        </div>
-      </a>
-      <a href="posts/post-5.html" class="archive-item">
-        <span class="archive-date">04-05</span>
-        <div class="archive-info">
-          <div class="archive-title">Git 工作流最佳实践：团队协作的那些坑</div>
-          <div class="archive-meta">
-            <span class="archive-cat cat-tech">技术</span>
-            <span class="archive-time">7 分钟</span>
-          </div>
-        </div>
-      </a>
-      <a href="posts/post-6.html" class="archive-item">
-        <span class="archive-date">04-01</span>
-        <div class="archive-info">
-          <div class="archive-title">复利思维：为什么你的努力需要方向</div>
-          <div class="archive-meta">
-            <span class="archive-cat cat-life">生活</span>
-            <span class="archive-time">5 分钟</span>
-          </div>
-        </div>
-      </a>
-    </div>
+  <div class="archive-list">
+    <a href="posts/post-1.html" class="archive-item"><span class="archive-date">2026-04-19</span><div class="archive-info"><div class="archive-title">如何建立自己的知识体系——从混乱到清晰</div><div class="archive-tags"><span class="archive-tag">#学习方法</span><span class="archive-tag">#知识管理</span><span class="archive-tag">#思维</span></div></div></a>
+    <a href="posts/post-2.html" class="archive-item"><span class="archive-date">2026-04-15</span><div class="archive-info"><div class="archive-title">Dota 2 游廊地图入门：从零开始制作自定义地图</div><div class="archive-tags"><span class="archive-tag">#Dota2</span><span class="archive-tag">#游戏开发</span><span class="archive-tag">#Lua</span></div></div></a>
+    <a href="posts/post-3.html" class="archive-item"><span class="archive-date">2026-04-10</span><div class="archive-info"><div class="archive-title">A 股量化入门：用 Python 获取和分析股票数据</div><div class="archive-tags"><span class="archive-tag">#Python</span><span class="archive-tag">#量化投资</span><span class="archive-tag">#金融</span></div></div></a>
+    <a href="posts/post-4.html" class="archive-item"><span class="archive-date">2026-04-08</span><div class="archive-info"><div class="archive-title">【转】费曼学习法：学会输出才是真正的学会</div><div class="archive-tags"><span class="archive-tag">#学习方法</span><span class="archive-tag">#费曼</span><span class="archive-tag">#转发</span></div></div></a>
+    <a href="posts/post-5.html" class="archive-item"><span class="archive-date">2026-04-05</span><div class="archive-info"><div class="archive-title">Git 工作流最佳实践：团队协作的那些坑</div><div class="archive-tags"><span class="archive-tag">#Git</span><span class="archive-tag">#工程实践</span></div></div></a>
+    <a href="posts/post-6.html" class="archive-item"><span class="archive-date">2026-04-01</span><div class="archive-info"><div class="archive-title">复利思维：为什么你的努力需要方向</div><div class="archive-tags"><span class="archive-tag">#思维</span><span class="archive-tag">#成长</span></div></div></a>
+    <a href="posts/post-rpg-1.html" class="archive-item"><span class="archive-date">2026-04-01</span><div class="archive-info"><div class="archive-title">RPG Maker MV 插件汉化列表</div><div class="archive-tags"><span class="archive-tag">#RPG-Maker</span><span class="archive-tag">#插件汉化</span></div></div></a>
+    <a href="posts/post-rpg-2.html" class="archive-item"><span class="archive-date">2026-03-20</span><div class="archive-info"><div class="archive-title">RPG Maker 事件 GIF 素材汇总</div><div class="archive-tags"><span class="archive-tag">#RPG-Maker</span><span class="archive-tag">#素材</span><span class="archive-tag">#GIF</span></div></div></a>
+    <a href="posts/post-rpg-3.html" class="archive-item"><span class="archive-date">2026-03-15</span><div class="archive-info"><div class="archive-title">RPG Maker MV 脚本调用参考</div><div class="archive-tags"><span class="archive-tag">#RPG-Maker</span><span class="archive-tag">#脚本</span><span class="archive-tag">#教程</span></div></div></a>
   </div>
 </div>
-
 <footer><p>用 ♥ 整理，用知识连接 &nbsp;·&nbsp; <a href="index.html">回到首页</a></p></footer>
-</body>
-</html>
+</body></html>

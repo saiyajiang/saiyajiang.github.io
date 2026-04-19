@@ -5,44 +5,7 @@
   <title>Dota 2 游廊地图入门 · 知识库</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    :root { --bg:#0d0d0d;--bg-card:#161616;--border:#2a2a2a;--border-hover:#404040;--text-primary:#f0f0f0;--text-secondary:#999;--text-muted:#555;--accent:#6ee7b7;--accent-2:#818cf8; }
-    *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
-    body{background:var(--bg);color:var(--text-primary);font-family:'Inter','Noto Sans SC',sans-serif;font-size:16px;line-height:1.8}
-    header{position:sticky;top:0;z-index:100;background:rgba(13,13,13,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
-    .header-inner{max-width:760px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-    .logo{font-size:18px;font-weight:700;color:var(--text-primary);text-decoration:none;display:flex;align-items:center;gap:8px}
-    .logo span{background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .back-btn{color:var(--text-secondary);text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;transition:all .2s}
-    .back-btn:hover{color:var(--text-primary);background:var(--bg-card)}
-    .post-header{max-width:760px;margin:0 auto;padding:64px 24px 40px;border-bottom:1px solid var(--border)}
-    .post-cat{display:inline-flex;align-items:center;background:rgba(244,114,182,0.1);color:#f472b6;border:1px solid rgba(244,114,182,0.2);font-size:12px;font-weight:600;letter-spacing:.5px;padding:4px 12px;border-radius:100px;margin-bottom:20px}
-    .post-title{font-size:clamp(26px,4vw,40px);font-weight:700;letter-spacing:-1px;line-height:1.2;margin-bottom:16px}
-    .post-meta{display:flex;align-items:center;gap:16px;color:var(--text-muted);font-size:13px;flex-wrap:wrap}
-    .post-meta span{display:flex;align-items:center;gap:5px}
-    .post-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:20px}
-    .tag{font-size:12px;color:var(--text-muted);background:rgba(255,255,255,.04);border:1px solid var(--border);padding:3px 10px;border-radius:4px}
-    .post-content{max-width:760px;margin:0 auto;padding:48px 24px 80px}
-    .post-content h2{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--text-primary);margin:48px 0 16px;padding-left:16px;border-left:3px solid #f472b6}
-    .post-content h3{font-size:18px;font-weight:600;color:var(--text-primary);margin:32px 0 12px}
-    .post-content p{color:var(--text-secondary);margin-bottom:20px}
-    .post-content strong{color:var(--text-primary);font-weight:600}
-    .post-content ul,.post-content ol{color:var(--text-secondary);padding-left:24px;margin-bottom:20px}
-    .post-content li{margin-bottom:8px}
-    .post-content blockquote{border-left:3px solid var(--accent-2);padding:16px 20px;margin:24px 0;background:rgba(129,140,248,.05);border-radius:0 8px 8px 0;color:var(--text-secondary);font-style:italic}
-    .post-content code{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:2px 6px;border-radius:4px;font-size:13px;font-family:'Fira Code',monospace;color:#f472b6}
-    .post-content pre{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:24px 0;overflow-x:auto}
-    .post-content pre code{background:none;border:none;padding:0;font-size:13px;color:var(--text-secondary)}
-    .post-content hr{border:none;border-top:1px solid var(--border);margin:40px 0}
-    .post-nav{max-width:760px;margin:0 auto;padding:0 24px 64px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .post-nav-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-decoration:none;transition:all .2s}
-    .post-nav-item:hover{border-color:var(--border-hover);transform:translateY(-2px)}
-    .post-nav-label{font-size:11px;color:var(--text-muted);margin-bottom:6px;letter-spacing:.5px}
-    .post-nav-title{font-size:14px;font-weight:500;color:var(--text-primary)}
-    footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--text-muted);font-size:13px}
-    footer a{color:var(--accent);text-decoration:none}
-    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-  </style>
+  <style>:root{--bg:#0d0d0d;--bg-card:#161616;--border:#2a2a2a;--border-hover:#404040;--text-primary:#f0f0f0;--text-secondary:#999;--text-muted:#555;--accent:#6ee7b7;--accent-2:#818cf8}*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{background:var(--bg);color:var(--text-primary);font-family:'Inter','Noto Sans SC',sans-serif;font-size:16px;line-height:1.8}header{position:sticky;top:0;z-index:100;background:rgba(13,13,13,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}.header-inner{max-width:760px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}.logo{font-size:18px;font-weight:700;color:var(--text-primary);text-decoration:none;display:flex;align-items:center;gap:8px}.logo span{background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.back-btn{color:var(--text-secondary);text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;transition:all .2s}.back-btn:hover{color:var(--text-primary);background:var(--bg-card)}.post-header{max-width:760px;margin:0 auto;padding:64px 24px 40px;border-bottom:1px solid var(--border)}.post-title{font-size:clamp(26px,4vw,40px);font-weight:700;letter-spacing:-1px;line-height:1.2;margin-bottom:16px}.post-meta{display:flex;align-items:center;gap:16px;color:var(--text-muted);font-size:13px;flex-wrap:wrap;margin-bottom:16px}.post-meta span{display:flex;align-items:center;gap:5px}.post-tags{display:flex;gap:8px;flex-wrap:wrap}.post-tag{font-size:12px;color:var(--accent);background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.15);padding:4px 12px;border-radius:100px;cursor:pointer;transition:all .2s;text-decoration:none}.post-tag:hover{background:rgba(110,231,183,.15);border-color:rgba(110,231,183,.3)}.post-content{max-width:760px;margin:0 auto;padding:48px 24px}.post-content h2{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--text-primary);margin:48px 0 16px;padding-left:16px;border-left:3px solid #818cf8}.post-content h3{font-size:18px;font-weight:600;color:var(--text-primary);margin:32px 0 12px}.post-content p{color:var(--text-secondary);margin-bottom:20px}.post-content strong{color:var(--text-primary);font-weight:600}.post-content ul,.post-content ol{color:var(--text-secondary);padding-left:24px;margin-bottom:20px}.post-content li{margin-bottom:8px}.post-content blockquote{border-left:3px solid var(--accent-2);padding:16px 20px;margin:24px 0;background:rgba(129,140,248,.05);border-radius:0 8px 8px 0;color:var(--text-secondary);font-style:italic}.post-content code{background:rgba(255,255,255,.06);border:1px solid var(--border);padding:2px 6px;border-radius:4px;font-size:13px;font-family:'Fira Code',monospace;color:#818cf8}.post-content pre{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:24px 0;overflow-x:auto}.post-content pre code{background:none;border:none;padding:0;font-size:13px;color:var(--text-secondary)}.post-content hr{border:none;border-top:1px solid var(--border);margin:40px 0}.comments-section{max-width:760px;margin:0 auto;padding:0 24px 64px}.comments-header{border-top:1px solid var(--border);padding:40px 0 24px;display:flex;align-items:center;justify-content:space-between}.comments-title{font-size:16px;font-weight:600;color:var(--text-primary)}.comment-link{text-decoration:none;color:var(--accent);font-size:13px;display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border:1px solid rgba(110,231,183,.2);border-radius:8px;transition:all .2s}.comment-link:hover{background:rgba(110,231,183,.08)}.no-comments{text-align:center;padding:32px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;color:var(--text-muted);font-size:14px}.post-nav{max-width:760px;margin:0 auto;padding:0 24px 64px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.post-nav-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-decoration:none;transition:all .2s}.post-nav-item:hover{border-color:var(--border-hover);transform:translateY(-2px)}.post-nav-label{font-size:11px;color:var(--text-muted);margin-bottom:6px;letter-spacing:.5px}.post-nav-title{font-size:14px;font-weight:500;color:var(--text-primary)}footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--text-muted);font-size:13px}footer a{color:var(--accent);text-decoration:none}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}</style>
 </head>
 <body>
 <header>
@@ -51,62 +14,34 @@
     <a href="../index.html" class="back-btn"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg> 返回首页</a>
   </div>
 </header>
-
 <div class="post-header">
-  <div class="post-cat">🟣 游戏</div>
   <h1 class="post-title">Dota 2 游廊地图入门<br/>从零开始制作自定义地图</h1>
   <div class="post-meta">
     <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2026年4月15日</span>
     <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 约 12 分钟阅读</span>
   </div>
   <div class="post-tags">
-    <span class="tag">#Dota2</span><span class="tag">#游廊</span><span class="tag">#Lua</span><span class="tag">#地图制作</span>
+    <a href="../index.html" class="post-tag">#Dota2</a>
+    <a href="../index.html" class="post-tag">#游戏开发</a>
+    <a href="../index.html" class="post-tag">#Lua</a>
   </div>
 </div>
-
 <article class="post-content">
-
-  <p>Dota 2 的游廊（Arcade）系统允许任何人制作并发布自定义游戏地图。从经典的"嘉年华"到各种创意玩法，游廊地图已经是 Dota 生态中不可或缺的一部分。本文介绍如何从零开始入门地图制作。</p>
-
+  <p>Dota 2 的游廊（Arcade）系统允许任何人制作并发布自定义游戏地图。本文介绍如何从零开始入门地图制作。</p>
   <h2>环境准备</h2>
-
   <h3>安装 Dota 2 Workshop Tools</h3>
   <p>在 Steam 的 Dota 2 属性页面中，找到 <strong>DLC</strong> 标签，勾选安装 <code>Dota 2 Workshop Tools DLC</code>。安装完成后，在游戏启动选项中选择"进入地图编辑器"即可打开工具套件。</p>
-
   <h3>工具结构</h3>
   <p>Workshop Tools 包含以下核心组件：</p>
   <ul>
-    <li><strong>Hammer</strong>：地图地形编辑器（类似 CS 的 Hammer Editor）</li>
-    <li><strong>Asset Browser</strong>：资源浏览器，可以查找所有可用的模型、材质</li>
-    <li><strong>Panorama UI</strong>：自定义 HUD 界面的前端框架（HTML/CSS/JS）</li>
-    <li><strong>KV 编辑器</strong>：用于修改物品、技能等游戏数据</li>
+    <li><strong>Hammer</strong>：地图地形编辑器</li>
+    <li><strong>Asset Browser</strong>：资源浏览器</li>
+    <li><strong>Panorama UI</strong>：自定义 HUD 界面（HTML/CSS/JS）</li>
+    <li><strong>KV 编辑器</strong>：物品、技能等游戏数据</li>
   </ul>
-
-  <h2>地图的基本结构</h2>
-
-  <p>一个 Dota 2 自定义地图项目位于：</p>
-  <pre><code>Steam\steamapps\common\dota 2 beta\game\dota_addons\你的地图名称\</code></pre>
-
-  <p>目录结构如下：</p>
-  <pre><code>your_addon/
-├── maps/           # .vmap 地图文件
-├── scripts/
-│   ├── vscripts/   # Lua 游戏逻辑脚本
-│   └── npc/        # KV 文件（英雄/物品数据覆盖）
-├── resource/       # 本地化文本
-└── panorama/       # 自定义 UI</code></pre>
-
   <h2>Lua 脚本入门</h2>
-
   <p>游廊地图的游戏逻辑完全由 <strong>Lua 脚本</strong>驱动。入口文件是 <code>vscripts/addon_game_mode.lua</code>。</p>
-
-  <h3>最简单的初始化</h3>
-  <pre><code>-- addon_game_mode.lua
-function Precache(context)
-  -- 预加载资源
-end
-
-function Activate()
+  <pre><code>function Activate()
   GameRules:GetGameModeEntity():SetThink("OnThink", GameRules:GetGameModeEntity(), 1)
   ListenToGameEvent("game_rules_state_change", OnStateChange, nil)
 end
@@ -114,78 +49,36 @@ end
 function OnStateChange()
   local state = GameRules:State_Get()
   if state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
-    -- 游戏开始时的逻辑
     print("游戏开始！")
   end
 end</code></pre>
-
-  <h3>监听事件</h3>
-  <p>Dota 2 提供了丰富的游戏事件系统。常用的事件包括：</p>
+  <h2>常用游戏事件</h2>
   <ul>
     <li><code>npc_spawned</code> — 单位生成</li>
     <li><code>entity_killed</code> — 单位死亡</li>
     <li><code>dota_player_gained_level</code> — 玩家升级</li>
-    <li><code>dota_item_purchased</code> — 购买物品</li>
   </ul>
-
-  <pre><code>ListenToGameEvent("entity_killed", function(keys)
-  local unit = EntIndexToHScript(keys.entindex_killed)
-  if unit ~= nil and unit:IsHero() then
-    print("英雄死亡：" .. unit:GetName())
-  end
-end, nil)</code></pre>
-
-  <h2>常用 API 参考</h2>
-
-  <p>官方 API 文档在 <strong>Valve Developer Community</strong> Wiki 上，以下是一些高频用法：</p>
-
-  <pre><code>-- 获取所有玩家
-for i = 0, DOTA_MAX_PLAYERS - 1 do
-  local player = PlayerResource:GetPlayer(i)
-  if player ~= nil then
-    local hero = player:GetAssignedHero()
-    -- 对每个英雄做操作
-  end
-end
-
--- 给英雄添加物品
-hero:AddItemByName("item_blink")
-
--- 给英雄加钱
-PlayerResource:ModifyGold(playerID, 1000, true, 0)
-
--- 创建单位
-local unit = CreateUnitByName("npc_dota_creep_goodguys_melee", spawnPos, true, nil, nil, DOTA_TEAM_GOODGUYS)</code></pre>
-
-  <h2>下一步</h2>
-
-  <blockquote>
-    学习地图制作最快的方式，是找一个已有的开源地图，把代码读懂，然后改它。
-  </blockquote>
-
-  <p>推荐学习资源：</p>
+  <blockquote>学习地图制作最快的方式，是找一个已有的开源地图，把代码读懂，然后改它。</blockquote>
+  <h2>推荐资源</h2>
   <ul>
-    <li><strong>Moddota.com</strong> — 游廊开发文档集合，含大量教程</li>
-    <li><strong>GitHub</strong> — 搜索 "dota2 custom game" 有很多开源项目</li>
-    <li><strong>r/DotA2Modding</strong> — Reddit 社区，可以提问</li>
+    <li><strong>Moddota.com</strong> — 游廊开发文档集合</li>
+    <li><strong>r/DotA2Modding</strong> — Reddit 社区</li>
+    <li>GitHub 搜索 "dota2 custom game" 有大量开源项目</li>
   </ul>
-
-  <hr />
-  <p style="font-size:14px;color:var(--text-muted)">本文是系列文章的第一篇，后续将深入介绍触发器系统、自定义英雄技能和 Panorama UI。</p>
-
+  <hr/>
+  <p style="font-size:14px;color:var(--text-muted)">本文是系列文章的第一篇，后续将深入介绍触发器系统与自定义技能。</p>
 </article>
-
+<div class="comments-section">
+  <div class="comments-header">
+    <div><div class="comments-title">💬 评论</div></div>
+    <a href="https://github.com/saiyajiang/saiyajiang.github.io/issues/new?title=讨论：Dota2游廊地图入门" target="_blank" class="comment-link"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 去 GitHub 发表讨论</a>
+  </div>
+  <div class="no-comments">暂无评论。点击上方链接去 GitHub 发表第一评论。</div>
+</div>
 <nav class="post-nav">
-  <a href="post-1.html" class="post-nav-item">
-    <div class="post-nav-label">← 上一篇</div>
-    <div class="post-nav-title">如何建立自己的知识体系</div>
-  </a>
-  <a href="post-3.html" class="post-nav-item" style="text-align:right">
-    <div class="post-nav-label">下一篇 →</div>
-    <div class="post-nav-title">A 股量化入门</div>
-  </a>
+  <a href="post-1.html" class="post-nav-item"><div class="post-nav-label">← 上一篇</div><div class="post-nav-title">如何建立自己的知识体系</div></a>
+  <a href="post-3.html" class="post-nav-item" style="text-align:right"><div class="post-nav-label">下一篇 →</div><div class="post-nav-title">A 股量化入门</div></a>
 </nav>
-
 <footer><p>用 ♥ 整理，用知识连接 &nbsp;·&nbsp; <a href="../index.html">回到首页</a></p></footer>
 </body>
 </html>
