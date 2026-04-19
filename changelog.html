@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>更新日志 · 知识库</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#0d0d0d;--bg-card:#161616;--bg-card-hover:#1e1e1e;--border:#2a2a2a;--border-hover:#404040;--text-primary:#f0f0f0;--text-secondary:#999;--text-muted:#555;--accent:#6ee7b7;--accent-2:#818cf8;--accent-pink:#f472b6;--accent-yellow:#fbbf24;--accent-red:#f87171;--accent-blue:#60a5fa}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text-primary);font-family:'Inter','Noto Sans SC',sans-serif;font-size:16px;line-height:1.8}
+    header{position:sticky;top:0;z-index:100;background:rgba(13,13,13,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .header-inner{max-width:860px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-size:18px;font-weight:700;color:var(--text-primary);text-decoration:none;display:flex;align-items:center;gap:8px}
+    .logo span{background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    nav{display:flex;gap:8px}
+    nav a{color:var(--text-secondary);text-decoration:none;font-size:14px;padding:6px 12px;border-radius:6px;transition:all .2s}
+    nav a:hover{color:var(--text-primary);background:var(--bg-card)}
+    nav a.active{color:var(--accent)}
+    .page-hero{max-width:860px;margin:0 auto;padding:72px 24px 48px}
+    .page-hero h1{font-size:38px;font-weight:700;letter-spacing:-1.5px;margin-bottom:12px}
+    .page-hero p{color:var(--text-secondary);font-size:15px;max-width:480px}
+    .changelog-body{max-width:860px;margin:0 auto;padding:0 24px 80px}
+    .changelog-list{display:flex;flex-direction:column;gap:0}
+    .changelog-date-group{margin-bottom:8px}
+    .date-heading{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);padding:32px 0 16px;display:flex;align-items:center;gap:10px}
+    .date-heading::after{content:'';flex:1;height:1px;background:var(--border)}
+    .changelog-entry{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:all .2s}
+    .changelog-entry:hover{border-color:var(--border-hover)}
+    .entry-header{display:flex;align-items:center;gap:12px;padding:20px 24px;cursor:pointer;user-select:none}
+    .entry-header:hover{background:rgba(255,255,255,.02)}
+    .entry-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;flex-shrink:0}
+    .badge-new{background:rgba(110,231,183,.1);border:1px solid rgba(110,231,183,.2);color:var(--accent)}
+    .badge-update{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:var(--accent-yellow)}
+    .badge-fix{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:var(--accent-red)}
+    .badge-feature{background:rgba(129,140,248,.1);border:1px solid rgba(129,140,248,.2);color:#818cf8}
+    .badge-doc{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:var(--accent-blue)}
+    .badge-refactor{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.2);color:var(--accent-pink)}
+    .entry-title{flex:1;font-size:15px;font-weight:600;color:var(--text-primary)}
+    .entry-toggle{color:var(--text-muted);transition:transform .2s;flex-shrink:0}
+    .entry-toggle.open{transform:rotate(90deg)}
+    .entry-body{padding:0 24px 20px;border-top:1px solid var(--border);display:none}
+    .entry-body.open{display:block}
+    .entry-changes{display:flex;flex-direction:column;gap:8px;padding-top:16px}
+    .change-item{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text-secondary)}
+    .change-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+    .icon-add{background:rgba(110,231,183,.15);color:var(--accent)}
+    .icon-remove{background:rgba(248,113,113,.15);color:var(--accent-red)}
+    .icon-change{background:rgba(251,191,36,.15);color:var(--accent-yellow)}
+    .icon-note{background:rgba(255,255,255,.05);color:var(--text-muted)}
+    .footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--text-muted);font-size:13px}
+    .footer a{color:var(--accent);text-decoration:none}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+    @media(max-width:640px){.page-hero{padding:48px 20px 32px}.changelog-body{padding:0 16px 60px}.entry-header{padding:16px 18px}.entry-body{padding:0 18px 16px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">✦ <span>知识库</span></a>
+    <nav>
+      <a href="index.html">首页</a>
+      <a href="archive.html">归档</a>
+      <a href="changelog.html" class="active">更新日志</a>
+      <a href="about.html">关于</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <h1>更新日志</h1>
+  <p>记录博客的每一次变化，包括新文章、功能更新、内容调整等。</p>
+</div>
+
+<div class="changelog-body">
+  <div class="changelog-list">
+
+    <!-- 2026-04-19 -->
+    <div class="date-heading">2026 年 4 月 19 日</div>
+
+    <div class="changelog-entry">
+      <div class="entry-header" onclick="toggleEntry(this)">
+        <span class="entry-badge badge-refactor">🔄 重构</span>
+        <span class="entry-title">博客迁移至根目录，整合原有 RPG Maker 页面</span>
+        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="entry-body">
+        <div class="entry-changes">
+          <div class="change-item"><span class="change-icon icon-add">+</span>博客从 <code>/blog/</code> 子目录迁移至根目录，访问路径更简洁</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>新增「更新日志」页面（changelog.html），记录每次变更</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>新增文章《RPG Maker MV 资源导航页》，整合原有所有 RPG Maker 资源链接</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>导航栏新增「更新日志」入口</div>
+          <div class="change-item"><span class="change-icon icon-remove">−</span>删除旧 blog/ 子目录</div>
+          <div class="change-item"><span class="change-icon icon-remove">−</span>删除废弃页面 new_index.html、gif.html、plugins.html（内容已整合）</div>
+          <div class="change-item"><span class="change-icon icon-change">~</span>更新所有文章路径引用（posts/ 移至根目录）</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="entry-header" onclick="toggleEntry(this)">
+        <span class="entry-badge badge-feature">✨ 功能</span>
+        <span class="entry-title">多标签系统上线，替代原有分类体系</span>
+        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="entry-body">
+        <div class="entry-changes">
+          <div class="change-item"><span class="change-icon icon-add">+</span>每篇文章支持多个标签（不限数量）</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>首页顶部标签云，支持一键按标签筛选</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>卡片内标签可点击跳转筛选</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>全文实时搜索（标题 + 标签 + 摘要）</div>
+          <div class="change-item"><span class="change-icon icon-remove">−</span>删除原有「分类」体系</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="entry-header" onclick="toggleEntry(this)">
+        <span class="entry-badge badge-feature">✨ 功能</span>
+        <span class="entry-title">GitHub Issues 评论系统上线</span>
+        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="entry-body">
+        <div class="entry-changes">
+          <div class="change-item"><span class="change-icon icon-add">+</span>每篇文章底部新增「讨论」区域</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>点击「去 GitHub 发表讨论」跳转到对应 Issue 页面</div>
+          <div class="change-item"><span class="change-icon icon-note">💡</span>无需任何第三方服务，GitHub 账号即可评论</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="changelog-entry">
+      <div class="entry-header" onclick="toggleEntry(this)">
+        <span class="entry-badge badge-feature">✨ 功能</span>
+        <span class="entry-title">原有 RPG Maker 内容全面整合</span>
+        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="entry-body">
+        <div class="entry-changes">
+          <div class="change-item"><span class="change-icon icon-add">+</span>RPG Maker 插件汉化列表 → 新样式博客文章（post-rpg-1.html）</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>RPG Maker GIF素材 → 新样式博客文章（post-rpg-2.html）</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>RPG Maker 脚本调用参考 → 新样式博客文章（post-rpg-3.html）</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>资源导航总页 → 整合所有资源入口（post-old-rpg.html）</div>
+          <div class="change-item"><span class="change-icon icon-change">~</span>统一使用暗色主题样式，视觉效果一致</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2026-04-19 初次 -->
+    <div class="changelog-entry">
+      <div class="entry-header" onclick="toggleEntry(this)">
+        <span class="entry-badge badge-new">🚀 上线</span>
+        <span class="entry-title">知识库博客正式上线</span>
+        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="entry-body">
+        <div class="entry-changes">
+          <div class="change-item"><span class="change-icon icon-add">+</span>博客系统上线，采用暗色主题 + 卡片式布局</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>首批发布 6 篇文章，涵盖学习方法、金融量化、游戏开发等方向</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>归档页和关于页同步上线</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>部署文档 DEPLOY.md 同步上线</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  <p>用 ♥ 整理，用知识连接 &nbsp;·&nbsp; <a href="index.html">回到首页</a> &nbsp;·&nbsp; <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">GitHub</a></p>
+</div>
+
+<script>
+function toggleEntry(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.entry-toggle');
+  const isOpen = body.classList.toggle('open');
+  toggle.classList.toggle('open', isOpen);
+}
+</script>
+</body>
+</html>
