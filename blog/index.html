@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>知识库 · Knowledge Base</title>
+  <meta name="description" content="分享知识、记录思考、传播有价值的内容" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --bg-card: #161616;
+      --bg-card-hover: #1e1e1e;
+      --border: #2a2a2a;
+      --border-hover: #404040;
+      --text-primary: #f0f0f0;
+      --text-secondary: #888;
+      --text-muted: #555;
+      --accent: #6ee7b7;
+      --accent-2: #818cf8;
+      --accent-3: #f472b6;
+      --accent-4: #fbbf24;
+      --accent-5: #60a5fa;
+      --tag-bg: rgba(110,231,183,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Inter', 'Noto Sans SC', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── 顶部导航 ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,13,13,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo span {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--text-primary);
+      background: var(--bg-card);
+    }
+
+    nav a.active {
+      color: var(--accent);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 72px 24px 48px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(110,231,183,0.1);
+      border: 1px solid rgba(110,231,183,0.2);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff 0%, #999 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+
+    /* ── 搜索框 ── */
+    .search-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 20px 12px 44px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(110,231,183,0.1);
+    }
+
+    .search-wrap input::placeholder { color: var(--text-muted); }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* ── 分类筛选 ── */
+    .filters {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-family: inherit;
+      padding: 6px 16px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* ── 统计栏 ── */
+    .stats {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 24px;
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── 分隔线 ── */
+    .divider {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 36px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── 文章网格 ── */
+    .articles-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .result-count {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── 文章卡片 ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .card-accent {
+      height: 3px;
+      width: 100%;
+    }
+
+    .card-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .card-cat {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .card-date {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    .card h2 {
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      padding: 0 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .card-read {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── 置顶卡片（大) ── */
+    .card-featured {
+      grid-column: 1 / -1;
+    }
+
+    @media (min-width: 700px) {
+      .card-featured .card-body {
+        max-width: 60%;
+      }
+    }
+
+    .card-featured h2 {
+      font-size: 22px;
+    }
+
+    .card-featured p {
+      -webkit-line-clamp: 4;
+    }
+
+    .featured-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-4);
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    /* ── 无结果 ── */
+    .no-results {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    .no-results svg {
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    /* ── 底部 ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── 颜色主题 ── */
+    .cat-tech { color: #60a5fa; }
+    .bg-tech { background: linear-gradient(90deg, #60a5fa, #818cf8); }
+    .meta-tech { background: rgba(96,165,250,0.1); color: #60a5fa; }
+
+    .cat-finance { color: #6ee7b7; }
+    .bg-finance { background: linear-gradient(90deg, #6ee7b7, #34d399); }
+    .meta-finance { background: rgba(110,231,183,0.1); color: #6ee7b7; }
+
+    .cat-game { color: #f472b6; }
+    .bg-game { background: linear-gradient(90deg, #f472b6, #e879f9); }
+    .meta-game { background: rgba(244,114,182,0.1); color: #f472b6; }
+
+    .cat-life { color: #fbbf24; }
+    .bg-life { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .meta-life { background: rgba(251,191,36,0.1); color: #fbbf24; }
+
+    .cat-share { color: #a78bfa; }
+    .bg-share { background: linear-gradient(90deg, #a78bfa, #8b5cf6); }
+    .meta-share { background: rgba(167,139,250,0.1); color: #a78bfa; }
+
+    /* ── 响应式 ── */
+    @media (max-width: 640px) {
+      .hero { padding: 48px 20px 32px; }
+      .hero h1 { letter-spacing: -0.5px; }
+      .grid { grid-template-columns: 1fr; }
+      .stats { gap: 20px; }
+      nav a span { display: none; }
+    }
+
+    /* ── 滚动条 ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+    /* ── 动画 ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      animation: fadeInUp 0.4s ease both;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.05s; }
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.15s; }
+    .card:nth-child(4) { animation-delay: 0.2s; }
+    .card:nth-child(5) { animation-delay: 0.25s; }
+    .card:nth-child(6) { animation-delay: 0.3s; }
+  </style>
+</head>
+<body>
+
+<!-- 导航 -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      ✦ <span>知识库</span>
+    </a>
+    <nav>
+      <a href="index.html" class="active"><span>首页</span></a>
+      <a href="archive.html"><span>归档</span></a>
+      <a href="about.html"><span>关于</span></a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">✦ 持续更新中</div>
+  <h1>知识值得被分享</h1>
+  <p>记录有价值的内容，整理思考，传播好的知识。</p>
+  <div class="search-wrap">
+    <svg class="search-icon" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="搜索文章、标签…" autocomplete="off" />
+  </div>
+</section>
+
+<!-- 分类筛选 -->
+<div class="filters">
+  <button class="filter-btn active" data-cat="all">全部</button>
+  <button class="filter-btn" data-cat="tech">🔵 技术</button>
+  <button class="filter-btn" data-cat="finance">🟢 金融</button>
+  <button class="filter-btn" data-cat="game">🟣 游戏</button>
+  <button class="filter-btn" data-cat="life">🟡 生活</button>
+  <button class="filter-btn" data-cat="share">🔴 转发精选</button>
+</div>
+
+<!-- 文章列表 -->
+<main class="articles-section">
+  <div class="section-header">
+    <span class="section-title">最新文章</span>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="no-results" id="noResults">
+    <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <p>没有找到相关内容</p>
+  </div>
+</main>
+
+<!-- 底部 -->
+<footer>
+  <p>用 ♥ 整理，用知识连接 &nbsp;·&nbsp; <a href="about.html">了解更多</a> &nbsp;·&nbsp; <a href="https://github.com" target="_blank">GitHub</a></p>
+</footer>
+
+<script>
+// ── 文章数据（后续直接在此添加新文章即可）──
+const articles = [
+  {
+    id: "post-1",
+    featured: true,
+    title: "如何建立自己的知识体系——从混乱到清晰",
+    excerpt: "知识碎片化时代，我们每天接受海量信息，却难以形成系统认知。本文分享一套实用的知识管理框架：收集、整理、链接、输出，帮你把零散信息变成真正属于自己的认知资产。",
+    cat: "life",
+    catLabel: "生活",
+    date: "2026-04-19",
+    tags: ["知识管理", "思维方法", "学习"],
+    readTime: "8 分钟",
+    href: "posts/post-1.html"
+  },
+  {
+    id: "post-2",
+    featured: false,
+    title: "Dota 2 游廊地图入门：从零开始制作自定义地图",
+    excerpt: "Dota 2 Workshop Tools 是 Valve 提供的强大地图编辑工具。本文介绍环境搭建、基础地图结构、Lua 脚本入门，以及常见触发器的使用方式。",
+    cat: "game",
+    catLabel: "游戏",
+    date: "2026-04-15",
+    tags: ["Dota 2", "游廊", "Lua", "地图制作"],
+    readTime: "12 分钟",
+    href: "posts/post-2.html"
+  },
+  {
+    id: "post-3",
+    featured: false,
+    title: "A 股量化入门：用 Python 获取和分析股票数据",
+    excerpt: "介绍如何用 Python 获取 A 股数据，进行基础的技术指标计算，以及可视化价格走势。适合有编程基础但对量化陌生的朋友。",
+    cat: "finance",
+    catLabel: "金融",
+    date: "2026-04-10",
+    tags: ["Python", "量化", "A股", "数据分析"],
+    readTime: "10 分钟",
+    href: "posts/post-3.html"
+  },
+  {
+    id: "post-4",
+    featured: false,
+    title: "【转】费曼学习法：学会输出才是真正的学会",
+    excerpt: "原文来自 Farnam Street。费曼技巧的核心：把知识讲给一个外行人听，讲不清楚的地方就是你真正没理解的地方。这篇文章是我读过关于学习方法最有价值的文章之一。",
+    cat: "share",
+    catLabel: "转发精选",
+    date: "2026-04-08",
+    tags: ["学习方法", "费曼", "思维"],
+    readTime: "6 分钟",
+    href: "posts/post-4.html"
+  },
+  {
+    id: "post-5",
+    featured: false,
+    title: "Git 工作流最佳实践：团队协作的那些坑",
+    excerpt: "Branch 策略、commit message 规范、PR review 流程——总结了一些在实际协作中踩过的坑和解决方案，适合刚开始团队开发的朋友。",
+    cat: "tech",
+    catLabel: "技术",
+    date: "2026-04-05",
+    tags: ["Git", "协作", "工程实践"],
+    readTime: "7 分钟",
+    href: "posts/post-5.html"
+  },
+  {
+    id: "post-6",
+    featured: false,
+    title: "复利思维：为什么你的努力需要方向",
+    excerpt: "查理·芒格说，给我看激励机制，我就能预测行为。同样，给我看你的时间去向，我就能预测你的未来。本文探讨如何用复利思维重新审视日常决策。",
+    cat: "life",
+    catLabel: "生活",
+    date: "2026-04-01",
+    tags: ["复利", "思维", "成长"],
+    readTime: "5 分钟",
+    href: "posts/post-6.html"
+  }
+];
+
+// ── 渲染函数 ──
+const catColor = {
+  tech: { accent: 'bg-tech', meta: 'meta-tech', text: 'cat-tech' },
+  finance: { accent: 'bg-finance', meta: 'meta-finance', text: 'cat-finance' },
+  game: { accent: 'bg-game', meta: 'meta-game', text: 'cat-game' },
+  life: { accent: 'bg-life', meta: 'meta-life', text: 'cat-life' },
+  share: { accent: 'bg-share', meta: 'meta-share', text: 'cat-share' }
+};
+
+function formatDate(d) {
+  const [y, m, day] = d.split('-');
+  return `${y}年${m}月${day}日`;
+}
+
+function renderCard(a) {
+  const c = catColor[a.cat];
+  return `
+    <a class="card ${a.featured ? 'card-featured' : ''}" href="${a.href}" data-cat="${a.cat}" data-title="${a.title}" data-tags="${a.tags.join(' ')}">
+      <div class="card-accent ${c.accent}"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          ${a.featured ? '<span class="featured-badge">★ 精选</span>' : ''}
+          <span class="card-cat ${c.meta}">${a.catLabel}</span>
+          <span class="card-date">${formatDate(a.date)}</span>
+        </div>
+        <h2>${a.title}</h2>
+        <p>${a.excerpt}</p>
+      </div>
+      <div class="card-footer">
+        ${a.tags.map(t => `<span class="tag">#${t}</span>`).join('')}
+        <span class="card-read">
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          ${a.readTime}
+        </span>
+      </div>
+    </a>`;
+}
+
+// ── 渲染 + 筛选 ──
+let currentCat = 'all';
+let currentSearch = '';
+
+function render() {
+  const grid = document.getElementById('grid');
+  const noResults = document.getElementById('noResults');
+  const countEl = document.getElementById('resultCount');
+
+  let filtered = articles.filter(a => {
+    const matchCat = currentCat === 'all' || a.cat === currentCat;
+    const q = currentSearch.toLowerCase();
+    const matchSearch = !q || a.title.toLowerCase().includes(q) || a.tags.join(' ').toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q);
+    return matchCat && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    noResults.style.display = 'block';
+    countEl.textContent = '';
+  } else {
+    noResults.style.display = 'none';
+    grid.innerHTML = filtered.map(renderCard).join('');
+    countEl.textContent = `共 ${filtered.length} 篇`;
+  }
+}
+
+// ── 事件绑定 ──
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = btn.dataset.cat;
+    render();
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  currentSearch = e.target.value.trim();
+  render();
+});
+
+// 初始渲染
+render();
+</script>
+</body>
+</html>

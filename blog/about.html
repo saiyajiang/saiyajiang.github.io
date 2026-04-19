@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>关于 · 知识库</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0d; --bg-card: #161616; --border: #2a2a2a; --border-hover: #404040;
+      --text-primary: #f0f0f0; --text-secondary: #999; --text-muted: #555;
+      --accent: #6ee7b7; --accent-2: #818cf8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', 'Noto Sans SC', sans-serif; font-size: 16px; line-height: 1.8; }
+
+    header { position: sticky; top: 0; z-index: 100; background: rgba(13,13,13,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 18px; font-weight: 700; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .logo span { background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    nav { display: flex; gap: 8px; }
+    nav a { color: var(--text-secondary); text-decoration: none; font-size: 14px; padding: 6px 12px; border-radius: 6px; transition: all 0.2s; }
+    nav a:hover { color: var(--text-primary); background: var(--bg-card); }
+    nav a.active { color: var(--accent); }
+
+    .about-hero { max-width: 720px; margin: 0 auto; padding: 80px 24px 48px; }
+    .about-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin-bottom: 28px;
+    }
+    .about-hero h1 { font-size: 36px; font-weight: 700; letter-spacing: -1px; margin-bottom: 12px; }
+    .about-hero p { font-size: 16px; color: var(--text-secondary); max-width: 500px; }
+
+    .about-body { max-width: 720px; margin: 0 auto; padding: 0 24px 80px; }
+
+    .section { margin-bottom: 48px; }
+    .section h2 {
+      font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 20px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+    .section p { color: var(--text-secondary); margin-bottom: 16px; }
+    .section strong { color: var(--text-primary); }
+
+    .topics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .topic-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .topic-icon { font-size: 24px; }
+    .topic-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+    .topic-desc { font-size: 13px; color: var(--text-muted); }
+
+    .contact-list { display: flex; flex-direction: column; gap: 12px; }
+    .contact-item {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .contact-item:hover { border-color: var(--border-hover); }
+    .contact-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .contact-name { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+    .contact-sub { font-size: 13px; color: var(--text-muted); }
+
+    .update-list { display: flex; flex-direction: column; gap: 0; }
+    .update-item {
+      display: flex; gap: 20px; padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .update-item:last-child { border-bottom: none; }
+    .update-date { font-size: 12px; color: var(--text-muted); width: 90px; flex-shrink: 0; padding-top: 2px; }
+    .update-text { font-size: 14px; color: var(--text-secondary); }
+    .update-text strong { color: var(--text-primary); }
+
+    footer { border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; color: var(--text-muted); font-size: 13px; }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">✦ <span>知识库</span></a>
+    <nav>
+      <a href="index.html">首页</a>
+      <a href="archive.html">归档</a>
+      <a href="about.html" class="active">关于</a>
+    </nav>
+  </div>
+</header>
+
+<div class="about-hero">
+  <div class="about-avatar">✦</div>
+  <h1>这是一个知识库</h1>
+  <p>记录有价值的内容，整理自己的思考，分享值得传播的知识。不定期更新，持续生长。</p>
+</div>
+
+<div class="about-body">
+
+  <div class="section">
+    <h2>这里有什么</h2>
+    <p>这个博客没有严格的主题限制——只要是<strong>值得记录、值得分享</strong>的内容，都可能出现在这里。</p>
+    <p>内容来源包括：原创思考整理、读书笔记、转发的好文章（附上来源和我的评注）、以及各种值得留存的资料。</p>
+    <div class="topics-grid" style="margin-top:20px;">
+      <div class="topic-card">
+        <div class="topic-icon">🔵</div>
+        <div class="topic-name">技术</div>
+        <div class="topic-desc">编程、工具、工程实践</div>
+      </div>
+      <div class="topic-card">
+        <div class="topic-icon">🟢</div>
+        <div class="topic-name">金融</div>
+        <div class="topic-desc">投资、市场、经济逻辑</div>
+      </div>
+      <div class="topic-card">
+        <div class="topic-icon">🟣</div>
+        <div class="topic-name">游戏</div>
+        <div class="topic-desc">Dota 2、游戏设计</div>
+      </div>
+      <div class="topic-card">
+        <div class="topic-icon">🟡</div>
+        <div class="topic-name">生活</div>
+        <div class="topic-desc">思维方式、学习、成长</div>
+      </div>
+      <div class="topic-card">
+        <div class="topic-icon">🔴</div>
+        <div class="topic-name">转发精选</div>
+        <div class="topic-desc">觉得值得二次传播的内容</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>更新记录</h2>
+    <div class="update-list">
+      <div class="update-item">
+        <span class="update-date">2026-04-19</span>
+        <span class="update-text"><strong>博客上线</strong>，发布首批 6 篇文章</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>联系 / 订阅</h2>
+    <p style="margin-bottom:16px;">如果你有好的内容推荐，或者对某篇文章有想法，欢迎联系。</p>
+    <div class="contact-list">
+      <a href="https://github.com" class="contact-item" target="_blank">
+        <div class="contact-icon" style="background:rgba(255,255,255,0.06);">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        </div>
+        <div>
+          <div class="contact-name">GitHub</div>
+          <div class="contact-sub">查看博客源码，欢迎 Star</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>用 ♥ 整理，用知识连接 &nbsp;·&nbsp; <a href="index.html">回到首页</a></p>
+</footer>
+
+</body>
+</html>

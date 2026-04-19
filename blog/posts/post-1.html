@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>如何建立自己的知识体系 · 知识库</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --bg-card: #161616;
+      --border: #2a2a2a;
+      --border-hover: #404040;
+      --text-primary: #f0f0f0;
+      --text-secondary: #999;
+      --text-muted: #555;
+      --accent: #6ee7b7;
+      --accent-2: #818cf8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Inter', 'Noto Sans SC', sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    /* 导航 */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,13,13,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner {
+      max-width: 760px; margin: 0 auto; padding: 0 24px;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-size: 18px; font-weight: 700; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .logo span { background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .back-btn { color: var(--text-secondary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; transition: all 0.2s; }
+    .back-btn:hover { color: var(--text-primary); background: var(--bg-card); }
+
+    /* 文章头部 */
+    .post-header {
+      max-width: 760px; margin: 0 auto;
+      padding: 64px 24px 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .post-cat {
+      display: inline-flex; align-items: center;
+      background: rgba(251,191,36,0.1); color: #fbbf24;
+      border: 1px solid rgba(251,191,36,0.2);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+      padding: 4px 12px; border-radius: 100px; margin-bottom: 20px;
+    }
+    .post-title {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 700; letter-spacing: -1px; line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .post-meta {
+      display: flex; align-items: center; gap: 16px;
+      color: var(--text-muted); font-size: 13px; flex-wrap: wrap;
+    }
+    .post-meta span { display: flex; align-items: center; gap: 5px; }
+    .post-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 20px; }
+    .tag { font-size: 12px; color: var(--text-muted); background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 3px 10px; border-radius: 4px; }
+
+    /* 文章内容 */
+    .post-content {
+      max-width: 760px; margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+    .post-content h2 {
+      font-size: 22px; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--text-primary); margin: 48px 0 16px;
+      padding-left: 16px;
+      border-left: 3px solid var(--accent);
+    }
+    .post-content h3 {
+      font-size: 18px; font-weight: 600;
+      color: var(--text-primary); margin: 32px 0 12px;
+    }
+    .post-content p {
+      color: var(--text-secondary); margin-bottom: 20px;
+    }
+    .post-content strong { color: var(--text-primary); font-weight: 600; }
+    .post-content ul, .post-content ol {
+      color: var(--text-secondary); padding-left: 24px; margin-bottom: 20px;
+    }
+    .post-content li { margin-bottom: 8px; }
+    .post-content blockquote {
+      border-left: 3px solid var(--accent-2);
+      padding: 16px 20px; margin: 24px 0;
+      background: rgba(129,140,248,0.05);
+      border-radius: 0 8px 8px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    .post-content code {
+      background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+      padding: 2px 6px; border-radius: 4px; font-size: 14px;
+      font-family: 'Fira Code', monospace; color: var(--accent);
+    }
+    .post-content pre {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin: 24px 0;
+      overflow-x: auto;
+    }
+    .post-content pre code {
+      background: none; border: none; padding: 0; font-size: 14px;
+    }
+    .post-content hr {
+      border: none; border-top: 1px solid var(--border); margin: 40px 0;
+    }
+
+    /* 底部导航 */
+    .post-nav {
+      max-width: 760px; margin: 0 auto;
+      padding: 0 24px 64px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .post-nav-item {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .post-nav-item:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .post-nav-label { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 0.5px; }
+    .post-nav-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+
+    footer { border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; color: var(--text-muted); font-size: 13px; }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="../index.html" class="logo">✦ <span>知识库</span></a>
+    <a href="../index.html" class="back-btn">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      返回首页
+    </a>
+  </div>
+</header>
+
+<div class="post-header">
+  <div class="post-cat">🟡 生活</div>
+  <h1 class="post-title">如何建立自己的知识体系<br/>——从混乱到清晰</h1>
+  <div class="post-meta">
+    <span>
+      <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      2026年4月19日
+    </span>
+    <span>
+      <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      约 8 分钟阅读
+    </span>
+  </div>
+  <div class="post-tags">
+    <span class="tag">#知识管理</span>
+    <span class="tag">#思维方法</span>
+    <span class="tag">#学习</span>
+  </div>
+</div>
+
+<article class="post-content">
+
+  <p>我们每天都在接受大量信息。微信、公众号、知乎、B站、播客……信息的密度从未像今天这样高。但奇怪的是，很多人反而感到空虚——知道很多，却什么都不深。</p>
+
+  <p>问题不在于信息太少，而在于<strong>没有系统</strong>。</p>
+
+  <h2>为什么知识会碎片化</h2>
+
+  <p>人脑在处理信息时，有一个天然的偏好：<strong>新奇感</strong>。每一条新鲜内容都会触发多巴胺，让你觉得"学到了"。但实际上，没有被连接的知识，很快就会遗忘。</p>
+
+  <blockquote>
+    "没有关联的知识是死知识。知识只有在与其他知识发生连接时，才真正属于你。" ——《卡片笔记写作法》
+  </blockquote>
+
+  <p>碎片化的根本原因，是<strong>只有输入，没有整理</strong>。你收藏了一千篇文章，但从没回看；你在便签上记了无数灵感，但从没串联。这些内容就像散落的沙子，无法构成任何建筑。</p>
+
+  <h2>一个实用的知识管理框架</h2>
+
+  <h3>第一步：收集</h3>
+  <p>建立一个"收件箱"。不管是文章、视频观后感、脑中闪过的想法，先统一放进来，不做判断。工具可以是 Notion、Obsidian、甚至一个纯文本文件。<strong>关键是只有一个入口。</strong></p>
+
+  <h3>第二步：处理</h3>
+  <p>每周至少清空一次收件箱。对每条内容问自己：</p>
+  <ul>
+    <li>这对我有价值吗？</li>
+    <li>它和我已有的哪些知识相关？</li>
+    <li>我能用自己的话复述它吗？</li>
+  </ul>
+  <p>不能回答第三个问题，说明你还没真正理解。</p>
+
+  <h3>第三步：链接</h3>
+  <p>这是最关键的一步。<strong>知识的价值在于连接。</strong>当你整理一个新概念时，主动思考：它和什么相似？它能解释什么现象？它和哪些旧知识矛盾？</p>
+
+  <p>双向链接笔记（Obsidian / Roam Research）能帮你可视化这些连接，形成真正的知识图谱。</p>
+
+  <h3>第四步：输出</h3>
+
+  <blockquote>
+    输出是检验理解的最佳方式。
+  </blockquote>
+
+  <p>写博客、做分享、教别人——这些都是输出。输出的过程会暴露你的认知盲区，倒逼你真正理解。即便是像这篇文章一样，把思考整理成文字，也是一种输出。</p>
+
+  <h2>工具不是关键</h2>
+
+  <p>很多人在选工具上花了太多时间：Notion vs Obsidian、印象笔记 vs Logseq……其实<strong>工具是次要的</strong>，习惯才是关键。</p>
+
+  <p>一个简单的原则：用你愿意每天打开的工具。再好的系统，不用就是零。</p>
+
+  <h2>开始比完美更重要</h2>
+
+  <p>不要等到设计出"完美的知识体系"再开始记录。先动起来，记下第一条，链接第一个概念，写出第一篇总结。</p>
+
+  <p>知识体系不是一天建成的，但它<strong>每一天都在生长</strong>。</p>
+
+  <hr />
+
+  <p style="font-size:14px; color: var(--text-muted);">如果这篇文章对你有帮助，欢迎分享给朋友。</p>
+
+</article>
+
+<nav class="post-nav">
+  <a href="post-2.html" class="post-nav-item" style="text-align:right">
+    <div class="post-nav-label">下一篇 →</div>
+    <div class="post-nav-title">Dota 2 游廊地图入门</div>
+  </a>
+</nav>
+
+<footer>
+  <p>用 ♥ 整理，用知识连接 &nbsp;·&nbsp; <a href="../index.html">回到首页</a></p>
+</footer>
+
+</body>
+</html>
