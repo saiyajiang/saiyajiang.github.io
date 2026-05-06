@@ -151,7 +151,7 @@
 
   <h2>小结</h2>
   <p>这个问题本质是 NVIDIA 安装程序在某次（不一定成功的）安装/更新过程中，往注册表写了一个"需要重启"的标记，但后来的重启没有把这个标记清掉，导致后续所有安装操作都被卡住。</p>
-  <p>解决方案非常简单：<strong>手动删掉那个注册表键</strong>，安装程序就不再认为系统在等待重启，一切恢复正常。</p>
+  <p>可以尝试：<strong>手动删掉那个注册表键</strong>，安装程序就不再认为系统在等待重启，通常情况下问题会恢复正常。</p>
 
   <hr />
   <p style="font-size:14px;color:var(--text-muted)">折腾了挺久，记录下来备忘。如果你也遇到同样的问题，希望这篇能帮到你。</p>
@@ -173,10 +173,10 @@
 </div>
 
 <nav class="post-nav">
-  <a href="post-1.html" class="post-nav-item">
+  <div class="post-nav-item" style="opacity:.3;cursor:default;">
     <div class="post-nav-label">← 上一篇</div>
-    <div class="post-nav-title">如何建立自己的知识体系</div>
-  </a>
+    <div class="post-nav-title">暂无</div>
+  </div>
   <div class="post-nav-item" style="opacity:.3;cursor:default;">
     <div class="post-nav-label">下一篇 →</div>
     <div class="post-nav-title">暂无</div>
