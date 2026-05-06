@@ -59,11 +59,11 @@
 <body>
 <header>
   <div class="header-inner">
-    <a href="index.html" class="logo">✦ <span>知识库</span></a>
+    <a href="index.html" class="logo" style="font-size:15px;font-weight:600;background:none;-webkit-text-fill-color:var(--text-primary)">悲歌的小站</a>
     <nav>
       <a href="index.html">首页</a>
       <a href="archive.html">归档</a>
-      <a href="changelog.html" class="active">更新日志</a>
+      <a href="changelog.html" class="active">日志</a>
       <a href="about.html">关于</a>
     </nav>
   </div>
@@ -71,11 +71,31 @@
 
 <div class="page-hero">
   <h1>更新日志</h1>
-  <p>记录博客的每一次变化，包括新文章、功能更新、内容调整等。</p>
+  <p>记录每次更新的内容，包括新文章、页面调整等。</p>
 </div>
 
 <div class="changelog-body">
   <div class="changelog-list">
+
+    <!-- 2026-05-06 -->
+    <div class="date-heading">2026 年 5 月 6 日</div>
+
+    <div class="changelog-entry">
+      <div class="entry-header" onclick="toggleEntry(this)">
+        <span class="entry-badge badge-refactor">🔄 改版</span>
+        <span class="entry-title">改版为个人博客风格，删除测试文章，标签收纳</span>
+        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="entry-body">
+        <div class="entry-changes">
+          <div class="change-item"><span class="change-icon icon-change">~</span>站名改为「悲歌的小站」，去掉「知识库」定位，恢复个人分享博客风格</div>
+          <div class="change-item"><span class="change-icon icon-remove">−</span>删除测试文章：复利思维、Git 工作流、费曼学习法、Dota2 游廊入门、A 股量化、如何建立自己的知识体系（共 6 篇）</div>
+          <div class="change-item"><span class="change-icon icon-change">~</span>首页文章列表改为紧凑时间轴样式（去掉大卡片）</div>
+          <div class="change-item"><span class="change-icon icon-change">~</span>标签云改为下拉按钮，不再占用固定高度</div>
+          <div class="change-item"><span class="change-icon icon-change">~</span>归档页、关于页、日志页导航文案同步更新</div>
+        </div>
+      </div>
+    </div>
 
     <!-- 2026-04-29 -->
     <div class="date-heading">2026 年 4 月 29 日</div>
@@ -170,15 +190,14 @@
     <div class="changelog-entry">
       <div class="entry-header" onclick="toggleEntry(this)">
         <span class="entry-badge badge-new">🚀 上线</span>
-        <span class="entry-title">知识库博客正式上线</span>
+        <span class="entry-title">博客上线</span>
         <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
       </div>
       <div class="entry-body">
         <div class="entry-changes">
-          <div class="change-item"><span class="change-icon icon-add">+</span>博客系统上线，采用暗色主题 + 卡片式布局</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>首批发布 6 篇文章，涵盖学习方法、金融量化、游戏开发等方向</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>博客系统上线，采用暗色主题</div>
+          <div class="change-item"><span class="change-icon icon-add">+</span>发布 RPG Maker 相关内容</div>
           <div class="change-item"><span class="change-icon icon-add">+</span>归档页和关于页同步上线</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>部署文档 DEPLOY.md 同步上线</div>
         </div>
       </div>
     </div>
@@ -187,7 +206,7 @@
 </div>
 
 <div class="footer">
-  <p>用 ♥ 整理，用知识连接 &nbsp;·&nbsp; <a href="index.html">回到首页</a> &nbsp;·&nbsp; <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">GitHub</a></p>
+  <p><a href="index.html">首页</a> · <a href="https://github.com/saiyajiang" target="_blank">GitHub</a></p>
 </div>
 
 <script>

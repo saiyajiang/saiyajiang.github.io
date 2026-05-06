@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>知识库 · Knowledge Base</title>
-  <meta name="description" content="分享知识、记录思考、传播有价值的内容" />
+  <title>悲歌的小站</title>
+  <meta name="description" content="随便写写，记录一些东西。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #0d0d0d;
       --bg-card: #161616;
-      --bg-card-hover: #1e1e1e;
+      --bg-card-hover: #1c1c1c;
       --border: #2a2a2a;
-      --border-hover: #404040;
-      --text-primary: #f0f0f0;
-      --text-secondary: #999;
-      --text-muted: #555;
+      --border-hover: #3a3a3a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #888;
+      --text-muted: #4a4a4a;
       --accent: #6ee7b7;
       --accent-2: #818cf8;
-      --tag-bg: rgba(255,255,255,0.05);
-      --tag-border: rgba(255,255,255,0.08);
+      --tag-bg: rgba(255,255,255,0.04);
+      --tag-border: rgba(255,255,255,0.07);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -36,241 +36,229 @@
     /* ── 顶部导航 ── */
     header {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(13,13,13,0.88);
+      background: rgba(13,13,13,0.92);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
     .header-inner {
-      max-width: 1100px; margin: 0 auto;
-      padding: 0 24px; height: 60px;
+      max-width: 860px; margin: 0 auto;
+      padding: 0 24px; height: 56px;
       display: flex; align-items: center; justify-content: space-between;
     }
     .logo {
-      font-size: 18px; font-weight: 700;
+      font-size: 15px; font-weight: 600;
       color: var(--text-primary); text-decoration: none;
-      display: flex; align-items: center; gap: 8px;
+      letter-spacing: 0.2px;
     }
-    .logo span {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    nav { display: flex; align-items: center; gap: 8px; }
+    .logo em { font-style: normal; color: var(--text-secondary); font-weight: 400; }
+    nav { display: flex; align-items: center; gap: 4px; }
     nav a {
       color: var(--text-secondary); text-decoration: none;
-      font-size: 14px; padding: 6px 12px; border-radius: 6px;
+      font-size: 13px; padding: 5px 10px; border-radius: 6px;
       transition: all 0.2s;
     }
-    nav a:hover { color: var(--text-primary); background: var(--bg-card); }
-    nav a.active { color: var(--accent); }
+    nav a:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+    nav a.active { color: var(--text-primary); }
 
-    /* ── Hero ── */
-    .hero {
-      max-width: 1100px; margin: 0 auto;
-      padding: 72px 24px 48px; text-align: center;
+    /* ── 顶部区域 ── */
+    .top-area {
+      max-width: 860px; margin: 0 auto;
+      padding: 48px 24px 28px;
     }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(110,231,183,0.08);
-      border: 1px solid rgba(110,231,183,0.18);
-      color: var(--accent); font-size: 12px; font-weight: 500;
-      padding: 4px 12px; border-radius: 100px; margin-bottom: 20px;
-      letter-spacing: 0.5px;
+    .site-title {
+      font-size: 22px; font-weight: 600;
+      color: var(--text-primary); margin-bottom: 6px;
+      letter-spacing: -0.3px;
     }
-    .hero h1 {
-      font-size: clamp(32px, 5vw, 52px);
-      font-weight: 700; letter-spacing: -1.5px; line-height: 1.15;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #fff 0%, #999 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero p {
-      font-size: 16px; color: var(--text-secondary);
-      max-width: 520px; margin: 0 auto 36px;
+    .site-desc {
+      font-size: 14px; color: var(--text-secondary);
+      margin-bottom: 24px;
     }
 
-    /* ── 搜索框 ── */
+    /* ── 搜索 + 标签筛选行 ── */
+    .filter-row {
+      display: flex; align-items: center; gap: 10px;
+    }
     .search-wrap {
-      max-width: 520px; margin: 0 auto; position: relative;
+      flex: 1; position: relative; max-width: 420px;
     }
     .search-wrap input {
       width: 100%;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 20px 12px 44px;
-      color: var(--text-primary); font-size: 14px;
+      border-radius: 8px;
+      padding: 9px 14px 9px 38px;
+      color: var(--text-primary); font-size: 13px;
       font-family: inherit; outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s;
     }
-    .search-wrap input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(110,231,183,0.1);
-    }
+    .search-wrap input:focus { border-color: rgba(255,255,255,0.18); }
     .search-wrap input::placeholder { color: var(--text-muted); }
     .search-icon {
-      position: absolute; left: 14px; top: 50%;
+      position: absolute; left: 12px; top: 50%;
       transform: translateY(-50%); color: var(--text-muted);
       pointer-events: none;
     }
 
-    /* ── 标签云 ── */
-    .tags-section {
-      max-width: 1100px; margin: 0 auto;
-      padding: 0 24px 28px;
+    /* ── 标签下拉 ── */
+    .tag-dropdown {
+      position: relative;
     }
-    .tags-label {
-      font-size: 12px; color: var(--text-muted);
-      text-align: center; margin-bottom: 12px;
-      letter-spacing: 0.5px;
+    .tag-toggle-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 14px;
+      color: var(--text-secondary); font-size: 13px;
+      font-family: inherit; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap;
     }
-    .tag-cloud {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      justify-content: center;
+    .tag-toggle-btn:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.15); }
+    .tag-toggle-btn.has-active {
+      color: var(--accent);
+      border-color: rgba(110,231,183,0.3);
+      background: rgba(110,231,183,0.05);
+    }
+    .tag-toggle-btn svg { transition: transform 0.2s; }
+    .tag-toggle-btn.open svg { transform: rotate(180deg); }
+
+    .tag-panel {
+      display: none;
+      position: absolute; top: calc(100% + 8px); right: 0;
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      min-width: 260px; max-width: 340px;
+      z-index: 200;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+    .tag-panel.open { display: block; }
+    .tag-panel-inner {
+      display: flex; flex-wrap: wrap; gap: 7px;
     }
     .tag-btn {
       background: var(--tag-bg);
       border: 1px solid var(--tag-border);
       color: var(--text-secondary);
-      font-size: 13px; font-family: inherit;
-      padding: 6px 14px; border-radius: 100px;
-      cursor: pointer; transition: all 0.2s;
+      font-size: 12px; font-family: inherit;
+      padding: 4px 11px; border-radius: 100px;
+      cursor: pointer; transition: all 0.15s;
     }
     .tag-btn:hover {
-      border-color: var(--border-hover);
+      border-color: rgba(255,255,255,0.15);
       color: var(--text-primary);
-      background: rgba(255,255,255,0.08);
     }
     .tag-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #000;
+      background: rgba(110,231,183,0.12);
+      border-color: rgba(110,231,183,0.35);
+      color: var(--accent);
       font-weight: 600;
     }
+    .active-tag-label {
+      font-size: 12px; color: var(--text-secondary);
+      margin-left: 2px;
+    }
+    .active-tag-clear {
+      font-size: 12px; color: var(--text-muted);
+      cursor: pointer; margin-left: 2px;
+      padding: 2px 4px; border-radius: 4px;
+      transition: color 0.15s;
+    }
+    .active-tag-clear:hover { color: var(--text-secondary); }
 
-    /* ── 文章网格 ── */
+    /* ── 文章列表 ── */
     .articles-section {
-      max-width: 1100px; margin: 0 auto;
+      max-width: 860px; margin: 0 auto;
       padding: 0 24px 80px;
     }
-    .section-header {
+    .section-bar {
       display: flex; align-items: center;
-      justify-content: space-between; margin-bottom: 24px;
-      padding-bottom: 16px;
+      justify-content: space-between;
+      padding: 16px 0 16px;
       border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
     }
-    .section-title {
-      font-size: 14px; font-weight: 600;
-      color: var(--text-muted); letter-spacing: 1px;
-      text-transform: uppercase;
+    .section-bar-left {
+      display: flex; align-items: center; gap: 10px;
     }
-    .result-count { font-size: 13px; color: var(--text-muted); }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
-
-    /* ── 文章卡片 ── */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px; overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer; text-decoration: none;
-      display: flex; flex-direction: column;
-      position: relative;
-    }
-    .card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-    }
-    .card:hover {
-      border-color: var(--border-hover);
-      background: var(--bg-card-hover);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-
-    .card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
-    .card-date {
+    .section-label {
       font-size: 12px; color: var(--text-muted);
-      margin-bottom: 12px;
+      letter-spacing: 0.8px; text-transform: uppercase;
     }
-    .card h2 {
-      font-size: 17px; font-weight: 600; line-height: 1.4;
-      color: var(--text-primary); margin-bottom: 10px;
-      letter-spacing: -0.3px;
+    .result-count { font-size: 12px; color: var(--text-muted); }
+    .current-tag-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; color: var(--accent);
+      background: rgba(110,231,183,0.07);
+      border: 1px solid rgba(110,231,183,0.2);
+      padding: 2px 9px; border-radius: 100px;
     }
-    .card p {
-      font-size: 13px; color: var(--text-secondary);
-      line-height: 1.65; flex: 1;
-      display: -webkit-box; -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical; overflow: hidden;
+
+    /* ── 文章列表项（时间轴风格，无大卡片） ── */
+    .post-list { display: flex; flex-direction: column; gap: 0; }
+    .post-item {
+      display: flex; align-items: baseline; gap: 0;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      text-decoration: none;
+      transition: all 0.15s;
     }
-    .card-footer {
-      padding: 0 24px 20px;
-      display: flex; align-items: center; gap: 6px;
-      flex-wrap: wrap;
+    .post-item:last-child { border-bottom: none; }
+    .post-item:hover .post-item-title { color: var(--accent); }
+    .post-date {
+      flex-shrink: 0; width: 88px;
+      font-size: 12px; color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
     }
-    .card-tag {
+    .post-item-main { flex: 1; min-width: 0; }
+    .post-item-title {
+      font-size: 15px; font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.4;
+      transition: color 0.15s;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .post-item-tags {
+      display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px;
+    }
+    .post-item-tag {
       font-size: 11px; color: var(--text-muted);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      padding: 3px 9px; border-radius: 4px;
-      transition: all 0.15s; cursor: pointer;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 1px 7px; border-radius: 3px;
+      cursor: pointer; transition: all 0.15s;
     }
-    .card-tag:hover { color: var(--accent); border-color: rgba(110,231,183,0.3); }
-    .card-read {
-      margin-left: auto; font-size: 12px; color: var(--text-muted);
-      display: flex; align-items: center; gap: 4px;
-    }
+    .post-item-tag:hover { color: var(--accent); border-color: rgba(110,231,183,0.25); }
 
     /* ── 无结果 ── */
     .no-results {
-      text-align: center; padding: 80px 20px;
-      color: var(--text-muted); display: none;
+      text-align: center; padding: 60px 20px;
+      color: var(--text-muted); display: none; font-size: 14px;
     }
-    .no-results svg { margin-bottom: 16px; opacity: 0.3; }
 
     /* ── 底部 ── */
     footer {
       border-top: 1px solid var(--border);
-      padding: 32px 24px; text-align: center;
-      color: var(--text-muted); font-size: 13px;
+      padding: 28px 24px; text-align: center;
+      color: var(--text-muted); font-size: 12px;
     }
-    footer a { color: var(--accent); text-decoration: none; }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-secondary); }
 
     /* ── 滚动条 ── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
-
-    /* ── 动画 ── */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .card { animation: fadeInUp 0.4s ease both; }
-    .card:nth-child(1) { animation-delay: 0.05s; }
-    .card:nth-child(2) { animation-delay: 0.1s; }
-    .card:nth-child(3) { animation-delay: 0.15s; }
-    .card:nth-child(4) { animation-delay: 0.2s; }
-    .card:nth-child(5) { animation-delay: 0.25s; }
-    .card:nth-child(6) { animation-delay: 0.3s; }
-    .card:nth-child(7) { animation-delay: 0.35s; }
-    .card:nth-child(8) { animation-delay: 0.4s; }
-    .card:nth-child(9) { animation-delay: 0.45s; }
-    .card:nth-child(10) { animation-delay: 0.5s; }
 
     /* ── 响应式 ── */
-    @media (max-width: 640px) {
-      .hero { padding: 48px 20px 32px; }
-      .grid { grid-template-columns: 1fr; }
+    @media (max-width: 600px) {
+      .top-area { padding: 32px 16px 20px; }
+      .articles-section { padding: 0 16px 60px; }
+      .post-date { width: 70px; font-size: 11px; }
+      .post-item-title { font-size: 14px; white-space: normal; }
+      .tag-panel { left: 0; right: auto; }
     }
   </style>
 </head>
@@ -279,51 +267,64 @@
 <!-- 导航 -->
 <header>
   <div class="header-inner">
-    <a href="index.html" class="logo">✦ <span>知识库</span></a>
+    <a href="index.html" class="logo">悲歌的小站</a>
     <nav>
       <a href="index.html" class="active">首页</a>
       <a href="archive.html">归档</a>
-      <a href="changelog.html">更新日志</a>
+      <a href="changelog.html">日志</a>
       <a href="about.html">关于</a>
     </nav>
   </div>
 </header>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-badge">✦ 持续更新中</div>
-  <h1>知识值得被分享</h1>
-  <p>记录有价值的内容，整理思考，传播好的知识。</p>
-  <div class="search-wrap">
-    <svg class="search-icon" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
-    <input type="text" id="searchInput" placeholder="搜索文章或标签…" autocomplete="off" />
-  </div>
-</section>
+<!-- 顶部区域 -->
+<div class="top-area">
+  <div class="site-title">悲歌的小站</div>
+  <div class="site-desc">随便写写，记录一些东西。</div>
 
-<!-- 标签云 -->
-<div class="tags-section">
-  <div class="tags-label">按标签筛选</div>
-  <div class="tag-cloud" id="tagCloud"></div>
+  <!-- 搜索 + 标签筛选 -->
+  <div class="filter-row">
+    <div class="search-wrap">
+      <svg class="search-icon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="searchInput" placeholder="搜索…" autocomplete="off" />
+    </div>
+
+    <!-- 标签下拉 -->
+    <div class="tag-dropdown" id="tagDropdown">
+      <button class="tag-toggle-btn" id="tagToggleBtn" onclick="toggleTagPanel()">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+        </svg>
+        <span id="tagBtnLabel">标签</span>
+        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div class="tag-panel" id="tagPanel">
+        <div class="tag-panel-inner" id="tagPanelInner"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- 文章列表 -->
 <main class="articles-section">
-  <div class="section-header">
-    <span class="section-title">全部文章</span>
-    <span class="result-count" id="resultCount"></span>
+  <div class="section-bar">
+    <div class="section-bar-left">
+      <span class="section-label">文章</span>
+      <span class="result-count" id="resultCount"></span>
+      <span id="currentTagBadge"></span>
+    </div>
   </div>
-  <div class="grid" id="grid"></div>
-  <div class="no-results" id="noResults">
-    <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <p>没有找到相关内容</p>
-  </div>
+  <div class="post-list" id="postList"></div>
+  <div class="no-results" id="noResults">没有找到相关内容</div>
 </main>
 
 <!-- 底部 -->
 <footer>
-  <p>用 ♥ 整理，用知识连接 &nbsp;·&nbsp; <a href="about.html">了解更多</a> &nbsp;·&nbsp; <a href="changelog.html">更新日志</a> &nbsp;·&nbsp; <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">GitHub</a></p>
+  <p><a href="about.html">关于</a> · <a href="changelog.html">更新日志</a> · <a href="https://github.com/saiyajiang" target="_blank">GitHub</a></p>
 </footer>
 
 <script>
@@ -332,157 +333,108 @@ const articles = [
   {
     id: "post-7",
     title: "NVIDIA APP 怎么也无法更新或卸载？删这个注册表项就好了",
-    excerpt: "NVIDIA 安装程序无法继续，提示「已找到在等待重新启动的设备驱动程序」，重启也没用。网上各种方法都试过了，最后发现是注册表里有个 NVIDIA 残留的待重启标记键，删掉就解决了。",
+    excerpt: "NVIDIA 安装程序无法继续，提示「已找到在等待重新启动的设备驱动程序」，重启也没用。最后发现是注册表里有个 NVIDIA 残留的待重启标记键，删掉就解决了。",
     date: "2026-04-29",
     tags: ["Windows", "NVIDIA", "故障排查", "注册表"],
-    readTime: "3 分钟",
     href: "posts/post-7.html"
-  },
-  {
-    id: "post-1",
-    title: "如何建立自己的知识体系——从混乱到清晰",
-    excerpt: "知识碎片化时代，我们每天接受海量信息，却难以形成系统认知。本文分享一套实用的知识管理框架：收集、整理、链接、输出，帮你把零散信息变成真正属于自己的认知资产。",
-    date: "2026-04-19",
-    tags: ["学习方法", "知识管理", "思维"],
-    readTime: "8 分钟",
-    href: "posts/post-1.html"
   },
   {
     id: "post-old-rpg",
     title: "RPG Maker MV 资源导航页",
-    excerpt: "收录所有 RPG Maker 相关资源链接，包括插件汉化、GIF素材、脚本参考等。按分类整理，点击即可下载或在新窗口打开。",
+    excerpt: "收录所有 RPG Maker 相关资源链接，包括插件汉化、GIF素材、脚本参考等。",
     date: "2026-04-01",
     tags: ["RPG-Maker", "插件汉化", "素材", "GIF", "脚本"],
-    readTime: "3 分钟",
     href: "posts/post-old-rpg.html"
   },
   {
     id: "post-rpg-1",
     title: "RPG Maker MV 插件汉化列表",
-    excerpt: "整理了所有汉化过的 RPG Maker 插件，包括自带插件汉化、QPlugins 汉化、Yanfly 汉化等。持续更新中。",
+    excerpt: "整理了所有汉化过的 RPG Maker 插件，包括自带插件汉化、QPlugins 汉化、Yanfly 汉化等。",
     date: "2026-04-01",
     tags: ["RPG-Maker", "插件汉化"],
-    readTime: "2 分钟",
     href: "posts/post-rpg-1.html"
   },
   {
     id: "post-rpg-2",
     title: "RPG Maker 事件 GIF 素材汇总",
-    excerpt: "收集整理了 RPG Maker 可用的事件 GIF 素材，包括开关门动画、伸缩桥、机关触发效果等，下载后放入项目文件夹即可使用。",
+    excerpt: "收集整理了 RPG Maker 可用的事件 GIF 素材，包括开关门动画、伸缩桥、机关触发效果等。",
     date: "2026-03-20",
     tags: ["RPG-Maker", "素材", "GIF"],
-    readTime: "1 分钟",
     href: "posts/post-rpg-2.html"
   },
   {
     id: "post-rpg-3",
     title: "RPG Maker MV 常用脚本调用参考",
-    excerpt: "整理了 RPG Maker MV 中常用的脚本调用命令（Script Calls），涵盖开关、变量、队伍、游戏数据等常用操作，含 xlsx 速查表下载。",
+    excerpt: "整理了 RPG Maker MV 中常用的脚本调用命令，涵盖开关、变量、队伍、游戏数据等常用操作。",
     date: "2026-03-15",
     tags: ["RPG-Maker", "脚本", "教程"],
-    readTime: "5 分钟",
     href: "posts/post-rpg-3.html"
-  },
-  {
-    id: "post-2",
-    title: "Dota 2 游廊地图入门：从零开始制作自定义地图",
-    excerpt: "Dota 2 Workshop Tools 是 Valve 提供的强大地图编辑工具。本文介绍环境搭建、基础地图结构、Lua 脚本入门，以及常见触发器的使用方式。",
-    date: "2026-04-15",
-    tags: ["Dota2", "游戏开发", "Lua"],
-    readTime: "12 分钟",
-    href: "posts/post-2.html"
-  },
-  {
-    id: "post-3",
-    title: "A 股量化入门：用 Python 获取和分析股票数据",
-    excerpt: "介绍如何用 Python 获取 A 股数据，进行基础的技术指标计算，以及可视化价格走势。适合有编程基础但对量化陌生的朋友。",
-    date: "2026-04-10",
-    tags: ["Python", "量化投资", "金融"],
-    readTime: "10 分钟",
-    href: "posts/post-3.html"
-  },
-  {
-    id: "post-4",
-    title: "【转】费曼学习法：学会输出才是真正的学会",
-    excerpt: "费曼技巧的核心：把知识讲给一个外行人听，讲不清楚的地方就是你真正没理解的地方。这篇文章是我读过关于学习方法最有价值的文章之一。",
-    date: "2026-04-08",
-    tags: ["学习方法", "费曼", "转发"],
-    readTime: "6 分钟",
-    href: "posts/post-4.html"
-  },
-  {
-    id: "post-5",
-    title: "Git 工作流最佳实践：团队协作的那些坑",
-    excerpt: "Branch 策略、commit message 规范、PR review 流程——总结了一些在实际协作中踩过的坑和解决方案，适合刚开始团队开发的朋友。",
-    date: "2026-04-05",
-    tags: ["Git", "工程实践"],
-    readTime: "7 分钟",
-    href: "posts/post-5.html"
-  },
-  {
-    id: "post-6",
-    title: "复利思维：为什么你的努力需要方向",
-    excerpt: "查理·芒格说，给我看激励机制，我就能预测行为。同样，给我看你的时间去向，我就能预测你的未来。",
-    date: "2026-04-01",
-    tags: ["思维", "成长"],
-    readTime: "5 分钟",
-    href: "posts/post-6.html"
   }
 ];
 
-// ── 提取所有标签 ──
-const allTags = [...new Set(articles.flatMap(a => a.tags))].sort();
+// ── 状态 ──
+let currentTag = '';
+let currentSearch = '';
 
-// ── 渲染标签云 ──
-function renderTagCloud(activeTag) {
-  const cloud = document.getElementById('tagCloud');
-  cloud.innerHTML = `
-    <button class="tag-btn ${!activeTag ? 'active' : ''}" data-tag="">全部</button>
-    ${allTags.map(t => `
-      <button class="tag-btn ${activeTag === t ? 'active' : ''}" data-tag="${t}">#${t}</button>
-    `).join('')}
+// ── 标签面板开关 ──
+function toggleTagPanel() {
+  const panel = document.getElementById('tagPanel');
+  const btn = document.getElementById('tagToggleBtn');
+  const isOpen = panel.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+}
+
+// 点击外部关闭
+document.addEventListener('click', e => {
+  const dropdown = document.getElementById('tagDropdown');
+  if (!dropdown.contains(e.target)) {
+    document.getElementById('tagPanel').classList.remove('open');
+    document.getElementById('tagToggleBtn').classList.remove('open');
+  }
+});
+
+// ── 渲染标签面板 ──
+function renderTagPanel() {
+  const allTags = [...new Set(articles.flatMap(a => a.tags))].sort();
+  const inner = document.getElementById('tagPanelInner');
+  inner.innerHTML = `
+    <button class="tag-btn ${!currentTag ? 'active' : ''}" data-tag="">全部</button>
+    ${allTags.map(t => `<button class="tag-btn ${currentTag === t ? 'active' : ''}" data-tag="${t}">#${t}</button>`).join('')}
   `;
-
-  cloud.querySelectorAll('.tag-btn').forEach(btn => {
+  inner.querySelectorAll('.tag-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      cloud.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
       currentTag = btn.dataset.tag;
+      // 关闭面板
+      document.getElementById('tagPanel').classList.remove('open');
+      document.getElementById('tagToggleBtn').classList.remove('open');
+      updateTagBtnLabel();
+      renderTagPanel();
       render();
     });
   });
 }
 
-// ── 渲染单张卡片 ──
-function renderCard(a) {
-  return `
-    <a class="card" href="${a.href}" data-tags="${a.tags.join(' ')} ${a.title}">
-      <div class="card-body">
-        <div class="card-date">${a.date}</div>
-        <h2>${a.title}</h2>
-        <p>${a.excerpt}</p>
-      </div>
-      <div class="card-footer">
-        ${a.tags.map(t => `<span class="card-tag" data-tag="${t}">#${t}</span>`).join('')}
-        <span class="card-read">
-          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          ${a.readTime}
-        </span>
-      </div>
-    </a>`;
+function updateTagBtnLabel() {
+  const btn = document.getElementById('tagToggleBtn');
+  const label = document.getElementById('tagBtnLabel');
+  if (currentTag) {
+    label.textContent = '#' + currentTag;
+    btn.classList.add('has-active');
+  } else {
+    label.textContent = '标签';
+    btn.classList.remove('has-active');
+  }
 }
 
-// ── 渲染 + 筛选 ──
-let currentTag = '';
-let currentSearch = '';
-
+// ── 渲染列表 ──
 function render() {
-  const grid = document.getElementById('grid');
+  const list = document.getElementById('postList');
   const noResults = document.getElementById('noResults');
   const countEl = document.getElementById('resultCount');
+  const badgeEl = document.getElementById('currentTagBadge');
 
   const q = currentSearch.toLowerCase();
-  let filtered = articles.filter(a => {
+  const filtered = articles.filter(a => {
     const matchTag = !currentTag || a.tags.includes(currentTag);
     const matchSearch = !q ||
       a.title.toLowerCase().includes(q) ||
@@ -491,28 +443,50 @@ function render() {
     return matchTag && matchSearch;
   });
 
+  // 当前标签徽章
+  if (currentTag) {
+    badgeEl.innerHTML = `<span class="current-tag-badge">#${currentTag} <span class="active-tag-clear" onclick="clearTag()">✕</span></span>`;
+  } else {
+    badgeEl.innerHTML = '';
+  }
+
   if (filtered.length === 0) {
-    grid.innerHTML = '';
+    list.innerHTML = '';
     noResults.style.display = 'block';
     countEl.textContent = '';
   } else {
     noResults.style.display = 'none';
-    grid.innerHTML = filtered.map(renderCard).join('');
-    countEl.textContent = `共 ${filtered.length} 篇`;
+    countEl.textContent = filtered.length + ' 篇';
+    list.innerHTML = filtered.map(a => `
+      <a class="post-item" href="${a.href}">
+        <span class="post-date">${a.date.slice(0, 7)}</span>
+        <div class="post-item-main">
+          <div class="post-item-title">${a.title}</div>
+          <div class="post-item-tags">
+            ${a.tags.map(t => `<span class="post-item-tag" data-tag="${t}">#${t}</span>`).join('')}
+          </div>
+        </div>
+      </a>`).join('');
 
-    // 点击卡片内标签，跳转筛选
-    grid.querySelectorAll('.card-tag').forEach(el => {
+    // 卡片内标签点击
+    list.querySelectorAll('.post-item-tag').forEach(el => {
       el.addEventListener('click', e => {
-        e.preventDefault();
-        e.stopPropagation();
-        const tag = el.dataset.tag;
-        currentTag = tag;
-        renderTagCloud(tag);
+        e.preventDefault(); e.stopPropagation();
+        currentTag = el.dataset.tag;
+        updateTagBtnLabel();
+        renderTagPanel();
         render();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
   }
+}
+
+function clearTag() {
+  currentTag = '';
+  updateTagBtnLabel();
+  renderTagPanel();
+  render();
 }
 
 // ── 搜索 ──
@@ -522,7 +496,7 @@ document.getElementById('searchInput').addEventListener('input', e => {
 });
 
 // ── 初始化 ──
-renderTagCloud('');
+renderTagPanel();
 render();
 </script>
 </body>
