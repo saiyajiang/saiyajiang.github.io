@@ -271,24 +271,42 @@
     .active-tag-clear:hover { color: #999; }
 
     /* === 文章卡片 === */
-    .post-list { display: flex; flex-direction: column; gap: 12px; }
+    .post-list { display: flex; flex-direction: column; gap: 14px; }
     .post-card {
       display: flex; gap: 0;
       background: #131313;
       border: 1px solid #222; border-radius: 14px;
       text-decoration: none; color: inherit;
-      transition: all 0.2s;
+      transition: all 0.25s;
       overflow: hidden;
       position: relative;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.5s ease forwards;
     }
+    .post-card:nth-child(1) { animation-delay: 0.05s; }
+    .post-card:nth-child(2) { animation-delay: 0.10s; }
+    .post-card:nth-child(3) { animation-delay: 0.15s; }
+    .post-card:nth-child(4) { animation-delay: 0.20s; }
+    .post-card:nth-child(5) { animation-delay: 0.25s; }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .post-card:hover {
       background: #1a1a1a; border-color: #444;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(110,231,183,0.1);
     }
     .post-card-accent {
       width: 4px; flex-shrink: 0;
       background: linear-gradient(180deg, #6ee7b7, #818cf8);
+      transition: width 0.25s, box-shadow 0.25s;
+    }
+    .post-card:hover .post-card-accent {
+      width: 5px;
+      box-shadow: 0 0 12px rgba(110,231,183,0.4);
     }
     .post-card-body { flex: 1; padding: 18px 22px; display: flex; flex-direction: column; gap: 8px; }
     .post-card-meta { display: flex; align-items: center; gap: 10px; }
@@ -379,11 +397,11 @@
     </p>
     <div class="hero-stats">
       <div class="hero-stat">
-        <span class="hero-stat-num">7</span>
+        <span class="hero-stat-num">5</span>
         <span class="hero-stat-label">文章</span>
       </div>
       <div class="hero-stat">
-        <span class="hero-stat-num">3</span>
+        <span class="hero-stat-num">2</span>
         <span class="hero-stat-label">分类</span>
       </div>
     </div>
@@ -401,18 +419,17 @@
       <span class="search-icon">🔍</span>
       <input type="text" id="searchInput" placeholder="搜索文章..." />
     </div>
-    <button class="tag-toggle-btn" id="tagToggleBtn">🏷 标签</button>
+    <button class="tag-toggle-btn" id="tagToggleBtn">🏷️ 标签</button>
   </div>
 
   <div class="tag-cloud" id="tagCloud">
-    <button class="tag-btn" data-tag="UnrealEngine">UnrealEngine</button>
-    <button class="tag-btn" data-tag="C++">C++</button>
-    <button class="tag-btn" data-tag="RPG">RPG</button>
-    <button class="tag-btn" data-tag="蓝图">蓝图</button>
     <button class="tag-btn" data-tag="NVIDIA">NVIDIA</button>
     <button class="tag-btn" data-tag="硬件">硬件</button>
     <button class="tag-btn" data-tag="Windows">Windows</button>
     <button class="tag-btn" data-tag="故障修复">故障修复</button>
+    <button class="tag-btn" data-tag="RPGMaker">RPGMaker</button>
+    <button class="tag-btn" data-tag="插件">插件</button>
+    <button class="tag-btn" data-tag="素材">素材</button>
     <button class="tag-btn" data-tag="Git">Git</button>
     <button class="tag-btn" data-tag="教程">教程</button>
   </div>
@@ -427,7 +444,7 @@
 
   <div class="post-list" id="postList">
 
-    <a href="posts/post-7.html" class="post-card" data-tags="NVIDIA 硬件">
+    <a href="posts/post-7.html" class="post-card" data-tags="NVIDIA 硬件" target="_blank">
       <div class="post-card-accent"></div>
       <div class="post-card-body">
         <div class="post-card-meta">
@@ -447,19 +464,20 @@
       </div>
     </a>
 
-    <a href="posts/post-6.html" class="post-card" data-tags="UnrealEngine C++">
+    <a href="posts/post-old-rpg.html" class="post-card" data-tags="RPGMaker 插件 素材 GIF" target="_blank">
       <div class="post-card-accent"></div>
       <div class="post-card-body">
         <div class="post-card-meta">
-          <span class="post-card-date">2026-01-28</span>
+          <span class="post-card-date">2026-04-01</span>
           <span style="color:#333;">·</span>
           <div class="post-card-tags">
-            <span class="post-card-tag">UnrealEngine</span>
-            <span class="post-card-tag">C++</span>
+            <span class="post-card-tag">RPGMaker</span>
+            <span class="post-card-tag">插件</span>
+            <span class="post-card-tag">素材</span>
           </div>
         </div>
-        <div class="post-card-title">UE5 跑酷系统：从碰撞检测转向射线检测</div>
-        <div class="post-card-excerpt">在开发跑酷系统的过程中，我将障碍物检测方式从碰撞检测改为射线检测，记录下这次重构的思路与实现细节。</div>
+        <div class="post-card-title">RPG Maker MV 资源导航页</div>
+        <div class="post-card-excerpt">RPG Maker MV 相关插件汉化、GIF 素材、脚本资源的整理导航。</div>
         <div class="post-card-footer">
           <span class="post-card-more">继续阅读</span>
           <span class="post-card-arrow">→</span>
@@ -467,19 +485,19 @@
       </div>
     </a>
 
-    <a href="posts/post-5.html" class="post-card" data-tags="UnrealEngine 蓝图">
+    <a href="posts/post-rpg-1.html" class="post-card" data-tags="RPGMaker 插件" target="_blank">
       <div class="post-card-accent"></div>
       <div class="post-card-body">
         <div class="post-card-meta">
-          <span class="post-card-date">2026-01-24</span>
+          <span class="post-card-date">2026-04-02</span>
           <span style="color:#333;">·</span>
           <div class="post-card-tags">
-            <span class="post-card-tag">UnrealEngine</span>
-            <span class="post-card-tag">蓝图</span>
+            <span class="post-card-tag">RPGMaker</span>
+            <span class="post-card-tag">插件</span>
           </div>
         </div>
-        <div class="post-card-title">UE5 跑酷系统：实现多段跳与蹬墙跳</div>
-        <div class="post-card-excerpt">在 UE5 跑酷系统中实现多段跳与蹬墙跳功能，包括输入处理、物理检测与动画同步的完整实现记录。</div>
+        <div class="post-card-title">RPG Maker MV 插件汉化列表</div>
+        <div class="post-card-excerpt">整理 RPG Maker MV 常用插件的汉化版本列表及下载地址。</div>
         <div class="post-card-footer">
           <span class="post-card-more">继续阅读</span>
           <span class="post-card-arrow">→</span>
@@ -487,19 +505,20 @@
       </div>
     </a>
 
-    <a href="posts/post-4.html" class="post-card" data-tags="UnrealEngine C++">
+    <a href="posts/post-rpg-2.html" class="post-card" data-tags="RPGMaker 素材 GIF" target="_blank">
       <div class="post-card-accent"></div>
       <div class="post-card-body">
         <div class="post-card-meta">
-          <span class="post-card-date">2026-01-20</span>
+          <span class="post-card-date">2026-03-15</span>
           <span style="color:#333;">·</span>
           <div class="post-card-tags">
-            <span class="post-card-tag">UnrealEngine</span>
-            <span class="post-card-tag">C++</span>
+            <span class="post-card-tag">RPGMaker</span>
+            <span class="post-card-tag">素材</span>
+            <span class="post-card-tag">GIF</span>
           </div>
         </div>
-        <div class="post-card-title">UE5 跑酷系统：C++ 实现基础移动功能</div>
-        <div class="post-card-excerpt">使用 C++ 在 UE5 中搭建跑酷系统的基础移动功能，涵盖输入绑定、速度控制与移动逻辑的实现要点。</div>
+        <div class="post-card-title">RPG Maker 事件 GIF 素材汇总</div>
+        <div class="post-card-excerpt">收集整理 RPG Maker 事件系统常用的 GIF 动图素材。</div>
         <div class="post-card-footer">
           <span class="post-card-more">继续阅读</span>
           <span class="post-card-arrow">→</span>
@@ -507,59 +526,20 @@
       </div>
     </a>
 
-    <a href="posts/post-3.html" class="post-card" data-tags="Git 教程">
+    <a href="posts/post-rpg-3.html" class="post-card" data-tags="RPGMaker 脚本 教程" target="_blank">
       <div class="post-card-accent"></div>
       <div class="post-card-body">
         <div class="post-card-meta">
-          <span class="post-card-date">2026-01-18</span>
+          <span class="post-card-date">2026-03-20</span>
           <span style="color:#333;">·</span>
           <div class="post-card-tags">
-            <span class="post-card-tag">Git</span>
+            <span class="post-card-tag">RPGMaker</span>
+            <span class="post-card-tag">脚本</span>
             <span class="post-card-tag">教程</span>
           </div>
         </div>
-        <div class="post-card-title">Git 日常使用指南</div>
-        <div class="post-card-excerpt">整理一份实用的 Git 日常使用指南，涵盖常用命令、典型工作流与常见问题处理方式。</div>
-        <div class="post-card-footer">
-          <span class="post-card-more">继续阅读</span>
-          <span class="post-card-arrow">→</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="posts/post-2.html" class="post-card" data-tags="UnrealEngine RPG">
-      <div class="post-card-accent"></div>
-      <div class="post-card-body">
-        <div class="post-card-meta">
-          <span class="post-card-date">2026-01-15</span>
-          <span style="color:#333;">·</span>
-          <div class="post-card-tags">
-            <span class="post-card-tag">UnrealEngine</span>
-            <span class="post-card-tag">RPG</span>
-          </div>
-        </div>
-        <div class="post-card-title">UE5 第三人称 RPG 项目规划</div>
-        <div class="post-card-excerpt">启动一个 UE5 第三人称 RPG 项目，梳理核心玩法、系统模块与开发路线图。</div>
-        <div class="post-card-footer">
-          <span class="post-card-more">继续阅读</span>
-          <span class="post-card-arrow">→</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="posts/post-1.html" class="post-card" data-tags="Windows 故障修复">
-      <div class="post-card-accent"></div>
-      <div class="post-card-body">
-        <div class="post-card-meta">
-          <span class="post-card-date">2026-01-10</span>
-          <span style="color:#333;">·</span>
-          <div class="post-card-tags">
-            <span class="post-card-tag">Windows</span>
-            <span class="post-card-tag">故障修复</span>
-          </div>
-        </div>
-        <div class="post-card-title">Windows 照片查看器无法查看图片</div>
-        <div class="post-card-excerpt">解决 Windows 照片查看器无法正常显示图片的问题，记录故障现象与修复步骤。</div>
+        <div class="post-card-title">RPG Maker MV 常用脚本调用参考</div>
+        <div class="post-card-excerpt">RPG Maker MV 中常用脚本命令的调用方法与参考手册。</div>
         <div class="post-card-footer">
           <span class="post-card-more">继续阅读</span>
           <span class="post-card-arrow">→</span>
@@ -577,7 +557,7 @@
 
 <footer>
   © 2026 悲歌的小站 · Powered by GitHub Pages
-  · <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
+   · <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
 </footer>
 
 <script>

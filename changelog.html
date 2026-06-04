@@ -1,222 +1,239 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>更新日志 · 悲歌的小站</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <meta name="description" content="网站更新日志 - 悲歌的小站" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <style>
-    :root{--bg:#0d0d0d;--bg-card:#161616;--bg-card-hover:#1e1e1e;--border:#2a2a2a;--border-hover:#404040;--text-primary:#f0f0f0;--text-secondary:#999;--text-muted:#555;--accent:#6ee7b7;--accent-2:#818cf8;--accent-pink:#f472b6;--accent-yellow:#fbbf24;--accent-red:#f87171;--accent-blue:#60a5fa}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text-primary);font-family:'Inter','Noto Sans SC',sans-serif;font-size:16px;line-height:1.8}
-    header{position:sticky;top:0;z-index:100;background:rgba(13,13,13,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
-    .header-inner{max-width:860px;margin:0 auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-    .logo{font-size:18px;font-weight:700;color:var(--text-primary);text-decoration:none;display:flex;align-items:center;gap:8px}
-    .logo span{background:linear-gradient(135deg,var(--accent),var(--accent-2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    nav{display:flex;gap:8px}
-    nav a{color:var(--text-secondary);text-decoration:none;font-size:14px;padding:6px 12px;border-radius:6px;transition:all .2s}
-    nav a:hover{color:var(--text-primary);background:var(--bg-card)}
-    nav a.active{color:var(--accent)}
-    .page-hero{max-width:860px;margin:0 auto;padding:72px 24px 48px}
-    .page-hero h1{font-size:38px;font-weight:700;letter-spacing:-1.5px;margin-bottom:12px}
-    .page-hero p{color:var(--text-secondary);font-size:15px;max-width:480px}
-    .changelog-body{max-width:860px;margin:0 auto;padding:0 24px 80px}
-    .changelog-list{display:flex;flex-direction:column;gap:0}
-    .changelog-date-group{margin-bottom:8px}
-    .date-heading{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);padding:32px 0 16px;display:flex;align-items:center;gap:10px}
-    .date-heading::after{content:'';flex:1;height:1px;background:var(--border)}
-    .changelog-entry{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:all .2s}
-    .changelog-entry:hover{border-color:var(--border-hover)}
-    .entry-header{display:flex;align-items:center;gap:12px;padding:20px 24px;cursor:pointer;user-select:none}
-    .entry-header:hover{background:rgba(255,255,255,.02)}
-    .entry-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;flex-shrink:0}
-    .badge-new{background:rgba(110,231,183,.1);border:1px solid rgba(110,231,183,.2);color:var(--accent)}
-    .badge-update{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:var(--accent-yellow)}
-    .badge-fix{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:var(--accent-red)}
-    .badge-feature{background:rgba(129,140,248,.1);border:1px solid rgba(129,140,248,.2);color:#818cf8}
-    .badge-doc{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:var(--accent-blue)}
-    .badge-refactor{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.2);color:var(--accent-pink)}
-    .entry-title{flex:1;font-size:15px;font-weight:600;color:var(--text-primary)}
-    .entry-toggle{color:var(--text-muted);transition:transform .2s;flex-shrink:0}
-    .entry-toggle.open{transform:rotate(90deg)}
-    .entry-body{padding:0 24px 20px;border-top:1px solid var(--border);display:none}
-    .entry-body.open{display:block}
-    .entry-changes{display:flex;flex-direction:column;gap:8px;padding-top:16px}
-    .change-item{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text-secondary)}
-    .change-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
-    .icon-add{background:rgba(110,231,183,.15);color:var(--accent)}
-    .icon-remove{background:rgba(248,113,113,.15);color:var(--accent-red)}
-    .icon-change{background:rgba(251,191,36,.15);color:var(--accent-yellow)}
-    .icon-note{background:rgba(255,255,255,.05);color:var(--text-muted)}
-    .footer{border-top:1px solid var(--border);padding:32px 24px;text-align:center;color:var(--text-muted);font-size:13px}
-    .footer a{color:var(--accent);text-decoration:none}
-    ::-webkit-scrollbar{width:6px}
-    ::-webkit-scrollbar-track{background:var(--bg)}
-    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-    @media(max-width:640px){.page-hero{padding:48px 20px 32px}.changelog-body{padding:0 16px 60px}.entry-header{padding:16px 18px}.entry-body{padding:0 18px 16px}}
+    :root {
+      --bg: #080808;
+      --bg-card: #131313;
+      --border: #222;
+      --text-primary: #e8e8e8;
+      --text-secondary: #999;
+      --text-muted: #555;
+      --accent: #6ee7b7;
+      --accent2: #818cf8;
+      --accent3: #f472b6;
+      --accent-yellow: #fbbf24;
+      --accent-red: #f87171;
+      --accent-blue: #60a5fa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #080808;
+      color: #e8e8e8;
+      font-family: "Inter", "Noto Sans SC", sans-serif;
+      font-size: 15px; line-height: 1.8;
+      min-height: 100vh; overflow-x: hidden;
+      position: relative;
+    }
+
+    /* === 背景 === */
+    .bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .bg-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(100px);
+      animation: orbFloat 20s ease-in-out infinite alternate;
+      opacity: 0.15;
+    }
+    .bg-orb-1 { width: 500px; height: 500px; background: #6ee7b7; top: -10vh; left: -10vw; }
+    .bg-orb-2 { width: 400px; height: 400px; background: #818cf8; bottom: 5vh; right: -5vw; animation-delay: -7s; animation-duration: 25s; }
+    .bg-grid { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 30px 30px; }
+    @keyframes orbFloat {
+      0%   { transform: translate(0, 0) scale(1); }
+      33%  { transform: translate(40px, -30px) scale(1.08); }
+      66%  { transform: translate(-20px, 20px) scale(0.96); }
+      100% { transform: translate(15px, -10px) scale(1.03); }
+    }
+
+    /* === 顶部条 === */
+    #topBar {
+      position: fixed; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #6ee7b7, #818cf8, #f472b6, #6ee7b7);
+      background-size: 300% 100%;
+      animation: shimmer 5s ease infinite;
+      z-index: 1002; pointer-events: none;
+    }
+    @keyframes shimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+    /* === 导航 === */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(8, 8, 8, 0.9);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .header-inner {
+      max-width: 860px; margin: 0 auto;
+      padding: 0 24px; height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-size: 17px; font-weight: 800;
+      background: linear-gradient(135deg, #6ee7b7, #818cf8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none; letter-spacing: -0.3px; transition: opacity 0.15s;
+    }
+    .logo:hover { opacity: 0.7; }
+    nav { display: flex; gap: 4px; }
+    nav a { color: #999; text-decoration: none; font-size: 13.5px; padding: 6px 13px; border-radius: 7px; transition: all 0.2s; font-weight: 500; }
+    nav a:hover { color: #e8e8e8; background: rgba(255, 255, 255, 0.05); }
+    nav a.active { color: #6ee7b7; background: rgba(110, 231, 183, 0.08); }
+
+    /* === 主内容 === */
+    .page-wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 24px; }
+    .page-hero { padding: 80px 0 28px; }
+    .page-hero h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px; }
+    .page-hero p { color: #999; font-size: 14px; }
+
+    /* === 时间线 === */
+    .timeline { position: relative; padding: 0 0 80px; }
+    .timeline::before {
+      content: ""; position: absolute;
+      left: 3px; top: 8px; bottom: 80px;
+      width: 1px; background: rgba(255,255,255,0.08);
+    }
+    .timeline-item { position: relative; padding: 0 0 28px 28px; }
+    .timeline-dot {
+      position: absolute; left: -1px; top: 8px;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: #6ee7b7; box-shadow: 0 0 8px rgba(110,231,183,0.3);
+    }
+    .timeline-date { font-size: 12px; color: #6ee7b7; font-weight: 600; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+    .timeline-title { font-size: 15px; font-weight: 600; color: #e8e8e8; margin-bottom: 6px; }
+    .timeline-desc { font-size: 13px; color: #999; line-height: 1.7; }
+    .timeline-tag {
+      display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 4px;
+      margin-right: 4px; margin-top: 6px;
+    }
+    .tag-new { background: rgba(110,231,183,0.1); color: #6ee7b7; border: 1px solid rgba(110,231,183,0.2); }
+    .tag-fix { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+    .tag-ui  { background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
+    .tag-doc { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
+
+    /* === Footer === */
+    footer { border-top: 1px solid rgba(255, 255, 255, 0.06); padding: 32px 24px; text-align: center; color: #555; font-size: 12px; position: relative; z-index: 1; }
+    footer a { color: #555; text-decoration: none; transition: color 0.15s; }
+    footer a:hover { color: #6ee7b7; }
+
+    /* === 滚动条 === */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #444; }
+
+    @media (max-width: 640px) {
+      .page-hero { padding: 48px 0 24px; }
+      .page-hero h1 { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
+
+<div class="bg-layer">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-grid"></div>
+</div>
+<div id="topBar"></div>
+
 <header>
   <div class="header-inner">
-    <a href="index.html" class="logo" style="font-size:15px;font-weight:600;background:none;-webkit-text-fill-color:var(--text-primary)">悲歌的小站</a>
+    <a href="index.html" class="logo">悲歌的小站</a>
     <nav>
-      <a href="index.html">首页</a>
-      <a href="archive.html">归档</a>
-      <a href="changelog.html" class="active">日志</a>
-      <a href="about.html">关于</a>
+      <a href="index.html">Blog</a>
+      <a href="archive.html">Archive</a>
+      <a href="about.html">About</a>
+      <a href="changelog.html" class="active">Changelog</a>
     </nav>
   </div>
 </header>
 
-<div class="page-hero">
-  <h1>更新日志</h1>
-  <p>记录每次更新的内容，包括新文章、页面调整等。</p>
-</div>
-
-<div class="changelog-body">
-  <div class="changelog-list">
-
-    <!-- 2026-05-06 -->
-    <div class="date-heading">2026 年 5 月 6 日</div>
-
-    <div class="changelog-entry">
-      <div class="entry-header" onclick="toggleEntry(this)">
-        <span class="entry-badge badge-refactor">🔄 改版</span>
-        <span class="entry-title">改版为个人博客风格，删除测试文章，标签收纳</span>
-        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-      <div class="entry-body">
-        <div class="entry-changes">
-          <div class="change-item"><span class="change-icon icon-change">~</span>站名改为「悲歌的小站」，去掉「知识库」定位，恢复个人分享博客风格</div>
-          <div class="change-item"><span class="change-icon icon-remove">−</span>删除测试文章：复利思维、Git 工作流、费曼学习法、Dota2 游廊入门、A 股量化、如何建立自己的知识体系（共 6 篇）</div>
-          <div class="change-item"><span class="change-icon icon-change">~</span>首页文章列表改为紧凑时间轴样式（去掉大卡片）</div>
-          <div class="change-item"><span class="change-icon icon-change">~</span>标签云改为下拉按钮，不再占用固定高度</div>
-          <div class="change-item"><span class="change-icon icon-change">~</span>归档页、关于页、日志页导航文案同步更新</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2026-04-29 -->
-    <div class="date-heading">2026 年 4 月 29 日</div>
-
-    <div class="changelog-entry">
-      <div class="entry-header" onclick="toggleEntry(this)">
-        <span class="entry-badge badge-new">📝 新文章</span>
-        <span class="entry-title">NVIDIA APP 无法更新/卸载：注册表残留键解决方案</span>
-        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-      <div class="entry-body">
-        <div class="entry-changes">
-          <div class="change-item"><span class="change-icon icon-add">+</span>新增文章《NVIDIA APP 怎么也无法更新或卸载？删这个注册表项就好了》</div>
-          <div class="change-item"><span class="change-icon icon-note">💡</span>记录了 NVIDIA 安装程序无法继续（提示等待重启）的根本原因与注册表修复方法</div>
-          <div class="change-item"><span class="change-icon icon-change">~</span>归档页文章总数更新至 11 篇</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2026-04-19 -->
-    <div class="date-heading">2026 年 4 月 19 日</div>
-
-    <div class="changelog-entry">
-      <div class="entry-header" onclick="toggleEntry(this)">
-        <span class="entry-badge badge-refactor">🔄 重构</span>
-        <span class="entry-title">博客迁移至根目录，整合原有 RPG Maker 页面</span>
-        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-      <div class="entry-body">
-        <div class="entry-changes">
-          <div class="change-item"><span class="change-icon icon-add">+</span>博客从 <code>/blog/</code> 子目录迁移至根目录，访问路径更简洁</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>新增「更新日志」页面（changelog.html），记录每次变更</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>新增文章《RPG Maker MV 资源导航页》，整合原有所有 RPG Maker 资源链接</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>导航栏新增「更新日志」入口</div>
-          <div class="change-item"><span class="change-icon icon-remove">−</span>删除旧 blog/ 子目录</div>
-          <div class="change-item"><span class="change-icon icon-remove">−</span>删除废弃页面 new_index.html、gif.html、plugins.html（内容已整合）</div>
-          <div class="change-item"><span class="change-icon icon-change">~</span>更新所有文章路径引用（posts/ 移至根目录）</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="changelog-entry">
-      <div class="entry-header" onclick="toggleEntry(this)">
-        <span class="entry-badge badge-feature">✨ 功能</span>
-        <span class="entry-title">多标签系统上线，替代原有分类体系</span>
-        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-      <div class="entry-body">
-        <div class="entry-changes">
-          <div class="change-item"><span class="change-icon icon-add">+</span>每篇文章支持多个标签（不限数量）</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>首页顶部标签云，支持一键按标签筛选</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>卡片内标签可点击跳转筛选</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>全文实时搜索（标题 + 标签 + 摘要）</div>
-          <div class="change-item"><span class="change-icon icon-remove">−</span>删除原有「分类」体系</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="changelog-entry">
-      <div class="entry-header" onclick="toggleEntry(this)">
-        <span class="entry-badge badge-feature">✨ 功能</span>
-        <span class="entry-title">GitHub Issues 评论系统上线</span>
-        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-      <div class="entry-body">
-        <div class="entry-changes">
-          <div class="change-item"><span class="change-icon icon-add">+</span>每篇文章底部新增「讨论」区域</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>点击「去 GitHub 发表讨论」跳转到对应 Issue 页面</div>
-          <div class="change-item"><span class="change-icon icon-note">💡</span>无需任何第三方服务，GitHub 账号即可评论</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="changelog-entry">
-      <div class="entry-header" onclick="toggleEntry(this)">
-        <span class="entry-badge badge-feature">✨ 功能</span>
-        <span class="entry-title">原有 RPG Maker 内容全面整合</span>
-        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-      <div class="entry-body">
-        <div class="entry-changes">
-          <div class="change-item"><span class="change-icon icon-add">+</span>RPG Maker 插件汉化列表 → 新样式博客文章（post-rpg-1.html）</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>RPG Maker GIF素材 → 新样式博客文章（post-rpg-2.html）</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>RPG Maker 脚本调用参考 → 新样式博客文章（post-rpg-3.html）</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>资源导航总页 → 整合所有资源入口（post-old-rpg.html）</div>
-          <div class="change-item"><span class="change-icon icon-change">~</span>统一使用暗色主题样式，视觉效果一致</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2026-04-19 初次 -->
-    <div class="changelog-entry">
-      <div class="entry-header" onclick="toggleEntry(this)">
-        <span class="entry-badge badge-new">🚀 上线</span>
-        <span class="entry-title">博客上线</span>
-        <svg class="entry-toggle" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-      <div class="entry-body">
-        <div class="entry-changes">
-          <div class="change-item"><span class="change-icon icon-add">+</span>博客系统上线，采用暗色主题</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>发布 RPG Maker 相关内容</div>
-          <div class="change-item"><span class="change-icon icon-add">+</span>归档页和关于页同步上线</div>
-        </div>
-      </div>
-    </div>
-
+<main class="page-wrap">
+  <div class="page-hero">
+    <h1>更新日志</h1>
+    <p>记录网站的每一次改动</p>
   </div>
-</div>
 
-<div class="footer">
-  <p><a href="index.html">首页</a> · <a href="https://github.com/saiyajiang" target="_blank">GitHub</a></p>
-</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2026-06-04</div>
+      <div class="timeline-title">全站 UI 统一</div>
+      <div class="timeline-desc">
+        首页/关于/归档/日志四个页面统一为新设计语言：动态背景光球、顶部彩虹装饰条、文章卡片动画、毛玻璃导航栏。删除所有 UE 相关文章引用。所有外部链接改为新标签打开。
+      </div>
+      <div>
+        <span class="timeline-tag tag-new">New</span>
+        <span class="timeline-tag tag-ui">UI</span>
+        <span class="timeline-tag tag-fix">Fix</span>
+      </div>
+    </div>
 
-<script>
-function toggleEntry(header) {
-  const body = header.nextElementSibling;
-  const toggle = header.querySelector('.entry-toggle');
-  const isOpen = body.classList.toggle('open');
-  toggle.classList.toggle('open', isOpen);
-}
-</script>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#818cf8; box-shadow:0 0 8px rgba(129,140,248,0.3);"></div>
+      <div class="timeline-date" style="color:#818cf8;">2026-05-06</div>
+      <div class="timeline-title">改版：个人博客风格</div>
+      <div class="timeline-desc">
+        从工具导航站改版为个人博客，删除测试文章，标签改为下拉收纳式，统一配色为深色主题 + 绿紫色调。
+      </div>
+      <div>
+        <span class="timeline-tag tag-new">New</span>
+        <span class="timeline-tag tag-ui">UI</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#f472b6; box-shadow:0 0 8px rgba(244,114,182,0.3);"></div>
+      <div class="timeline-date" style="color:#f472b6;">2026-04-29</div>
+      <div class="timeline-title">NVIDIA APP 注册表修复文章</div>
+      <div class="timeline-desc">
+        发布《NVIDIA APP 怎么也无法更新或卸载？可以尝试删除这个注册表项》，记录注册表路径与操作步骤。
+      </div>
+      <div>
+        <span class="timeline-tag tag-new">New</span>
+        <span class="timeline-tag tag-doc">Doc</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#fbbf24; box-shadow:0 0 8px rgba(251,191,36,0.3);"></div>
+      <div class="timeline-date" style="color:#fbbf24;">2026-04-19</div>
+      <div class="timeline-title">博客迁移 + RPG Maker 内容整合</div>
+      <div class="timeline-desc">
+        将博客从子目录迁移至根目录，整合原有 RPG Maker 插件/素材页面，新增更新日志页面。
+      </div>
+      <div>
+        <span class="timeline-tag tag-fix">Fix</span>
+        <span class="timeline-tag tag-doc">Doc</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#60a5fa; box-shadow:0 0 8px rgba(96,165,250,0.3);"></div>
+      <div class="timeline-date" style="color:#60a5fa;">2026-04-01</div>
+      <div class="timeline-title">博客上线</div>
+      <div class="timeline-desc">
+        基于 GitHub Pages 搭建个人博客，发布 RPG Maker MV 资源导航、插件汉化列表、GIF 素材汇总、脚本调用参考等文章。
+      </div>
+      <div>
+        <span class="timeline-tag tag-new">New</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  © 2026 悲歌的小站
+   · <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
+</footer>
+
 </body>
 </html>
