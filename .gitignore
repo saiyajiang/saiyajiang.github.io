@@ -1,0 +1,23 @@
+# 依赖
+node_modules/
+package-lock.json
+*.log
+
+# 临时/备份
+.backup/
+*.bak
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# WorkBuddy
+.workbuddy/
