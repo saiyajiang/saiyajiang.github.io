@@ -11,5 +11,6 @@
 
 # 二进制文件
 *.gif  binary
+*.webp binary
 *.xlsx binary
 *.svg  binary

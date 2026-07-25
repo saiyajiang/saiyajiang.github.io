@@ -33,27 +33,23 @@ saiyajiang.github.io/
    - `.post-content` 正文
    - 评论区 `href` 中 `title=` 参数改为文章标题（用于创建对应 Issue）
    - `.post-nav` 上下篇链接
-3. **在首页添加条目**：打开 `index.html`，找到 `const articles = [...]`，在数组**开头**插入：
-   ```javascript
-   {
-     id: "post-X",
-     title: "文章标题",
-     excerpt: "摘要，50-80 字",
-     date: "2026-06-04",
-     tags: ["标签1", "标签2"],
-     href: "posts/post-X.html"
-   }
-   ```
-4. **在归档页添加**：打开 `archive.html`，在 `.archive-list` 最前面加一条 `<a class="archive-item">...</a>`
+3. **在首页添加卡片**：打开 `index.html`，找到 `<div class="post-list" id="postList">`，在其中**复制一个已有的 `<a class="post-card" ...>` 块**并修改：
+   - `href="posts/post-X.html"`
+   - `data-tags="标签1 标签2"`（空格分隔，驱动标签筛选；与卡片内 `.post-card-tag` 保持一致）
+   - `.post-card-date` 日期、`.post-card-title` 标题、`.post-card-excerpt` 摘要
+   - 卡片内的 `.post-card-tag` 标签文字
+4. **在归档页添加**：打开 `archive.html`，在 `.archive-list` 最前面加一条 `<a class="archive-item" ...>...</a>`（结构参考已有条目）
 5. **在 changelog.html 添加更新记录**
+
+> ⚠️ 注意：本站文章列表是**写死在 `index.html` 的静态 HTML 卡片**，不存在 `const articles` 数组。新增/修改文章必须同步改 `index.html` 的 `.post-card` 块与 `archive.html` 的 `.archive-item` 条目，否则首页/归档不会更新。
 
 ---
 
 ## 标签系统
 
-- 标签在每篇文章的 `articles[].tags` 数组和文章页 `.post-tags` 中定义
-- 首页会自动提取所有标签生成筛选面板
-- 新增标签只需在 `articles[].tags` 里写入，无需其他配置
+- 标签通过首页每张卡片的 `data-tags="标签1 标签2"`（空格分隔）与卡片内 `.post-card-tag` 文字定义，文章页的 `.post-tags` 仅作展示
+- 首页根据 `data-tags` 做筛选；顶部标签云是 `#tagCloud` 里静态的 `<button class="tag-btn" data-tag="...">` 按钮
+- 新增标签：在卡片 `data-tags` 与 `.post-card-tag` 写入即可参与筛选；要让它出现在标签云，再在 `#tagCloud` 加一个对应的 `tag-btn` 按钮
 
 ---
 

@@ -2,38 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://saiyajiang.github.io/</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://saiyajiang.github.io/archive.html</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://saiyajiang.github.io/changelog.html</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://saiyajiang.github.io/about.html</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://saiyajiang.github.io/posts/post-7.html</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://saiyajiang.github.io/posts/post-old-rpg.html</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://saiyajiang.github.io/posts/post-rpg-1.html</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://saiyajiang.github.io/posts/post-rpg-2.html</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
   </url>
   <url>
     <loc>https://saiyajiang.github.io/posts/post-rpg-3.html</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
   </url>
 </urlset>
