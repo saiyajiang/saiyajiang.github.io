@@ -8,7 +8,6 @@ window.SITE_POSTS = [
     excerpt: "金·元好问《摸鱼儿·雁丘词》，因一只大雁殉情而作，成为'情'字的极致表达。"
   },
   {
-  {
     title: "NVIDIA APP 怎么也无法更新或卸载？可以尝试删除这个注册表项",
     date: "2026-02-10",
     url: "posts/post-7.html",
