@@ -438,6 +438,13 @@ a { color: inherit; }
 }
 .cmd-desc { font-size: 12.5px; color: var(--text-2); }
 
+/* 文章内：诗词样式 */
+.poem-intro { margin: 24px 0; padding: 18px 22px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; }
+.poem-intro p { margin: 0; font-size: 14px; color: var(--text-2); line-height: 1.8; }
+.poem-body { margin: 28px 0; padding: 28px 32px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 14px; text-align: center; }
+.poem-body p { margin: 0 0 10px; font-size: 16px; line-height: 2; color: var(--text); letter-spacing: 0.3px; }
+.poem-body p:last-child { margin-bottom: 0; }
+
 /* ---------- 关于页 ---------- */
 .about-body { padding: 0 0 80px; }
 .about-section { margin-bottom: 36px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
