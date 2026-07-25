@@ -569,3 +569,65 @@ a { color: inherit; }
 @media (max-width: 640px) {
   .tts-label { display: none; }
 }
+
+/* ========== 全局音乐播放器 ========== */
+.player-bar {
+  position: fixed;
+  right: 20px;
+  bottom: 28px;
+  z-index: 81;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  max-width: min(380px, calc(100vw - 32px));
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.35);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+.player-bar.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.player-btn {
+  flex: 0 0 auto;
+  width: 38px; height: 38px;
+  display: grid; place-items: center;
+  border: none; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-brand), var(--c-brand2));
+  color: #fff; cursor: pointer;
+  font-size: 15px; line-height: 1;
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.player-btn:hover { transform: scale(1.06); box-shadow: 0 4px 16px var(--c-brand-bg); }
+.player-btn--sm { width: 30px; height: 30px; font-size: 13px; background: color-mix(in srgb, var(--c-brand) 22%, transparent); color: var(--text); }
+.player-icon-pause { display: none; }
+.player-bar.is-playing .player-icon-play { display: none; }
+.player-bar.is-playing .player-icon-pause { display: block; }
+.player-meta { flex: 0 1 auto; min-width: 0; max-width: 130px; }
+.player-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-sub { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-progress {
+  flex: 1 1 auto;
+  height: 6px;
+  min-width: 70px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border) 80%, transparent);
+  overflow: hidden;
+  cursor: pointer;
+}
+.player-progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--c-brand), var(--c-brand2));
+  border-radius: 999px;
+  transition: width .12s linear;
+}
+.player-time { flex: 0 0 auto; font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 640px) {
+  .player-meta { display: none; }
+  .player-time { display: none; }
+}

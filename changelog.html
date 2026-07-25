@@ -51,6 +51,17 @@
     <div class="timeline__item">
       <div class="timeline__dot" style="background:var(--c-new);box-shadow:0 0 8px var(--c-new-bg);"></div>
       <div class="timeline__date" style="color:var(--c-new);">2026-07-26</div>
+      <div class="timeline__title">TTS 进度条修复 + 全局音乐播放器</div>
+      <div class="timeline__desc">朗读进度条改为基于时间推算，解决长文本 boundary 事件不触发导致进度不动的问题；自动优选中文神经网络嗓音。新增全局音乐播放器（右下角），读取 assets/playlist.js 播放列表，支持跨页面续播（localStorage 记忆曲目与进度）、进度拖拽、上下首切换。</div>
+      <div>
+        <span class="tag-badge tag-new">New</span>
+        <span class="tag-badge tag-fix">Fix</span>
+      </div>
+    </div>
+
+    <div class="timeline__item">
+      <div class="timeline__dot" style="background:var(--c-new);box-shadow:0 0 8px var(--c-new-bg);"></div>
+      <div class="timeline__date" style="color:var(--c-new);">2026-07-26</div>
       <div class="timeline__title">新增文字朗读功能（AI 读文字）</div>
       <div class="timeline__desc">文章页新增浮动朗读控件，基于浏览器 Web Speech API（speechSynthesis）朗读中文全文，支持播放/暂停/继续、进度条与字符级进度。纯前端实现，无需密钥或后端，契合 GitHub Pages 静态限制。</div>
       <div>
@@ -144,7 +155,8 @@
    · <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
 </footer>
 
-<script src="assets/posts.js?v=20260727"></script>
-<script src="assets/site.js?v=20260727"></script>
+<script src="assets/playlist.js?v=20260727bb"></script>
+<script src="assets/posts.js?v=20260727bb"></script>
+<script src="assets/site.js?v=20260727bb"></script>
 </body>
 </html>
