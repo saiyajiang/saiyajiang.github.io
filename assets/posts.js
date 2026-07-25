@@ -1,6 +1,13 @@
 /* 文章数据源 —— 新增文章只需在此数组添加一项，首页与归档页会自动更新 */
 window.SITE_POSTS = [
   {
+    title: "一生所爱",
+    date: "2026-07-26",
+    url: "posts/post-song-1.html",
+    tags: ["歌词", "一生所爱", "大话西游"],
+    excerpt: "电影《大话西游》片尾曲，唐书琛作词、卢冠廷作曲，写尽错过与命运。"
+  },
+  {
     title: "摸鱼儿·恨人间情是何物",
     date: "2026-07-25",
     url: "posts/post-poem-1.html",
