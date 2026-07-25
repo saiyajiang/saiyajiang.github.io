@@ -234,6 +234,93 @@
     });
   }
 
+  /* ---------- 文字朗读（Web Speech API）---------- */
+  function initTTS() {
+    // 仅在文章页启用
+    var article = document.querySelector(".post-content");
+    if (!article) return;
+    if (!("speechSynthesis" in window)) return; // 浏览器不支持则静默跳过
+
+    var synth = window.speechSynthesis;
+    var utter = null;
+    var chars = Array.prototype.map.call(article.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,pre,code"), function (n) { return n.textContent; });
+    var fullText = chars.join("\n").replace(/\s*\n\s*/g, "\n").trim();
+    if (!fullText) return;
+
+    // 构建浮动控件
+    var bar = document.createElement("div");
+    bar.className = "tts-bar";
+    bar.innerHTML =
+      '<button class="tts-btn" id="ttsPlay" aria-label="朗读">'
+      + '<svg class="tts-icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+      + '<svg class="tts-icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>'
+      + '</button>'
+      + '<div class="tts-progress"><div class="tts-progress-fill" id="ttsFill"></div></div>'
+      + '<span class="tts-label" id="ttsLabel">朗读全文</span>';
+    document.body.appendChild(bar);
+    bar.classList.add("show");
+
+    var btn = bar.querySelector("#ttsPlay");
+    var fill = bar.querySelector("#ttsFill");
+    var label = bar.querySelector("#ttsLabel");
+
+    function setPlaying(on) {
+      bar.classList.toggle("is-playing", on);
+      label.textContent = on ? "暂停" : "继续";
+    }
+
+    function speak() {
+      utter = new SpeechSynthesisUtterance(fullText);
+      utter.lang = "zh-CN";
+      utter.rate = 1;
+      utter.pitch = 1;
+      // 尝试挑选中文语音
+      var voices = synth.getVoices();
+      var zh = voices.filter(function (v) { return /zh|cmn|Chinese/i.test(v.lang || v.name); });
+      if (zh.length) utter.voice = zh[0];
+      utter.onboundary = function (e) {
+        if (fullText.length) fill.style.width = Math.min(100, (e.charIndex / fullText.length) * 100) + "%";
+      };
+      utter.onend = function () {
+        setPlaying(false);
+        fill.style.width = "100%";
+        label.textContent = "朗读全文";
+        bar.classList.remove("is-playing");
+      };
+      utter.onerror = function () { setPlaying(false); label.textContent = "朗读出错"; };
+      synth.speak(utter);
+      setPlaying(true);
+    }
+
+    btn.addEventListener("click", function () {
+      if (synth.speaking && !synth.paused) { synth.pause(); setPlaying(false); }
+      else if (synth.paused) { synth.resume(); setPlaying(true); }
+      else { speak(); }
+    });
+
+    // 点击进度条跳转到大致位置（按字符比例重新分段朗读）
+    bar.querySelector(".tts-progress").addEventListener("click", function (e) {
+      var rect = this.getBoundingClientRect();
+      var ratio = (e.clientX - rect.left) / rect.width;
+      // 简单处理：停止并重启到对应字符
+      synth.cancel();
+      var start = Math.floor(fullText.length * ratio);
+      var seg = fullText.slice(start);
+      utter = new SpeechSynthesisUtterance(seg);
+      utter.lang = "zh-CN";
+      var voices = synth.getVoices();
+      var zh = voices.filter(function (v) { return /zh|cmn|Chinese/i.test(v.lang || v.name); });
+      if (zh.length) utter.voice = zh[0];
+      utter.onend = function () { setPlaying(false); fill.style.width = "100%"; label.textContent = "朗读全文"; };
+      fill.style.width = (ratio * 100) + "%";
+      synth.speak(utter);
+      setPlaying(true);
+    });
+
+    // 离开页面停止朗读
+    window.addEventListener("beforeunload", function () { synth.cancel(); });
+  }
+
   /* ---------- 启动 ---------- */
   function init() {
     initTheme();
@@ -244,6 +331,7 @@
     renderTags();
     initFilter();
     initArchiveTagNav();
+    initTTS();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
