@@ -330,96 +330,60 @@
   }
 
 
-  /* ---------- 全局音乐播放器：APlayer + Meting API 获取 QQ 音乐 ---------- */
+  /* ---------- 全局音乐播放器：APlayer + 本地歌单 ---------- */
   function initPlayer() {
     if (typeof window.APlayer === 'undefined') return;
     var cfg = window.SITE_MUSIC_CONFIG || {};
-    if (cfg.mode !== 'meting' || !cfg.meting) return;
+    var local = cfg.playlist || [];
+    if (!local.length) return;
     
-    var m = cfg.meting;
-    var api = 'https://api.injahow.cn/meting/?server=' + m.server + '&type=' + m.type + '&id=' + m.id;
-    
-    // 创建固定定位的 wrapper（这里加 position:fixed）
     var wrapper = document.createElement('div');
     wrapper.className = 'player-wrapper';
     wrapper.style.cssText = 'position:fixed;right:20px;bottom:28px;z-index:81';
     document.body.appendChild(wrapper);
     
-    // 加载提示
-    var tip = document.createElement('div');
-    tip.textContent = '加载歌单...';
-    tip.style.cssText = 'position:fixed;right:20px;bottom:28px;z-index:82;padding:10px 14px;background:var(--bg-elev);border:1px solid var(--border);border-radius:16px;font-size:13px;color:var(--text-muted);opacity:0;transition:opacity.25s ease';
-    document.body.appendChild(tip);
-    setTimeout(function(){ tip.style.opacity = '1'; }, 50);
+    var list = local.map(function(item) {
+      return {
+        name: item.title || item.name || '',
+        artist: item.artist || '',
+        url: item.src || item.url || '',
+        cover: item.pic || item.cover || ''
+      };
+    });
     
-    function buildPlayer(songs) {
-      tip.remove();
-      if (!songs || !songs.length) return;
-      var list = songs.map(function(item) {
-        return {
-          name: item.name || item.title || '',
-          artist: item.artist || '',
-          url: item.url || item.src || '',
-          cover: item.cover || item.pic || 'https://y.qq.com/music/photo_new/T002R300x300M000003RMaRI1iMXzR.jpg'
-        };
-      });
-      
-      var ap = new APlayer({
-        container: wrapper,
-        fixed: false,
-        mini: false,
-        autoplay: false,
-        theme: '#8b8cff',
-        loop: 'all',
-        order: 'list',
-        preload: 'auto',
-        volume: 0.5,
-        lrcType: 3,
-        audio: list
-      });
-      
-      // 拖拽 wrapper 整体
-      var drag = false, sx, sy, sr, sb;
-      wrapper.addEventListener('mousedown', function(e) {
-        if (e.target.closest('.aplayer-icon') || e.target.closest('.aplayer-bar-wrap') || e.target.closest('.aplayer-list')) return;
-        drag = true;
-        sx = e.clientX; sy = e.clientY;
-        sr = parseInt(wrapper.style.right) || 20;
-        sb = parseInt(wrapper.style.bottom) || 28;
-        wrapper.style.cursor = 'grabbing';
-      });
-      document.addEventListener('mousemove', function(e) {
-        if (!drag) return;
-        var nw = wrapper.offsetWidth;
-        wrapper.style.right = Math.max(10, Math.min(window.innerWidth - nw, sr + (sx - e.clientX))) + 'px';
-        wrapper.style.bottom = Math.max(10, sb + (sy - e.clientY)) + 'px';
-      });
-      document.addEventListener('mouseup', function() {
-        if (drag) { drag = false; wrapper.style.cursor = ''; }
-      });
-    }
+    new APlayer({
+      container: wrapper,
+      fixed: false,
+      mini: false,
+      autoplay: false,
+      theme: '#8b8cff',
+      loop: 'all',
+      order: 'list',
+      preload: 'auto',
+      volume: 0.5,
+      audio: list
+    });
     
-    // 尝试在线加载歌单
-    fetch(api, { mode: 'cors' })
-      .then(function(r) { return r.arrayBuffer(); })
-      .then(function(buf) {
-        var decoder = new TextDecoder('gbk');
-        var text = decoder.decode(buf);
-        buildPlayer(JSON.parse(text));
-      })
-      .catch(function(err) {
-        console.error('Meting fetch err:', err);
-        // 兜底：用本地备份歌单
-        var backup = cfg.playlist || [];
-        if (backup.length) {
-          tip.textContent = '使用本地备份歌单';
-          setTimeout(function() { buildPlayer(backup); }, 500);
-        } else {
-          tip.textContent = '歌单加载失败';
-          setTimeout(function(){ tip.remove(); }, 3000);
-        }
-      });
-  }  function _legacyCreatePlayer(list) {
+    var drag = false, sx, sy, sr, sb;
+    wrapper.addEventListener('mousedown', function(e) {
+      if (e.target.closest('.aplayer-icon') || e.target.closest('.aplayer-bar-wrap') || e.target.closest('.aplayer-list')) return;
+      drag = true;
+      sx = e.clientX; sy = e.clientY;
+      sr = parseInt(wrapper.style.right) || 20;
+      sb = parseInt(wrapper.style.bottom) || 28;
+      wrapper.style.cursor = 'grabbing';
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!drag) return;
+      wrapper.style.right = Math.max(10, Math.min(window.innerWidth - wrapper.offsetWidth, sr + (sx - e.clientX))) + 'px';
+      wrapper.style.bottom = Math.max(10, sb + (sy - e.clientY)) + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (drag) { drag = false; wrapper.style.cursor = ''; }
+    });
+  }
+
+    function _legacyCreatePlayer(list) {
     var LS_IDX = "site_player_idx";
     var LS_POS = "site_player_pos";
     var lastPosSave = 0;
