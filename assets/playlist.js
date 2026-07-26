@@ -1,46 +1,26 @@
 /* 网站背景音乐配置
- * mode: 'local'  - 使用自定义播放器（支持本地文件 + 直链 URL）
- * mode: 'meting' - 使用 Meting.js（支持 QQ 音乐、网易云等歌单）
+ * mode: 'local'  - 使用自定义播放器（直链 URL）
+ * mode: 'meting' - 通过 Meting API 获取 QQ音乐/网易云歌单
  *
  * Meting 配置说明：
- * - server: 'tencent' (QQ音乐), 'netease' (网易云), 'kugou', 'kuwo', 'baidu'
- * - type: 'playlist' (歌单), 'album' (专辑), 'song' (单曲), 'artist' (艺术家)
- * - id: 对应平台的 ID（从分享链接中获取）
+ * - server: 'tencent' (QQ音乐), 'netease' (网易云), 'kugou', 'kuwo'
+ * - type: 'playlist' (歌单), 'album' (专辑), 'song' (单曲)
+ * - id: 对应平台的 ID
  */
 window.SITE_MUSIC_CONFIG = {
-  mode: 'meting', // 切换: 'local' 或 'meting'（切换后需刷新页面）
-  
-  // local 模式: 播放列表（mode: 'local' 时生效）
-  playlist: [
-    // Internet Archive 示例（CC0 协议）
-    {
-      title: "Gymnopedie No.1",
-      artist: "Erik Satie",
-      src: "https://archive.org/download/Classical_Sampler-9615/Kevin_MacLeod_-_Gymnopedie_No_1.mp3"
-    },
-    {
-      title: "Relaxing Piano Music",
-      artist: "Kevin MacLeod",
-      src: "https://archive.org/download/Classical_Sampler-9615/Kevin_MacLeod_-_Relaxing_Piano_Music.mp3"
-    },
-  ],
-  
-  // meting 模式: 歌单配置（mode: 'meting' 时生效）
+  mode: 'meting',
   meting: {
-    id: '9750122774',    // QQ音乐歌单ID（从分享链接获取）
-    server: 'tencent',   // 平台: 'tencent'(QQ音乐), 'netease'(网易云), 'kugou', 'kuwo'
-    type: 'playlist',    // 类型: 'playlist', 'album', 'song', 'artist'
-    fixed: true,         // 固定到底部
-    autoplay: false,     // 自动播放
-    loop: 'all',         // 循环: 'all', 'one', 'none'
-    order: 'random',     // 顺序: 'random', 'list'
+    server: 'tencent',
+    type: 'playlist',
+    id: '9750122774',
+    fixed: true,
+    autoplay: false,
+    loop: 'all',
+    order: 'list',
     preload: 'auto',
-    listFolded: false,   // 默认展开列表（方便看到歌单）
-    listMaxHeight: '330px',
-    lrcType: 0,          // 歌词: 0=禁用, 1=原生, 2=Meting解析
-    theme: '#8b8cff'     // 主题色
+    listFolded: true,
+    listMaxHeight: '340px',
+    lrcType: 0,
+    theme: '#7c3aed'
   }
 };
-
-// 兼容旧代码
-window.SITE_PLAYLIST = window.SITE_MUSIC_CONFIG.playlist;

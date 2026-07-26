@@ -330,119 +330,52 @@
   }
 
 
-  /* ---------- 全局音乐播放器（本地 + Meting.js 双模式）---------- */
+  /* ---------- 全局音乐播放器（本地 + Meting API 获取 QQ音乐）---------- */
   function initPlayer() {
     var cfg = window.SITE_MUSIC_CONFIG || { mode: 'local', playlist: window.SITE_PLAYLIST || [] };
     
-    // Meting 模式：使用 APlayer + Meting.js 支持 QQ音乐/网易云等
-    if (cfg.mode === 'meting' && cfg.meting && typeof window.APlayer !== 'undefined') {
+    if (cfg.mode === 'meting' && cfg.meting) {
+      // Meting 模式：通过 API 获取歌单
       var m = cfg.meting;
-      var metingDiv = document.createElement('div');
-      metingDiv.setAttribute('data-id', m.id);
-      metingDiv.setAttribute('data-server', m.server);
-      metingDiv.setAttribute('data-type', m.type);
-      metingDiv.setAttribute('data-fixed', m.fixed ? 'true' : 'false');
-      metingDiv.setAttribute('data-autoplay', m.autoplay ? 'true' : 'false');
-      metingDiv.setAttribute('data-loop', m.loop);
-      metingDiv.setAttribute('data-order', m.order);
-      metingDiv.setAttribute('data-preload', m.preload);
-      metingDiv.setAttribute('data-list-folded', m.listFolded ? 'true' : 'false');
-      metingDiv.setAttribute('data-list-max-height', m.listMaxHeight);
-      metingDiv.setAttribute('data-lrc-type', String(m.lrcType));
-      metingDiv.setAttribute('data-theme', m.theme);
-      metingDiv.className = 'meting-js';
-      document.body.appendChild(metingDiv);
-      // Meting.js 会自动初始化，延迟加拖动和配置
-      setTimeout(function() {
-        var ap = document.querySelector('.aplayer.aplayer-fixed');
-        if (!ap) return;
-        
-        // 默认音量 50%（APlayer API + audio 元素双保险）
+      var api = 'https://api.injahow.cn/meting/?server=' + m.server + '&type=' + m.type + '&id=' + m.id;
+      
+      // 临时加载提示
+      var tip = document.createElement('div');
+      tip.style.cssText = 'position:fixed;z-index:81;right:20px;bottom:28px;padding:10px 14px;background:var(--bg-elev);border:1px solid var(--border);border-radius:16px;font-size:13px;color:var(--text-muted);opacity:0;transition:opacity.25s ease';
+      tip.textContent = '加载歌单...';
+      document.body.appendChild(tip);
+      setTimeout(function(){ tip.style.opacity = '1'; }, 50);
+      
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', api, true);
+      xhr.onload = function() {
+        tip.remove();
         try {
-          if (window.APlayer && ap.aplayer) ap.aplayer.volume(0.5, false);
-        } catch(e) {}
-        var audio = ap.querySelector('audio');
-        if (audio) audio.volume = 0.5;
-        
-        // 初始位置：右侧
-        ap.style.left = 'auto';
-        ap.style.right = '10px';
-        
-        // 拖动实现（累积 transform，mouseup 后保持位置）
-        var isDragging = false, startX, startY;
-        var transX = 0, transY = 0; // 累积位移
-        var EDGE_SNAP = 60;
-        
-        ap.addEventListener('mousedown', function(e) {
-          // 排除交互元素
-          if (e.target.closest('.aplayer-icon') || 
-              e.target.closest('.aplayer-bar-wrap') ||
-              e.target.closest('.aplayer-list') ||
-              e.target.closest('.aplayer-lrc') ||
-              e.target.closest('.aplayer-pic')) return;
-          isDragging = true;
-          startX = e.clientX;
-          startY = e.clientY;
-          ap.style.transition = 'none';
-          ap.style.cursor = 'grabbing';
-          e.preventDefault();
-        });
-        
-        document.addEventListener('mousemove', function(e) {
-          if (!isDragging) return;
-          var dx = e.clientX - startX;
-          var dy = e.clientY - startY;
-          startX = e.clientX;
-          startY = e.clientY;
-          transX += dx;
-          transY += dy;
-          ap.style.transform = 'translate3d(' + transX + 'px, ' + transY + 'px, 0)';
-        });
-        
-        document.addEventListener('mouseup', function() {
-          if (!isDragging) return;
-          isDragging = false;
-          ap.style.cursor = '';
-          ap.style.transition = 'transform .25s cubic-bezier(.2,.8,.2,1)';
-          
-          // 边缘吸附
-          var rect = ap.getBoundingClientRect();
-          var vw = window.innerWidth, vh = window.innerHeight;
-          var moved = false;
-          
-          // 右侧吸附（主要边）
-          if (vw - rect.right < EDGE_SNAP) {
-            transX -= (vw - rect.right) + 10;
-            moved = true;
-          }
-          // 左侧限制（防止拖出屏幕）
-          else if (rect.left < 10) {
-            transX += 10 - rect.left;
-            moved = true;
-          }
-          
-          if (rect.top < EDGE_SNAP) {
-            transY += rect.top + 10;
-            moved = true;
-          } else if (vh - rect.bottom < EDGE_SNAP) {
-            transY -= (vh - rect.bottom) + 10;
-            moved = true;
-          }
-          
-          if (moved) {
-            ap.style.transform = 'translate3d(' + transX + 'px, ' + transY + 'px, 0)';
-          }
-        });
-      }, 1500);
+          var data = JSON.parse(xhr.responseText);
+          var list = data.map(function(item) {
+            return {
+              title: item.name,
+              artist: item.artist,
+              src: item.url,
+              pic: item.pic
+            };
+          });
+          createPlayer(list);
+        } catch(e) { console.error('parse error', e); }
+      };
+      xhr.send();
       return;
     }
     
-    // Local 模式（原有自定义播放器）
+    // Local 模式
     var list = cfg.playlist || window.SITE_PLAYLIST || [];
-    if (!list.length) return;
-
+    if (list.length) createPlayer(list);
+  }
+  
+  function createPlayer(list) {
     var LS_IDX = "site_player_idx";
     var LS_POS = "site_player_pos";
+    var lastPosSave = 0;
 
     var cur = parseInt(localStorage.getItem(LS_IDX) || "0", 10) || 0;
     if (cur >= list.length) cur = 0;
@@ -460,8 +393,9 @@
       '</div>' +
       '<div class="player-progress" id="playerProgress"><div class="player-progress-fill" id="playerFill"></div></div>' +
       '<span class="player-time" id="playerTime">0:00</span>' +
-      '<button class="player-btn player-btn--sm" id="playerPrev" aria-label="上一首">\u23ee</button>' +
-      '<button class="player-btn player-btn--sm" id="playerNext" aria-label="下一首">\u23ed</button>' +
+      '<button class="player-btn player-btn--sm" id="playerPrev" aria-label="上一首">⏮</button>' +
+      '<button class="player-btn player-btn--sm" id="playerNext" aria-label="下一首">⏭</button>' +
+      '<button class="player-btn player-btn--sm" id="playerMin" aria-label="最小化" title="最小化" style="margin-left:4px">−</button>' +
       '<button class="player-btn player-btn--sm player-btn--list" id="playerList" aria-label="播放列表" title="播放列表">☰</button>' +
       '<div class="player-playlist" id="playerPlaylist">' +
         '<div class="player-playlist-header">' +
@@ -475,10 +409,13 @@
 
     var audio = new Audio();
     audio.preload = "metadata";
+    audio.volume = 0.5;
+    
     var btnPlay = bar.querySelector("#playerPlay");
     var btnPrev = bar.querySelector("#playerPrev");
     var btnNext = bar.querySelector("#playerNext");
     var btnList = bar.querySelector("#playerList");
+    var btnMin = bar.querySelector("#playerMin");
     var playlistPanel = bar.querySelector("#playerPlaylist");
     var btnCloseList = bar.querySelector("#playlistClose");
     var playlistList = bar.querySelector("#playlistList");
@@ -497,7 +434,7 @@
     function renderPlaylist() {
       playlistList.innerHTML = list.map(function(item, idx) {
         var active = idx === cur ? ' active' : '';
-        var source = item.src.includes('qq.com') ? 'QQ' : item.src.includes('netease') ? '网易' : item.src.includes('archive.org') ? 'Archive' : '本地';
+        var source = item.src.indexOf('injahow') > 0 ? 'QQ' : '直链';
         return '<div class="player-playlist-item' + active + '" data-idx="' + idx + '">' +
           '<span class="player-playlist-num">' + (idx + 1) + '</span>' +
           '<div class="player-playlist-info">' +
@@ -511,7 +448,6 @@
         el.addEventListener('click', function() {
           var idx = parseInt(this.dataset.idx, 10);
           load(idx, true);
-          renderPlaylist();
         });
       });
     }
@@ -527,37 +463,42 @@
       timeEl.textContent = "0:00";
       audio.load();
       if (autoplay) {
-        audio.play().then(function(){ setPlaying(true); }).catch(function(e){ setPlaying(false); console.log('play failed', e); });
+        audio.play().then(function(){ setPlaying(true); }).catch(function(e){ setPlaying(false); });
       }
       renderPlaylist();
     }
 
-    function setPlaying(on) {
-      bar.classList.toggle("is-playing", on);
-    }
+    function setPlaying(on) { bar.classList.toggle("is-playing", on); }
 
     btnPlay.addEventListener("click", function () {
       if (audio.paused) {
         audio.play().then(function(){ setPlaying(true); }).catch(function(){ setPlaying(false); });
       } else { audio.pause(); setPlaying(false); }
     });
-
     btnPrev.addEventListener("click", function () { load(cur - 1, true); });
     btnNext.addEventListener("click", function () { load(cur + 1, true); });
+
+    var isMin = false;
+    btnMin.addEventListener("click", function(e) {
+      e.stopPropagation();
+      isMin = !isMin;
+      bar.classList.toggle("player-min", isMin);
+      btnMin.innerHTML = isMin ? "+" : "−";
+      if (!isMin) playlistPanel.classList.remove("show");
+    });
 
     btnList.addEventListener("click", function() {
       playlistPanel.classList.toggle("show");
       renderPlaylist();
     });
-    btnCloseList.addEventListener("click", function() {
-      playlistPanel.classList.remove("show");
-    });
+    btnCloseList.addEventListener("click", function() { playlistPanel.classList.remove("show"); });
 
     audio.addEventListener("timeupdate", function () {
       if (audio.duration) {
         fill.style.width = (audio.currentTime / audio.duration) * 100 + "%";
         timeEl.textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration);
       }
+      lastPosSave = Date.now();
       localStorage.setItem(LS_POS, String(audio.currentTime));
     });
     audio.addEventListener("ended", function () { load(cur + 1, true); });
@@ -571,7 +512,7 @@
     });
 
     document.addEventListener("click", function(e) {
-      if (!playlistPanel.contains(e.target) && e.target !== btnList) {
+      if (playlistPanel && !playlistPanel.contains(e.target) && e.target !== btnList) {
         playlistPanel.classList.remove("show");
       }
     });
@@ -581,48 +522,27 @@
     var savedPos = parseFloat(localStorage.getItem(LS_POS) || "0");
     if (savedPos > 0) { try { audio.currentTime = savedPos; } catch (e) {} }
     
-    // 播放器拖动和最小化功能
-    var isDragging = false, startX, startY, startRight, startBottom;
+    // 拖动
     bar.style.userSelect = 'none';
-    
-    // 最小化按钮
-    var btnMin = document.createElement('button');
-    btnMin.className = 'player-btn player-btn--sm';
-    btnMin.innerHTML = '−';
-    btnMin.title = '最小化';
-    btnMin.style.marginLeft = '4px';
-    bar.insertBefore(btnMin, btnList);
-    
-    var isMin = false;
-    btnMin.addEventListener('click', function(e) {
-      e.stopPropagation();
-      isMin = !isMin;
-      bar.classList.toggle('player-min', isMin);
-      btnMin.innerHTML = isMin ? '+' : '−';
-      if (!isMin) playlistPanel.classList.remove('show');
-    });
-    
-    // 拖动实现
+    var isDragging = false, dragStartX, dragStartY, startRight, startBottom;
     bar.addEventListener('mousedown', function(e) {
       if (e.target.closest('button') || e.target.closest('.player-progress') || e.target.closest('.player-playlist')) return;
       isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
       var rect = bar.getBoundingClientRect();
       startRight = window.innerWidth - rect.right;
       startBottom = window.innerHeight - rect.bottom;
       bar.style.cursor = 'grabbing';
       bar.style.transition = 'none';
     });
-    
     document.addEventListener('mousemove', function(e) {
       if (!isDragging) return;
-      var dx = e.clientX - startX;
-      var dy = e.clientY - startY;
+      var dx = e.clientX - dragStartX;
+      var dy = e.clientY - dragStartY;
       bar.style.right = Math.max(10, Math.min(window.innerWidth - 100, startRight - dx)) + 'px';
       bar.style.bottom = Math.max(10, Math.min(window.innerHeight - 100, startBottom - dy)) + 'px';
     });
-    
     document.addEventListener('mouseup', function() {
       if (isDragging) {
         isDragging = false;
@@ -630,9 +550,7 @@
         bar.style.transition = '';
       }
     });
-  }
-
-  /* ---------- 启动 ---------- */
+  }  /* ---------- 启动 ---------- */
   function init() {
     // 设置音乐模式标记，CSS 据此显示/隐藏对应播放器
     var cfg = window.SITE_MUSIC_CONFIG || {};
