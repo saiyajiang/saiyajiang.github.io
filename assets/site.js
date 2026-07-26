@@ -346,12 +346,20 @@
       document.body.appendChild(tip);
       setTimeout(function(){ tip.style.opacity = '1'; }, 50);
       
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', api, true);
-      xhr.onload = function() {
-        tip.remove();
-        try {
-          var data = JSON.parse(xhr.responseText);
+      var timeout = setTimeout(function() {
+        tip.textContent = '加载超时，重试中...';
+        // 超时后直接尝试本地备份或忽略
+      }, 8000);
+      
+      fetch(api, { mode: 'cors' })
+        .then(function(r) { return r.arrayBuffer(); })
+        .then(function(buf) {
+          clearTimeout(timeout);
+          tip.remove();
+          // API 返回 GBK 编码，用 gbk 解码
+          var decoder = new TextDecoder('gbk');
+          var text = decoder.decode(buf);
+          var data = JSON.parse(text);
           var list = data.map(function(item) {
             return {
               title: item.name,
@@ -361,9 +369,20 @@
             };
           });
           createPlayer(list);
-        } catch(e) { console.error('parse error', e); }
-      };
-      xhr.send();
+        })
+        .catch(function(err) {
+          clearTimeout(timeout);
+          console.error('Meting API error:', err);
+          // 兜底：用本地备份歌单
+          var backup = cfg.playlist || window.SITE_PLAYLIST || [];
+          if (backup.length) {
+            tip.remove();
+            createPlayer(backup);
+          } else {
+            tip.textContent = '歌单加载失败，请刷新重试';
+            setTimeout(function(){ tip.remove(); }, 3000);
+          }
+        });
       return;
     }
     
