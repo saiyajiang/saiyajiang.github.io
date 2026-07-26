@@ -357,6 +357,20 @@
       audio: []
     });
     window.__ap = ap;
+    // 强制把列表方向改为向上展开
+    setTimeout(function() {
+      var list = wrapper.querySelector('.aplayer-list');
+      if (list) {
+        list.style.cssText = 'left:auto!important;right:0!important;bottom:100%!important;top:auto!important;';
+        console.log('[player] list CSS overridden to upward');
+      }
+    }, 100);
+    setTimeout(function() {
+      var list = wrapper.querySelector('.aplayer-list');
+      if (list) {
+        list.style.cssText = 'left:auto!important;right:0!important;bottom:100%!important;top:auto!important;';
+      }
+    }, 1000);
     
     document.body.setAttribute('data-music', cfg.mode === 'meting' ? 'meting' : 'local');
     console.log('[player] APlayer ready, mode=' + (cfg.mode || 'local'), 'wrapper=', wrapper, 'ap=', ap);
