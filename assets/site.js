@@ -636,42 +636,57 @@
     });
   }
   
-  /* ---------- 侧边栏引用 ---------- */
-  window.SITE_QUOTES = window.SITE_QUOTES || [
-    {"text": "行动是存在的唯一证据", "source": ""},
-    {"text": "自律不是束缚，是选择的累积", "source": ""},
-    {"text": "气场是行动 × 冷静 × 存在感的乘积", "source": ""}
+  /* ---------- 短记录侧边（读书、札记、短句）---------- */
+  window.SITE_NOTES = window.SITE_NOTES || [
+    {"text": "行动是存在的唯一证据", "meta": ""},
+    {"text": "自律不是束缚，是选择的累积", "meta": ""},
+    {"text": "气场 = 行动 × 冷静 × 存在感", "meta": ""}
   ];
   
   function initSidebar() {
-    var qs = window.SITE_QUOTES || [];
-    if (!qs.length || window.innerWidth < 1200) return;
+    var notes = window.SITE_NOTES || [];
+    if (!notes.length) return;
     
-    var half = Math.ceil(qs.length / 2);
+    // 查找 anchor：有 #postList 则贴它两侧，否则贴 .page 两侧
+    var anchor = document.getElementById('postList') ||
+                 document.getElementById('archiveList') ||
+                 document.querySelector('main.page') ||
+                 document.querySelector('main');
+    if (!anchor) return;
     
-    var leftBar = document.createElement('div');
-    leftBar.className = 'side-quote side-quote--left';
+    var half = Math.ceil(notes.length / 2);
     
-    var rightBar = document.createElement('div');
-    rightBar.className = 'side-quote side-quote--right';
+    function makeNote(n) {
+      var item = document.createElement('div');
+      item.className = 'side-note';
+      var t = document.createElement('div');
+      t.className = 'side-note__text';
+      t.textContent = n.text || '';
+      item.appendChild(t);
+      if (n.meta) {
+        var m = document.createElement('div');
+        m.className = 'side-note__meta';
+        m.textContent = '— ' + n.meta;
+        item.appendChild(m);
+      }
+      return item;
+    }
     
-    qs.slice(0, half).forEach(function(q) {
-      var el = document.createElement('div');
-      el.className = 'side-quote__item';
-      el.innerHTML = '<span class="side-quote__text">' + esc(q.text) + '</span>' +
-        (q.source ? '<span class="side-quote__source">— ' + esc(q.source) + '</span>' : '');
-      leftBar.appendChild(el);
-    });
-    qs.slice(half).forEach(function(q) {
-      var el = document.createElement('div');
-      el.className = 'side-quote__item';
-      el.innerHTML = '<span class="side-quote__text">' + esc(q.text) + '</span>' +
-        (q.source ? '<span class="side-quote__source">— ' + esc(q.source) + '</span>' : '');
-      rightBar.appendChild(el);
-    });
+    var leftCol = document.createElement('aside');
+    leftCol.className = 'side-notes__col side-notes__col--left';
+    notes.slice(0, half).forEach(function(n) { leftCol.appendChild(makeNote(n)); });
     
-    document.body.appendChild(leftBar);
-    document.body.appendChild(rightBar);
+    var rightCol = document.createElement('aside');
+    rightCol.className = 'side-notes__col side-notes__col--right';
+    notes.slice(half).forEach(function(n) { rightCol.appendChild(makeNote(n)); });
+    
+    // 包成一个两列 flex，置于 anchor 之前
+    var wrap = document.createElement('div');
+    wrap.className = 'side-notes';
+    wrap.appendChild(leftCol);
+    wrap.appendChild(rightCol);
+    
+    anchor.parentNode.insertBefore(wrap, anchor);
   }
   
   /* ---------- 启动 ---------- */

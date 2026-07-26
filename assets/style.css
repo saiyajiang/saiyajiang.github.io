@@ -869,47 +869,50 @@ a { color: inherit; }
 /* 音乐模式控制：自定义播放器在两种模式下都显示 */
 body[data-music="local"] .aplayer { display: none !important; }
 
-/* 侧边栏引用 */
-.side-quote {
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 140px;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
+/* 短记录侧边 */
+.side-notes {
+  display: none;
   gap: 24px;
-  pointer-events: none;
-  padding: 0 8px;
+  max-width: 1320px;
+  margin: 0 auto 32px;
+  padding: 0 24px;
 }
-.side-quote--left { left: 0; align-items: flex-start; }
-.side-quote--right { right: 0; align-items: flex-end; }
+.side-notes__col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+.side-notes__col--left { align-items: flex-end; text-align: right; }
+.side-notes__col--right { align-items: flex-start; text-align: left; }
 
-.side-quote__item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  max-width: 130px;
+.side-note {
+  max-width: 220px;
+  padding: 12px 16px;
+  border-left: 2px solid var(--accent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent);
+  border-radius: 0 8px 8px 0;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.side-notes__col--left .side-note {
+  border-left: none;
+  border-right: 2px solid var(--accent);
+  border-radius: 8px 0 0 8px;
 }
 
-.side-quote__text {
-  font-size: 12px;
-  line-height: 1.5;
+.side-note:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.side-note__text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+  font-weight: 400;
+}
+.side-note__meta {
+  font-size: 11px;
   color: var(--text-muted);
-  opacity: 0.65;
-  transition: opacity .2s;
-}
-.side-quote__item:hover .side-quote__text {
-  opacity: 1;
+  margin-top: 4px;
+  opacity: 0.7;
 }
 
-.side-quote__source {
-  font-size: 10px;
-  color: var(--text-muted);
-  opacity: 0.4;
-}
-
-@media (max-width: 1300px) {
-  .side-quote { display: none; }
+@media (min-width: 1200px) {
+  .side-notes { display: flex; }
 }
 
