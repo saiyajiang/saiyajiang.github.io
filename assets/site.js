@@ -480,9 +480,11 @@
       subEl.textContent = item.artist || "";
       fill.style.width = "0%";
       timeEl.textContent = "0:00";
+      bar.classList.add("is-loading");
+      subEl.textContent = "加载中...";
       audio.load();
       if (autoplay) {
-        audio.play().then(function(){ setPlaying(true); }).catch(function(e){ setPlaying(false); });
+        audio.play().then(function(){ setPlaying(true); bar.classList.remove("is-loading"); subEl.textContent = item.artist || ""; }).catch(function(e){ setPlaying(false); bar.classList.remove("is-loading"); subEl.textContent = "加载失败"; });
       }
       renderPlaylist();
     }
@@ -491,7 +493,9 @@
 
     btnPlay.addEventListener("click", function () {
       if (audio.paused) {
-        audio.play().then(function(){ setPlaying(true); }).catch(function(){ setPlaying(false); });
+        bar.classList.add("is-loading");
+        subEl.textContent = "加载中...";
+        audio.play().then(function(){ setPlaying(true); bar.classList.remove("is-loading"); subEl.textContent = list[cur].artist || ""; }).catch(function(e){ setPlaying(false); bar.classList.remove("is-loading"); subEl.textContent = "加载失败，点击切歌"; });
       } else { audio.pause(); setPlaying(false); }
     });
     btnPrev.addEventListener("click", function () { load(cur - 1, true); });
