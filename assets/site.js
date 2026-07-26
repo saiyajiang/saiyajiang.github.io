@@ -297,7 +297,8 @@
       setPlaying(true); startTimer();
     }
 
-    function ensureVoicesThen(fn){
+    function ensureVoicesThen(fn, onWait){
+      if(onWait) onWait();
       var voices = synth.getVoices();
       if(voices && voices.length){ fn(voices); return; }
       // 某些浏览器需等待 voiceschanged
@@ -310,7 +311,12 @@
     btn.addEventListener("click", function(){
       if(synth.speaking && !synth.paused){ synth.pause(); stopTimer(); setPlaying(false); }
       else if(synth.paused){ synth.resume(); setPlaying(true); startTimer(); }
-      else { ensureVoicesThen(function(voices){ doSpeak(voices, 0); }); }
+      else { 
+        label.textContent = "等待加载...";
+        ensureVoicesThen(function(voices){ doSpeak(voices, 0); }, function(){
+          label.textContent = "加载语音...";
+        }); 
+      }
     });
 
     bar.querySelector(".tts-progress").addEventListener("click", function(e){
@@ -493,6 +499,56 @@
     load(cur, false);
     var savedPos = parseFloat(localStorage.getItem(LS_POS) || "0");
     if (savedPos > 0) { try { audio.currentTime = savedPos; } catch (e) {} }
+    
+    // 播放器拖动和最小化功能
+    var isDragging = false, startX, startY, startRight, startBottom;
+    bar.style.userSelect = 'none';
+    
+    // 最小化按钮
+    var btnMin = document.createElement('button');
+    btnMin.className = 'player-btn player-btn--sm';
+    btnMin.innerHTML = '−';
+    btnMin.title = '最小化';
+    btnMin.style.marginLeft = '4px';
+    bar.insertBefore(btnMin, btnList);
+    
+    var isMin = false;
+    btnMin.addEventListener('click', function(e) {
+      e.stopPropagation();
+      isMin = !isMin;
+      bar.classList.toggle('player-min', isMin);
+      btnMin.innerHTML = isMin ? '+' : '−';
+      if (!isMin) playlistPanel.classList.remove('show');
+    });
+    
+    // 拖动实现
+    bar.addEventListener('mousedown', function(e) {
+      if (e.target.closest('button') || e.target.closest('.player-progress') || e.target.closest('.player-playlist')) return;
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      var rect = bar.getBoundingClientRect();
+      startRight = window.innerWidth - rect.right;
+      startBottom = window.innerHeight - rect.bottom;
+      bar.style.cursor = 'grabbing';
+      bar.style.transition = 'none';
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+      bar.style.right = Math.max(10, Math.min(window.innerWidth - 100, startRight - dx)) + 'px';
+      bar.style.bottom = Math.max(10, Math.min(window.innerHeight - 100, startBottom - dy)) + 'px';
+    });
+    
+    document.addEventListener('mouseup', function() {
+      if (isDragging) {
+        isDragging = false;
+        bar.style.cursor = '';
+        bar.style.transition = '';
+      }
+    });
   }
 
   /* ---------- 启动 ---------- */
