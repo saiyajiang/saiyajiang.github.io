@@ -8,9 +8,9 @@
  * - id: 对应平台的 ID（从分享链接中获取）
  */
 window.SITE_MUSIC_CONFIG = {
-  mode: 'local', // 切换: 'local' 或 'meting'
+  mode: 'meting', // 切换: 'local' 或 'meting'
   
-  // local 模式: 播放列表
+  // local 模式: 播放列表（mode: 'local' 时生效）
   playlist: [
     // Internet Archive 示例（CC0 协议）
     {
@@ -23,18 +23,12 @@ window.SITE_MUSIC_CONFIG = {
       artist: "Kevin MacLeod",
       src: "https://archive.org/download/Classical_Sampler-9615/Kevin_MacLeod_-_Relaxing_Piano_Music.mp3"
     },
-    // 本地示例（取消注释并放入文件即可使用）
-    // {
-    //   title: "一生所爱",
-    //   artist: "卢冠廷",
-    //   src: "assets/music/yishengsuojia.mp3"
-    // }
   ],
   
-  // meting 模式: 歌单配置
+  // meting 模式: 歌单配置（mode: 'meting' 时生效）
   meting: {
-    id: '20173709',      // 歌单ID（从QQ音乐/网易云分享链接获取）
-    server: 'netease',   // 平台: 'tencent'(QQ音乐), 'netease'(网易云), 'kugou', 'kuwo'
+    id: '9750122774',    // QQ音乐歌单ID（从分享链接获取）
+    server: 'tencent',   // 平台: 'tencent'(QQ音乐), 'netease'(网易云), 'kugou', 'kuwo'
     type: 'playlist',    // 类型: 'playlist', 'album', 'song', 'artist'
     fixed: true,         // 固定到底部
     autoplay: false,     // 自动播放
