@@ -337,11 +337,6 @@
     var local = cfg.playlist || [];
     if (!local.length) return;
     
-    var wrapper = document.createElement('div');
-    wrapper.className = 'player-wrapper';
-    wrapper.style.cssText = 'position:fixed;right:20px;bottom:28px;z-index:81';
-    document.body.appendChild(wrapper);
-    
     var list = local.map(function(item) {
       return {
         name: item.title || item.name || '',
@@ -351,9 +346,15 @@
       };
     });
     
+    // APlayer 原生 fixed 模式，右下角，列表向上展开
+    var wrapper = document.createElement('div');
+    wrapper.id = 'aplayer-wrap';
+    document.body.appendChild(wrapper);
+    document.body.setAttribute('data-music', 'local');
+    
     new APlayer({
       container: wrapper,
-      fixed: false,
+      fixed: true,
       mini: false,
       autoplay: false,
       theme: '#8b8cff',
@@ -361,25 +362,9 @@
       order: 'list',
       preload: 'auto',
       volume: 0.5,
+      lrcType: 0,
+      mutex: true,
       audio: list
-    });
-    
-    var drag = false, sx, sy, sr, sb;
-    wrapper.addEventListener('mousedown', function(e) {
-      if (e.target.closest('.aplayer-icon') || e.target.closest('.aplayer-bar-wrap') || e.target.closest('.aplayer-list')) return;
-      drag = true;
-      sx = e.clientX; sy = e.clientY;
-      sr = parseInt(wrapper.style.right) || 20;
-      sb = parseInt(wrapper.style.bottom) || 28;
-      wrapper.style.cursor = 'grabbing';
-    });
-    document.addEventListener('mousemove', function(e) {
-      if (!drag) return;
-      wrapper.style.right = Math.max(10, Math.min(window.innerWidth - wrapper.offsetWidth, sr + (sx - e.clientX))) + 'px';
-      wrapper.style.bottom = Math.max(10, sb + (sy - e.clientY)) + 'px';
-    });
-    document.addEventListener('mouseup', function() {
-      if (drag) { drag = false; wrapper.style.cursor = ''; }
     });
   }
 
@@ -600,57 +585,53 @@
     });
   }
   
-  /* ---------- 短记录侧边（读书、札记、短句）---------- */
-  window.SITE_NOTES = window.SITE_NOTES || [
-    {"text": "行动是存在的唯一证据", "meta": ""},
-    {"text": "自律不是束缚，是选择的累积", "meta": ""},
-    {"text": "气场 = 行动 × 冷静 × 存在感", "meta": ""}
-  ];
+  /* ---------- 内容区三列布局（左右夹短句）---------- */
+  window.SITE_NOTES = window.SITE_NOTES || [];  // 留空，默认占位 placeholder
+  
+  // 短句占位符样式
+  function _placeholderNote(text) {
+    var item = document.createElement('div');
+    item.className = 'side-note';
+    item.style.opacity = '0.35';
+    item.style.cursor = 'default';
+    var t = document.createElement('div');
+    t.className = 'side-note__text';
+    t.textContent = text || '占位短句';
+    item.appendChild(t);
+    return item;
+  }
   
   function initSidebar() {
-    var notes = window.SITE_NOTES || [];
-    if (!notes.length) return;
+    // 查找 main 容器
+    var main = document.querySelector('main.page') ||
+               document.querySelector('main.post-page') ||
+               document.querySelector('main');
+    if (!main) return;
     
-    // 查找 anchor：有 #postList 则贴它两侧，否则贴 .page 两侧
-    var anchor = document.getElementById('postList') ||
-                 document.getElementById('archiveList') ||
-                 document.querySelector('main.page') ||
-                 document.querySelector('main');
-    if (!anchor) return;
-    
-    var half = Math.ceil(notes.length / 2);
-    
-    function makeNote(n) {
-      var item = document.createElement('div');
-      item.className = 'side-note';
-      var t = document.createElement('div');
-      t.className = 'side-note__text';
-      t.textContent = n.text || '';
-      item.appendChild(t);
-      if (n.meta) {
-        var m = document.createElement('div');
-        m.className = 'side-note__meta';
-        m.textContent = '— ' + n.meta;
-        item.appendChild(m);
-      }
-      return item;
-    }
+    // 跳过已经是已包装过的页面（如文章页只有主区，不包装）
+    if (main.parentElement && main.parentElement.classList.contains('content-grid')) return;
     
     var leftCol = document.createElement('aside');
-    leftCol.className = 'side-notes__col side-notes__col--left';
-    notes.slice(0, half).forEach(function(n) { leftCol.appendChild(makeNote(n)); });
+    leftCol.className = 'side-notes side-notes--left';
+    leftCol.appendChild(_placeholderNote('短句占位'));
+    leftCol.appendChild(_placeholderNote('占位'));
+    leftCol.appendChild(_placeholderNote('占位短句占位'));
     
     var rightCol = document.createElement('aside');
-    rightCol.className = 'side-notes__col side-notes__col--right';
-    notes.slice(half).forEach(function(n) { rightCol.appendChild(makeNote(n)); });
+    rightCol.className = 'side-notes side-notes--right';
+    rightCol.appendChild(_placeholderNote('占位'));
+    rightCol.appendChild(_placeholderNote('占位短句'));
+    rightCol.appendChild(_placeholderNote('短句占位占位'));
     
-    // 包成一个两列 flex，置于 anchor 之前
-    var wrap = document.createElement('div');
-    wrap.className = 'side-notes';
-    wrap.appendChild(leftCol);
-    wrap.appendChild(rightCol);
+    var grid = document.createElement('div');
+    grid.className = 'content-grid';
+    grid.appendChild(leftCol);
+    grid.appendChild(main);
+    grid.appendChild(rightCol);
     
-    anchor.parentNode.insertBefore(wrap, anchor);
+    main.parentNode.insertBefore(grid, main);
+    main.parentNode.removeChild(main);
+    grid.appendChild(main);
   }
   
   /* ---------- 启动 ---------- */

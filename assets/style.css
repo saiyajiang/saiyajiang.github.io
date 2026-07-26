@@ -869,50 +869,71 @@ a { color: inherit; }
 /* 音乐模式控制：自定义播放器在两种模式下都显示 */
 body[data-music="local"] .aplayer { display: none !important; }
 
-/* 短记录侧边 */
+/* APlayer 主体位置：右下方，列表向上展开 */
+.aplayer.aplayer-fixed {
+  left: auto !important;
+  right: 20px !important;
+}
+.aplayer.aplayer-fixed .aplayer-list {
+  left: auto !important;
+  right: 0 !important;
+  bottom: 100% !important;
+  top: auto !important;
+}
+
+/* 内容主区：窄列表两侧夹短句 */
+.content-grid {
+  display: grid;
+  gap: 32px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+  align-items: start;
+}
+
+/* 侧边短句 */
 .side-notes {
   display: none;
-  gap: 24px;
-  max-width: 1320px;
-  margin: 0 auto 32px;
-  padding: 0 24px;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 8px;
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
-.side-notes__col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
-.side-notes__col--left { align-items: flex-end; text-align: right; }
-.side-notes__col--right { align-items: flex-start; text-align: left; }
+.side-notes__col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.side-notes__col--left { align-items: stretch; }
+.side-notes__col--right { align-items: stretch; }
 
 .side-note {
-  max-width: 220px;
-  padding: 12px 16px;
+  max-width: 200px;
+  padding: 10px 14px;
   border-left: 2px solid var(--accent);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent);
-  border-radius: 0 8px 8px 0;
-  transition: transform .2s ease, box-shadow .2s ease;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent);
+  border-radius: 0 6px 6px 0;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.55;
+  transition: transform .15s ease, opacity .15s;
+  opacity: 0.85;
+  cursor: default;
 }
 .side-notes__col--left .side-note {
   border-left: none;
   border-right: 2px solid var(--accent);
-  border-radius: 8px 0 0 8px;
+  border-radius: 6px 0 0 6px;
+  text-align: right;
 }
-
-.side-note:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 25%, transparent);
-}
-.side-note__text {
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--text);
-  font-weight: 400;
-}
+.side-note:hover { opacity: 1; transform: translateY(-1px); }
 .side-note__meta {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
-  margin-top: 4px;
-  opacity: 0.7;
+  margin-top: 2px;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1180px) {
+  .content-grid { grid-template-columns: 180px minmax(0, 1fr) 180px; }
   .side-notes { display: flex; }
 }
 
