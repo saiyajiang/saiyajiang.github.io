@@ -22,5 +22,9 @@ window.SITE_MUSIC_CONFIG = {
    *   { title: "歌名", artist: "艺术家", src: "assets/audio/song.mp3", pic: "" }
    * ]
    */
-  playlist: []
+  playlist: [
+    { title: 'Airship Serenity', artist: 'Kevin MacLeod', src: 'https://ia800201.us.archive.org/12/items/kevin-macleod/Airship.mp3', pic: '' },
+    { title: 'Canon in D Major', artist: 'Kevin MacLeod', src: 'https://ia800201.us.archive.org/15/items/kevin-macleod/Canon.mp3', pic: '' },
+    { title: 'Awakening', artist: 'Kevin MacLeod', src: 'https://ia800201.us.archive.org/24/items/kevin-macleod/Awakening.mp3', pic: '' }
+  ]
 };

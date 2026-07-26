@@ -356,8 +356,10 @@
       mutex: true,
       audio: []
     });
+    window.__ap = ap;
     
     document.body.setAttribute('data-music', cfg.mode === 'meting' ? 'meting' : 'local');
+    console.log('[player] APlayer ready, mode=' + (cfg.mode || 'local'), 'wrapper=', wrapper, 'ap=', ap);
     
     if (cfg.mode === 'meting' && cfg.meting) {
       // 走 Meting API 拉 QQ 音乐歌单
