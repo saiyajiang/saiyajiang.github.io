@@ -875,6 +875,7 @@ a { color: inherit; }
 
 /* 音乐模式控制：自定义播放器在两种模式下都显示 */
 body[data-music="local"] .aplayer { display: none !important; }
+body:not([data-music]) .aplayer { display: none !important; }
 
 /* APlayer 主体位置：右下方，列表向上展开 */
 .aplayer.aplayer-fixed {
@@ -911,17 +912,21 @@ body[data-music="local"] .aplayer { display: none !important; }
 }
 .side-note {
   max-width: 180px;
-  padding: 10px 14px;
+  padding: 18px 16px;
+  min-height: 240px;
   border-left: 2px solid var(--accent);
   background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent);
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 8px 8px 0;
   font-size: 12px;
   color: var(--text);
   line-height: 1.55;
   transition: transform .15s ease, opacity .15s;
   opacity: 0.4;
   cursor: default;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-.side-notes--right .side-note { text-align: right; border-right: 2px solid var(--accent); border-left: none; border-radius: 6px 0 0 6px; }
+.side-notes--right .side-note { text-align: right; border-right: 2px solid var(--accent); border-left: none; border-radius: 8px 0 0 8px; }
 .side-note__meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 

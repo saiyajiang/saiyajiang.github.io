@@ -330,29 +330,16 @@
   }
 
 
-  /* ---------- 全局音乐播放器：APlayer + 本地歌单 ---------- */
+  /* ---------- 全局音乐播放器：APlayer + Meting / 本地歌单 ---------- */
   function initPlayer() {
     if (typeof window.APlayer === 'undefined') return;
     var cfg = window.SITE_MUSIC_CONFIG || {};
-    var local = cfg.playlist || [];
-    if (!local.length) return;
     
-    var list = local.map(function(item) {
-      return {
-        name: item.title || item.name || '',
-        artist: item.artist || '',
-        url: item.src || item.url || '',
-        cover: item.pic || item.cover || ''
-      };
-    });
-    
-    // APlayer 原生 fixed 模式，右下角，列表向上展开
     var wrapper = document.createElement('div');
     wrapper.id = 'aplayer-wrap';
     document.body.appendChild(wrapper);
-    document.body.setAttribute('data-music', 'local');
     
-    new APlayer({
+    var ap = new APlayer({
       container: wrapper,
       fixed: true,
       mini: false,
@@ -364,8 +351,38 @@
       volume: 0.5,
       lrcType: 0,
       mutex: true,
-      audio: list
+      audio: []
     });
+    
+    document.body.setAttribute('data-music', cfg.mode === 'meting' ? 'meting' : 'local');
+    
+    if (cfg.mode === 'meting' && cfg.meting) {
+      // 走 Meting API 拉 QQ 音乐歌单
+      var m = cfg.meting;
+      var api = 'https://api.injahow.cn/meting/?server=' + m.server + '&type=' + m.type + '&id=' + m.id;
+      fetch(api).then(function(r){ return r.arrayBuffer(); }).then(function(buf){
+        var text = new TextDecoder('gbk').decode(buf);
+        var songs = JSON.parse(text);
+        var list = songs.map(function(s){ return {
+          name: s.name || s.title || '',
+          artist: s.artist || '',
+          url: s.url || s.src || '',
+          cover: s.cover || s.pic || ''
+        }; }).filter(function(s){ return s.url; });
+        if (list.length) ap.list.add(list);
+      }).catch(function(err){
+        console.error('Meting fetch failed:', err);
+        var backup = cfg.playlist || [];
+        if (backup.length) ap.list.add(backup.map(function(it){
+          return { name: it.title, artist: it.artist, url: it.src, cover: it.pic };
+        }));
+      });
+    } else {
+      var local = cfg.playlist || [];
+      if (local.length) ap.list.add(local.map(function(it){
+        return { name: it.title, artist: it.artist, url: it.src, cover: it.pic };
+      }));
+    }
   }
 
     function _legacyCreatePlayer(list) {
