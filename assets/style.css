@@ -879,7 +879,6 @@ a { color: inherit; }
 
 /* 音乐模式控制：自定义播放器在两种模式下都显示 */
 body[data-music="local"] .aplayer { display: none !important; }
-body:not([data-music]) .aplayer { display: none !important; }
 
 /* APlayer 主体位置：右下方，列表向上展开 */
 .aplayer.aplayer-fixed {
