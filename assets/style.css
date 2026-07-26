@@ -733,11 +733,12 @@ a { color: inherit; }
   height: 50px !important;
   min-width: 50px !important;
   border-radius: 50% !important;
-  overflow: hidden;
+  overflow: visible !important;
   transition: all .25s ease;
   padding: 0 !important;
   gap: 0 !important;
   justify-content: center !important;
+  cursor: pointer !important;
 }
 .player-bar.player-min .player-meta,
 .player-bar.player-min .player-progress,
@@ -745,7 +746,6 @@ a { color: inherit; }
 .player-bar.player-min #playerPrev,
 .player-bar.player-min #playerNext,
 .player-bar.player-min #playerList,
-.player-bar.player-min #playerMin,
 .player-bar.player-min .player-playlist {
   display: none !important;
 }
@@ -755,7 +755,28 @@ a { color: inherit; }
   margin: 0 !important;
   flex: 0 0 38px !important;
 }
+.player-bar.player-min #playerMin {
+  display: flex !important;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+  background: var(--bg-elev) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 50% !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  z-index: 2;
+}
+.player-bar.player-min .player-btn {
+  width: 38px !important;
+  height: 38px !important;
+}
 .player-bar:active { cursor: grabbing; }
+.player-bar.player-min:active { cursor: pointer !important; }
 
 /* 音乐模式控制：自定义播放器在两种模式下都显示 */
 body[data-music="local"] .aplayer { display: none !important; }

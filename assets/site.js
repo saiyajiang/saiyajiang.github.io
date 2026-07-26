@@ -477,16 +477,34 @@
       var item = list[cur];
       audio.src = item.src;
       titleEl.textContent = item.title || "未命名";
-      subEl.textContent = item.artist || "";
+      subEl.textContent = "加载中...";
       fill.style.width = "0%";
       timeEl.textContent = "0:00";
       bar.classList.add("is-loading");
-      subEl.textContent = "加载中...";
       audio.load();
-      if (autoplay) {
-        audio.play().then(function(){ setPlaying(true); bar.classList.remove("is-loading"); subEl.textContent = item.artist || ""; }).catch(function(e){ setPlaying(false); bar.classList.remove("is-loading"); subEl.textContent = "加载失败"; });
-      }
+      if (autoplay) tryPlay(item);
       renderPlaylist();
+    }
+
+    function tryPlay(item) {
+      var playTimer = setTimeout(function() {
+        if (audio.paused) {
+          bar.classList.remove("is-loading");
+          subEl.textContent = "加载超时，跳到下一首";
+          load(cur + 1, true);
+        }
+      }, 12000);
+      audio.play().then(function(){
+        clearTimeout(playTimer);
+        setPlaying(true);
+        bar.classList.remove("is-loading");
+        subEl.textContent = item.artist || "";
+      }).catch(function(e){
+        clearTimeout(playTimer);
+        setPlaying(false);
+        bar.classList.remove("is-loading");
+        subEl.textContent = "加载失败";
+      });
     }
 
     function setPlaying(on) { bar.classList.toggle("is-playing", on); }
@@ -495,7 +513,7 @@
       if (audio.paused) {
         bar.classList.add("is-loading");
         subEl.textContent = "加载中...";
-        audio.play().then(function(){ setPlaying(true); bar.classList.remove("is-loading"); subEl.textContent = list[cur].artist || ""; }).catch(function(e){ setPlaying(false); bar.classList.remove("is-loading"); subEl.textContent = "加载失败，点击切歌"; });
+        tryPlay(list[cur]);
       } else { audio.pause(); setPlaying(false); }
     });
     btnPrev.addEventListener("click", function () { load(cur - 1, true); });
@@ -527,6 +545,21 @@
     audio.addEventListener("ended", function () { load(cur + 1, true); });
     audio.addEventListener("play", function () { setPlaying(true); });
     audio.addEventListener("pause", function () { setPlaying(false); });
+    audio.addEventListener("error", function() {
+      setPlaying(false);
+      bar.classList.remove("is-loading");
+      subEl.textContent = "加载失败，点击下一首";
+    });
+    audio.addEventListener("stalled", function() {
+      subEl.textContent = "缓冲中...";
+    });
+    audio.addEventListener("waiting", function() {
+      subEl.textContent = "缓冲中...";
+    });
+    audio.addEventListener("playing", function() {
+      bar.classList.remove("is-loading");
+      subEl.textContent = list[cur].artist || "";
+    });
 
     prog.addEventListener("click", function (e) {
       if (!audio.duration) return;
