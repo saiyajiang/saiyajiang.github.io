@@ -332,7 +332,10 @@
 
   /* ---------- 全局音乐播放器：APlayer + Meting / 本地歌单 ---------- */
   function initPlayer() {
-    if (typeof window.APlayer === 'undefined') return;
+    if (typeof window.APlayer === 'undefined') {
+      console.warn('[player] APlayer JS 未加载，播放器隐藏');
+      return;
+    }
     var cfg = window.SITE_MUSIC_CONFIG || {};
     
     var wrapper = document.createElement('div');
@@ -661,22 +664,14 @@
       row._card = card;
     });
     
-    // 把 main 内除 mainWrap 以外的内容（hero / search / tagCloud）都搬到 mainWrap 之前
-    while (page.firstChild) {
-      var n = page.firstChild;
-      if (n === mainWrap) break;
-      page.removeChild(n);
-      mainWrap.parentNode ? mainWrap.parentNode.insertBefore(n, mainWrap) : null;
-    }
-    // 重新搞：直接重写 page 的子节点顺序：[pre-content...] + mainWrap
+    // 先把 mainWrap 附加到 page 末尾，再把前面的内容依次放在它之前
+    page.appendChild(mainWrap);
     var preNodes = [];
     while (page.firstChild && page.firstChild !== mainWrap) {
       preNodes.push(page.firstChild);
       page.removeChild(page.firstChild);
     }
-    // 插回原位
-    preNodes.forEach(function(n){ page.appendChild(n); });
-    page.appendChild(mainWrap);
+    preNodes.forEach(function(n){ page.insertBefore(n, mainWrap); });
     
     page.classList.add('with-side');
     
