@@ -239,23 +239,20 @@
     // 仅在文章页启用
     var article = document.querySelector(".post-content");
     if (!article) return;
-    if (!("speechSynthesis" in window)) return; // 浏览器不支持则静默跳过
+    if (!("speechSynthesis" in window)) return;
 
     var synth = window.speechSynthesis;
-    var utter = null;
-    var timer = null;
-    var readChars = 0; // 已朗读字符数（进度推断用）
-    var chars = Array.prototype.map.call(article.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,pre,code"), function (n) { return n.textContent; });
-    var fullText = chars.join("\n").replace(/\s*\n\s*/g, "\n").trim();
+    var utter = null, timer = null, readChars = 0;
+    var nodes = article.querySelectorAll("h1,h2,h3,h4,p,li,blockquote");
+    var fullText = Array.prototype.map.call(nodes, function(n){ return n.textContent; }).join("\n").replace(/\s*\n\s*/g, "\n").trim();
     if (!fullText) return;
     var totalLen = fullText.length;
-    var charMs = 180; // 每中文字约 180ms（估算，用于进度条）
+    var charMs = 180;
 
-    // 构建浮动控件
+    // 构建控件
     var bar = document.createElement("div");
     bar.className = "tts-bar";
-    bar.innerHTML =
-      '<button class="tts-btn" id="ttsPlay" aria-label="朗读">' +
+    bar.innerHTML = '<button class="tts-btn" id="ttsPlay" aria-label="朗读">' +
       '<svg class="tts-icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' +
       '<svg class="tts-icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>' +
       '</button>' +
@@ -268,82 +265,62 @@
     var fill = bar.querySelector("#ttsFill");
     var label = bar.querySelector("#ttsLabel");
 
-    function pickVoice() {
-      var voices = synth.getVoices() || [];
-      var zh = voices.filter(function (v) { return /zh|cmn|Chinese/i.test(v.lang || v.name); });
-      if (!zh.length) return null;
-      var scored = zh.map(function (v) {
-        var sc = 0, n = (v.name || "") + " " + (v.lang || "");
-        if (/neural|online|云|神经|premium|enhanced/i.test(n)) sc += 3;
-        if (/female|女|yaoyao|huihui|xiaoxiao|yunyang/i.test(n)) sc += 1;
-        return { v: v, s: sc };
-      });
-      scored.sort(function (a, b) { return b.s - a.s; });
+    function setPlaying(on){ bar.classList.toggle("is-playing", on); label.textContent = on ? "暂停" : "继续"; }
+    function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+    function startTimer(){ stopTimer(); timer = setInterval(function(){ readChars += Math.max(1, Math.round(120/charMs)); fill.style.width = Math.min(100, (readChars/totalLen)*100) + "%"; }, 120); }
+
+    function pickVoice(voices){
+      var zh = voices.filter(function(v){ return /zh|cmn|Chinese/i.test(v.lang || v.name); });
+      if(!zh.length) return null;
+      var scored = zh.map(function(v){ var sc=0, n=(v.name||"")+" "+(v.lang||""); if(/neural|online|云|神经|premium|enhanced/i.test(n)) sc+=3; if(/female|女|yaoyao|huihui|xiaoxiao|yunyang/i.test(n)) sc+=1; return {v:v,s:sc}; });
+      scored.sort(function(a,b){ return b.s-a.s; });
       return scored[0].v;
     }
 
-    function setPlaying(on) {
-      bar.classList.toggle("is-playing", on);
-      label.textContent = on ? "暂停" : "继续";
-    }
-
-    function startTimer() {
-      stopTimer();
-      timer = setInterval(function () {
-        readChars += Math.max(1, Math.round(120 / charMs));
-        fill.style.width = Math.min(100, (readChars / totalLen) * 100) + "%";
-      }, 120);
-    }
-    function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
-
-    function makeUtter(text, startIdx) {
+    function makeUtter(text, startIdx, voices){
       var u = new SpeechSynthesisUtterance(text);
-      u.lang = "zh-CN";
-      u.rate = 1; u.pitch = 1;
-      var v = pickVoice();
-      if (v) u.voice = v;
-      u.onboundary = function (e) {
-        if (typeof e.charIndex === "number") {
-          readChars = (startIdx || 0) + e.charIndex;
-          fill.style.width = Math.min(100, (readChars / totalLen) * 100) + "%";
-        }
-      };
+      u.lang = "zh-CN"; u.rate = 1; u.pitch = 1;
+      var v = pickVoice(voices);
+      if(v) u.voice = v;
+      u.onboundary = function(e){ if(typeof e.charIndex === "number"){ readChars = (startIdx||0)+e.charIndex; fill.style.width = Math.min(100,(readChars/totalLen)*100)+"%"; } };
       return u;
     }
 
-    function speak() {
-      readChars = 0; fill.style.width = "0%";
-      utter = makeUtter(fullText, 0);
-      utter.onend = function () { stopTimer(); setPlaying(false); fill.style.width = "100%"; label.textContent = "朗读全文"; };
-      utter.onerror = function () { stopTimer(); setPlaying(false); label.textContent = "朗读出错"; };
+    function doSpeak(voices, startAt){
+      readChars = startAt || 0; fill.style.width = (readChars/totalLen*100)+"%";
+      var text = fullText.slice(readChars);
+      if(!text){ label.textContent = "已读完"; setPlaying(false); return; }
+      utter = makeUtter(text, readChars, voices);
+      utter.onend = function(){ stopTimer(); setPlaying(false); fill.style.width = "100%"; label.textContent = "朗读全文"; };
+      utter.onerror = function(e){ stopTimer(); setPlaying(false); label.textContent = "朗读出错"; console.error("TTS error", e); };
       synth.speak(utter);
-      setPlaying(true);
-      startTimer();
+      setPlaying(true); startTimer();
     }
 
-    btn.addEventListener("click", function () {
-      if (synth.speaking && !synth.paused) { synth.pause(); stopTimer(); setPlaying(false); }
-      else if (synth.paused) { synth.resume(); setPlaying(true); startTimer(); }
-      else { speak(); }
+    function ensureVoicesThen(fn){
+      var voices = synth.getVoices();
+      if(voices && voices.length){ fn(voices); return; }
+      // 某些浏览器需等待 voiceschanged
+      var once = function(){ voices = synth.getVoices(); if(voices && voices.length){ synth.removeEventListener("voiceschanged", once); fn(voices); } };
+      synth.addEventListener("voiceschanged", once);
+      // 兜底：500ms 后若仍无则直接跑（用默认嗓音）
+      setTimeout(function(){ if(!(synth.getVoices()||[]).length) fn([]); }, 500);
+    }
+
+    btn.addEventListener("click", function(){
+      if(synth.speaking && !synth.paused){ synth.pause(); stopTimer(); setPlaying(false); }
+      else if(synth.paused){ synth.resume(); setPlaying(true); startTimer(); }
+      else { ensureVoicesThen(function(voices){ doSpeak(voices, 0); }); }
     });
 
-    bar.querySelector(".tts-progress").addEventListener("click", function (e) {
+    bar.querySelector(".tts-progress").addEventListener("click", function(e){
       var rect = this.getBoundingClientRect();
       var ratio = (e.clientX - rect.left) / rect.width;
       synth.cancel(); stopTimer();
-      var start = Math.floor(totalLen * ratio);
-      readChars = start;
-      var seg = fullText.slice(start);
-      utter = makeUtter(seg, start);
-      utter.onend = function () { stopTimer(); setPlaying(false); fill.style.width = "100%"; label.textContent = "朗读全文"; };
-      utter.onerror = function () { stopTimer(); setPlaying(false); label.textContent = "朗读出错"; };
-      fill.style.width = (ratio * 100) + "%";
-      synth.speak(utter);
-      setPlaying(true);
-      startTimer();
+      ensureVoicesThen(function(voices){ doSpeak(voices, Math.floor(totalLen*ratio)); });
     });
 
-    window.addEventListener("beforeunload", function () { stopTimer(); synth.cancel(); });
+    window.addEventListener("beforeunload", function(){ stopTimer(); synth.cancel(); });
   }
 
 

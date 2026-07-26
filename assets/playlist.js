@@ -1,18 +1,28 @@
-/* 网站背景音乐播放列表（数据驱动，和 posts.js 同源思路）
- * 用法：
- *   1) 把音频文件放到 assets/music/ 目录（推荐 mp3，兼顾 ogg）
- *   2) 在下面数组里增加一条，src 填相对路径即可
- *   也支持远程链接：src 直接写 https://...（需对方允许跨域）
- * 字段：
- *   title  显示名
- *   artist 艺术家（可选）
- *   src    音频地址（本地相对路径或远程 URL）
+/* 网站背景音乐播放列表（数据驱动）
+ * 支持本地文件或远程 URL
+ * 远程音源需对方允许跨域（CORS）
+ * 
+ * 推荐无版权音源：
+ * - archive.org（Internet Archive，CORS 友好）
+ * - incompetech.com（Kevin MacLeod，需确认跨域）
+ * - 本地 assets/music/ 目录（最稳，无跨域问题）
  */
 window.SITE_PLAYLIST = [
-  // 示例（请把你的音乐文件放进 assets/music/ 后取消注释并改好文件名）：
+  // Internet Archive 示例（CC0 协议，可自由使用）
+  {
+    title: "Gymnopedie No.1",
+    artist: "Erik Satie",
+    src: "https://archive.org/download/Classical_Sampler-9615/Kevin_MacLeod_-_Gymnopedie_No_1.mp3"
+  },
+  {
+    title: "Relaxing Piano Music",
+    artist: "Kevin MacLeod",
+    src: "https://archive.org/download/Classical_Sampler-9615/Kevin_MacLeod_-_Relaxing_Piano_Music.mp3"
+  },
+  // 本地示例（取消注释并放入文件即可使用）
   // {
-  //   title: "示例曲目",
-  //   artist: "佚名",
-  //   src: "assets/music/demo.mp3"
+  //   title: "一生所爱",
+  //   artist: "卢冠廷",
+  //   src: "assets/music/yishengsuojia.mp3"
   // }
 ];
