@@ -8,7 +8,7 @@
  * - id: 对应平台的 ID（从分享链接中获取）
  */
 window.SITE_MUSIC_CONFIG = {
-  mode: 'meting', // 切换: 'local' 或 'meting'
+  mode: 'meting', // 切换: 'local' 或 'meting'（切换后需刷新页面）
   
   // local 模式: 播放列表（mode: 'local' 时生效）
   playlist: [
@@ -35,7 +35,7 @@ window.SITE_MUSIC_CONFIG = {
     loop: 'all',         // 循环: 'all', 'one', 'none'
     order: 'random',     // 顺序: 'random', 'list'
     preload: 'auto',
-    listFolded: true,    // 默认折叠列表
+    listFolded: false,   // 默认展开列表（方便看到歌单）
     listMaxHeight: '330px',
     lrcType: 0,          // 歌词: 0=禁用, 1=原生, 2=Meting解析
     theme: '#8b8cff'     // 主题色

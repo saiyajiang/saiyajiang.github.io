@@ -750,3 +750,7 @@ a { color: inherit; }
   margin: 7px !important;
 }
 .player-bar:active { cursor: grabbing; }
+
+/* 音乐模式控制：默认 local 模式，meting 模式隐藏 local 播放器 */
+body[data-music="local"] .aplayer { display: none !important; }
+body[data-music="meting"] .player-bar { display: none !important; }

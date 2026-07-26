@@ -553,6 +553,9 @@
 
   /* ---------- 启动 ---------- */
   function init() {
+    // 设置音乐模式标记，CSS 据此显示/隐藏对应播放器
+    var cfg = window.SITE_MUSIC_CONFIG || {};
+    document.body.setAttribute('data-music', cfg.mode || 'local');
     initTheme();
     initToggle();
     setActiveNav();
