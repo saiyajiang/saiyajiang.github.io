@@ -835,3 +835,11 @@ body[data-music="meting"] .player-bar { display: none !important; }
 .aplayer.aplayer-fixed .aplayer-body {
   user-select: none;
 }
+
+/* APlayer 拖动优化 */
+.aplayer.aplayer-fixed {
+  will-change: transform;
+}
+.aplayer.aplayer-fixed .aplayer-body {
+  user-select: none;
+}

@@ -352,31 +352,93 @@
       metingDiv.setAttribute('data-theme', m.theme);
       metingDiv.className = 'meting-js';
       document.body.appendChild(metingDiv);
-      // Meting.js 会自动初始化，延迟加拖动
+      // Meting.js 会自动初始化，延迟加拖动和配置
       setTimeout(function() {
         var ap = document.querySelector('.aplayer.aplayer-fixed');
         if (!ap) return;
-        var isDragging = false, startX, startY, startRight, startBottom;
+        
+        // 默认音量 50%
+        var audio = ap.querySelector('audio');
+        if (audio) audio.volume = 0.5;
+        
+        // 改用 transform 拖动，更可靠
+        var isDragging = false, startX, startY, transX = 0, transY = 0;
+        var EDGE_SNAP = 60; // 边缘吸附距离
+        
+        // 获取当前位置
+        function getPos() {
+          var st = window.getComputedStyle(ap);
+          var tr = st.transform;
+          if (tr && tr !== 'none') {
+            var m = tr.match(/matrix([^,]+,[^,]+,[^,]+,[^,]+,s*([^,]+),s*([^)]+))/);
+            if (m) return { x: parseFloat(m[1]), y: parseFloat(m[2]) };
+          }
+          return { x: 0, y: 0 };
+        }
+        
         ap.addEventListener('mousedown', function(e) {
-          if (e.target.closest('.aplayer-icon') || e.target.closest('.aplayer-bar-wrap')) return;
+          // 排除按钮、进度条、列表区域
+          if (e.target.closest('.aplayer-icon') || 
+              e.target.closest('.aplayer-bar-wrap') ||
+              e.target.closest('.aplayer-list') ||
+              e.target.closest('.aplayer-lrc')) return;
           isDragging = true;
           startX = e.clientX;
           startY = e.clientY;
-          var rect = ap.getBoundingClientRect();
-          startRight = window.innerWidth - rect.right;
-          startBottom = window.innerHeight - rect.bottom;
+          var pos = getPos();
+          transX = pos.x;
+          transY = pos.y;
           ap.style.transition = 'none';
+          ap.style.cursor = 'grabbing';
         });
+        
         document.addEventListener('mousemove', function(e) {
           if (!isDragging) return;
           var dx = e.clientX - startX;
           var dy = e.clientY - startY;
-          ap.style.right = Math.max(0, Math.min(window.innerWidth - 100, startRight - dx)) + 'px';
-          ap.style.left = 'auto';
-          ap.style.bottom = Math.max(0, Math.min(window.innerHeight - 100, startBottom - dy)) + 'px';
+          transX += dx;
+          transY += dy;
+          startX = e.clientX;
+          startY = e.clientY;
+          ap.style.transform = 'translate3d(' + transX + 'px, ' + transY + 'px, 0)';
         });
-        document.addEventListener('mouseup', function() { isDragging = false; ap.style.transition = ''; });
-      }, 1000);
+        
+        document.addEventListener('mouseup', function() {
+          if (!isDragging) return;
+          isDragging = false;
+          ap.style.cursor = '';
+          ap.style.transition = 'transform .3s ease';
+          
+          // 边缘吸附
+          var rect = ap.getBoundingClientRect();
+          var vw = window.innerWidth, vh = window.innerHeight;
+          var snapX = transX, snapY = transY;
+          
+          // 检测各边距离
+          var distLeft = rect.left;
+          var distRight = vw - rect.right;
+          var distTop = rect.top;
+          var distBottom = vh - rect.bottom;
+          
+          if (distLeft < EDGE_SNAP) {
+            snapX = transX - distLeft - 10; // 缩进 10px
+          } else if (distRight < EDGE_SNAP) {
+            snapX = transX + distRight + 10;
+          }
+          
+          if (distTop < EDGE_SNAP) {
+            snapY = transY - distTop - 10;
+          } else if (distBottom < EDGE_SNAP) {
+            snapY = transY + distBottom + 10;
+          }
+          
+          if (snapX !== transX || snapY !== transY) {
+            transX = snapX;
+            transY = snapY;
+            ap.style.transform = 'translate3d(' + transX + 'px, ' + transY + 'px, 0)';
+          }
+        });
+      }, 1500);
       return;
     }
     
