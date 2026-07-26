@@ -352,7 +352,31 @@
       metingDiv.setAttribute('data-theme', m.theme);
       metingDiv.className = 'meting-js';
       document.body.appendChild(metingDiv);
-      // Meting.js 会自动初始化
+      // Meting.js 会自动初始化，延迟加拖动
+      setTimeout(function() {
+        var ap = document.querySelector('.aplayer.aplayer-fixed');
+        if (!ap) return;
+        var isDragging = false, startX, startY, startRight, startBottom;
+        ap.addEventListener('mousedown', function(e) {
+          if (e.target.closest('.aplayer-icon') || e.target.closest('.aplayer-bar-wrap')) return;
+          isDragging = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          var rect = ap.getBoundingClientRect();
+          startRight = window.innerWidth - rect.right;
+          startBottom = window.innerHeight - rect.bottom;
+          ap.style.transition = 'none';
+        });
+        document.addEventListener('mousemove', function(e) {
+          if (!isDragging) return;
+          var dx = e.clientX - startX;
+          var dy = e.clientY - startY;
+          ap.style.right = Math.max(0, Math.min(window.innerWidth - 100, startRight - dx)) + 'px';
+          ap.style.left = 'auto';
+          ap.style.bottom = Math.max(0, Math.min(window.innerHeight - 100, startBottom - dy)) + 'px';
+        });
+        document.addEventListener('mouseup', function() { isDragging = false; ap.style.transition = ''; });
+      }, 1000);
       return;
     }
     
