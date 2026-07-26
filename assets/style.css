@@ -164,13 +164,17 @@ a { color: inherit; }
 
 /* ---------- 布局 ---------- */
 .page { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 24px; }
-.page.with-side { max-width: 1240px; display: grid; grid-template-columns: 180px 1fr 180px; gap: 32px; padding: 0 24px; align-items: start; }
-.page.with-side > * { min-width: 0; }
-.page.with-side > .side-notes { grid-row: 1; }
-.page.with-side > .side-notes--left { grid-column: 1; }
-.page.with-side > .side-notes--right { grid-column: 3; }
-.page.with-side > .page-main { grid-column: 2; min-width: 0; }
-.page.with-side .side-notes { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow-y: auto; padding-top: 8px; }
+.page.with-side { max-width: 1240px; padding: 0 24px; }
+.page.with-side .page-main { display: flex; flex-direction: column; gap: 16px; }
+.page.with-side .content-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 180px;
+  gap: 32px;
+  align-items: stretch;
+}
+.page.with-side .content-row__main { min-width: 0; }
+.page.with-side .content-row__side { display: flex; }
+.page.with-side .side-note { flex: 1; }
 .post-page { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 0 24px; }
 
 /* ---------- Hero（首页） ---------- */
@@ -911,9 +915,8 @@ body:not([data-music]) .aplayer { display: none !important; }
   overflow-y: auto;
 }
 .side-note {
-  max-width: 180px;
+  width: 100%;
   padding: 18px 16px;
-  min-height: 240px;
   border-left: 2px solid var(--accent);
   background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent);
   border-radius: 0 8px 8px 0;
@@ -926,6 +929,7 @@ body:not([data-music]) .aplayer { display: none !important; }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-sizing: border-box;
 }
 .side-notes--right .side-note { text-align: right; border-right: 2px solid var(--accent); border-left: none; border-radius: 8px 0 0 8px; }
 .side-note__meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }

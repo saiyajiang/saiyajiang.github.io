@@ -620,27 +620,81 @@
     if (!page) return;
     if (page.classList.contains('with-side')) return;
     
+    var postList = document.getElementById('postList') ||
+                   document.getElementById('archiveList');
+    if (!postList) return;
+    
+    var cards = Array.prototype.slice.call(postList.children);
+    if (!cards.length) return;
+    
     var left = document.createElement('aside');
     left.className = 'side-notes side-notes--left';
-    left.appendChild(_placeholderNote('占位'));
-    left.appendChild(_placeholderNote('占位'));
-    left.appendChild(_placeholderNote('占位'));
     
     var right = document.createElement('aside');
     right.className = 'side-notes side-notes--right';
-    right.appendChild(_placeholderNote('占位'));
-    right.appendChild(_placeholderNote('占位'));
-    right.appendChild(_placeholderNote('占位'));
     
-    // 把原内容包到 .page-main 里
     var mainWrap = document.createElement('div');
     mainWrap.className = 'page-main';
-    while (page.firstChild) mainWrap.appendChild(page.firstChild);
+    
+    // 每张卡片包一层 row，row 是 grid 三列
+    cards.forEach(function(card){
+      var row = document.createElement('div');
+      row.className = 'content-row';
+      var ln = document.createElement('div');
+      ln.className = 'content-row__side';
+      var mid = document.createElement('div');
+      mid.className = 'content-row__main';
+      var rn = document.createElement('div');
+      rn.className = 'content-row__side';
+      var nl = _placeholderNote('占位');
+      var nr = _placeholderNote('占位');
+      ln.appendChild(nl);
+      rn.appendChild(nr);
+      mid.appendChild(card);
+      row.appendChild(ln);
+      row.appendChild(mid);
+      row.appendChild(rn);
+      mainWrap.appendChild(row);
+      // 保存引用以便后续 JS 同步高度
+      row._leftNote = nl;
+      row._rightNote = nr;
+      row._card = card;
+    });
+    
+    // 把 main 内除 mainWrap 以外的内容（hero / search / tagCloud）都搬到 mainWrap 之前
+    while (page.firstChild) {
+      var n = page.firstChild;
+      if (n === mainWrap) break;
+      page.removeChild(n);
+      mainWrap.parentNode ? mainWrap.parentNode.insertBefore(n, mainWrap) : null;
+    }
+    // 重新搞：直接重写 page 的子节点顺序：[pre-content...] + mainWrap
+    var preNodes = [];
+    while (page.firstChild && page.firstChild !== mainWrap) {
+      preNodes.push(page.firstChild);
+      page.removeChild(page.firstChild);
+    }
+    // 插回原位
+    preNodes.forEach(function(n){ page.appendChild(n); });
+    page.appendChild(mainWrap);
     
     page.classList.add('with-side');
-    page.appendChild(left);
-    page.appendChild(mainWrap);
-    page.appendChild(right);
+    
+    // 高度同步：每张占位卡的高度等于同行文章卡高度
+    function syncHeights(){
+      mainWrap.querySelectorAll('.content-row').forEach(function(row){
+        var h = row._card.offsetHeight;
+        if (h) {
+          row._leftNote.style.height = h + 'px';
+          row._rightNote.style.height = h + 'px';
+        }
+      });
+    }
+    syncHeights();
+    window.addEventListener('resize', syncHeights);
+    // 卡片加载完后图片 / 字高变化可能引起高度变，再同步一次
+    setTimeout(syncHeights, 300);
+    setTimeout(syncHeights, 1000);
   }
   
   /* ---------- 启动 ---------- */
