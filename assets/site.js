@@ -357,49 +357,45 @@
         var ap = document.querySelector('.aplayer.aplayer-fixed');
         if (!ap) return;
         
-        // 默认音量 50%
+        // 默认音量 50%（APlayer API + audio 元素双保险）
+        try {
+          if (window.APlayer && ap.aplayer) ap.aplayer.volume(0.5, false);
+        } catch(e) {}
         var audio = ap.querySelector('audio');
         if (audio) audio.volume = 0.5;
         
-        // 改用 transform 拖动，更可靠
-        var isDragging = false, startX, startY, transX = 0, transY = 0;
-        var EDGE_SNAP = 60; // 边缘吸附距离
+        // 初始位置：右侧（覆盖 APlayer 默认的 left:0）
+        ap.style.left = 'auto';
+        ap.style.right = '10px';
         
-        // 获取当前位置
-        function getPos() {
-          var st = window.getComputedStyle(ap);
-          var tr = st.transform;
-          if (tr && tr !== 'none') {
-            var m = tr.match(/matrix([^,]+,[^,]+,[^,]+,[^,]+,s*([^,]+),s*([^)]+))/);
-            if (m) return { x: parseFloat(m[1]), y: parseFloat(m[2]) };
-          }
-          return { x: 0, y: 0 };
-        }
+        // 拖动实现（累积 transform，mouseup 后保持位置）
+        var isDragging = false, startX, startY;
+        var transX = 0, transY = 0; // 累积位移
+        var EDGE_SNAP = 60;
         
         ap.addEventListener('mousedown', function(e) {
-          // 排除按钮、进度条、列表区域
+          // 排除交互元素
           if (e.target.closest('.aplayer-icon') || 
               e.target.closest('.aplayer-bar-wrap') ||
               e.target.closest('.aplayer-list') ||
-              e.target.closest('.aplayer-lrc')) return;
+              e.target.closest('.aplayer-lrc') ||
+              e.target.closest('.aplayer-pic')) return;
           isDragging = true;
           startX = e.clientX;
           startY = e.clientY;
-          var pos = getPos();
-          transX = pos.x;
-          transY = pos.y;
           ap.style.transition = 'none';
           ap.style.cursor = 'grabbing';
+          e.preventDefault();
         });
         
         document.addEventListener('mousemove', function(e) {
           if (!isDragging) return;
           var dx = e.clientX - startX;
           var dy = e.clientY - startY;
-          transX += dx;
-          transY += dy;
           startX = e.clientX;
           startY = e.clientY;
+          transX += dx;
+          transY += dy;
           ap.style.transform = 'translate3d(' + transX + 'px, ' + transY + 'px, 0)';
         });
         
@@ -407,34 +403,30 @@
           if (!isDragging) return;
           isDragging = false;
           ap.style.cursor = '';
-          ap.style.transition = 'transform .3s ease';
+          ap.style.transition = 'transform .25s cubic-bezier(.2,.8,.2,1)';
           
           // 边缘吸附
           var rect = ap.getBoundingClientRect();
           var vw = window.innerWidth, vh = window.innerHeight;
-          var snapX = transX, snapY = transY;
+          var moved = false;
           
-          // 检测各边距离
-          var distLeft = rect.left;
-          var distRight = vw - rect.right;
-          var distTop = rect.top;
-          var distBottom = vh - rect.bottom;
-          
-          if (distLeft < EDGE_SNAP) {
-            snapX = transX - distLeft - 10; // 缩进 10px
-          } else if (distRight < EDGE_SNAP) {
-            snapX = transX + distRight + 10;
+          if (rect.left < EDGE_SNAP) {
+            transX += rect.left + 10;
+            moved = true;
+          } else if (vw - rect.right < EDGE_SNAP) {
+            transX -= (vw - rect.right) + 10;
+            moved = true;
           }
           
-          if (distTop < EDGE_SNAP) {
-            snapY = transY - distTop - 10;
-          } else if (distBottom < EDGE_SNAP) {
-            snapY = transY + distBottom + 10;
+          if (rect.top < EDGE_SNAP) {
+            transY += rect.top + 10;
+            moved = true;
+          } else if (vh - rect.bottom < EDGE_SNAP) {
+            transY -= (vh - rect.bottom) + 10;
+            moved = true;
           }
           
-          if (snapX !== transX || snapY !== transY) {
-            transX = snapX;
-            transY = snapY;
+          if (moved) {
             ap.style.transform = 'translate3d(' + transX + 'px, ' + transY + 'px, 0)';
           }
         });
