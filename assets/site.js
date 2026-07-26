@@ -324,14 +324,38 @@
   }
 
 
-  /* ---------- 全局音乐播放器（跨页续播）---------- */
+  /* ---------- 全局音乐播放器（本地 + Meting.js 双模式）---------- */
   function initPlayer() {
-    var list = window.SITE_PLAYLIST || [];
-    if (!list.length) return; // 没有音源则静默不显示
+    var cfg = window.SITE_MUSIC_CONFIG || { mode: 'local', playlist: window.SITE_PLAYLIST || [] };
+    
+    // Meting 模式：使用 APlayer + Meting.js 支持 QQ音乐/网易云等
+    if (cfg.mode === 'meting' && cfg.meting && typeof window.APlayer !== 'undefined') {
+      var m = cfg.meting;
+      var metingDiv = document.createElement('div');
+      metingDiv.setAttribute('data-id', m.id);
+      metingDiv.setAttribute('data-server', m.server);
+      metingDiv.setAttribute('data-type', m.type);
+      metingDiv.setAttribute('data-fixed', m.fixed ? 'true' : 'false');
+      metingDiv.setAttribute('data-autoplay', m.autoplay ? 'true' : 'false');
+      metingDiv.setAttribute('data-loop', m.loop);
+      metingDiv.setAttribute('data-order', m.order);
+      metingDiv.setAttribute('data-preload', m.preload);
+      metingDiv.setAttribute('data-list-folded', m.listFolded ? 'true' : 'false');
+      metingDiv.setAttribute('data-list-max-height', m.listMaxHeight);
+      metingDiv.setAttribute('data-lrc-type', String(m.lrcType));
+      metingDiv.setAttribute('data-theme', m.theme);
+      metingDiv.className = 'meting-js';
+      document.body.appendChild(metingDiv);
+      // Meting.js 会自动初始化
+      return;
+    }
+    
+    // Local 模式（原有自定义播放器）
+    var list = cfg.playlist || window.SITE_PLAYLIST || [];
+    if (!list.length) return;
 
     var LS_IDX = "site_player_idx";
     var LS_POS = "site_player_pos";
-    var LS_ON = "site_player_on";
 
     var cur = parseInt(localStorage.getItem(LS_IDX) || "0", 10) || 0;
     if (cur >= list.length) cur = 0;
@@ -350,7 +374,15 @@
       '<div class="player-progress" id="playerProgress"><div class="player-progress-fill" id="playerFill"></div></div>' +
       '<span class="player-time" id="playerTime">0:00</span>' +
       '<button class="player-btn player-btn--sm" id="playerPrev" aria-label="上一首">\u23ee</button>' +
-      '<button class="player-btn player-btn--sm" id="playerNext" aria-label="下一首">\u23ed</button>';
+      '<button class="player-btn player-btn--sm" id="playerNext" aria-label="下一首">\u23ed</button>' +
+      '<button class="player-btn player-btn--sm player-btn--list" id="playerList" aria-label="播放列表" title="播放列表">☰</button>' +
+      '<div class="player-playlist" id="playerPlaylist">' +
+        '<div class="player-playlist-header">' +
+          '<span>播放列表 (' + list.length + ')</span>' +
+          '<button class="player-playlist-close" id="playlistClose">×</button>' +
+        '</div>' +
+        '<div class="player-playlist-list" id="playlistList"></div>' +
+      '</div>';
     document.body.appendChild(bar);
     bar.classList.add("show");
 
@@ -359,6 +391,10 @@
     var btnPlay = bar.querySelector("#playerPlay");
     var btnPrev = bar.querySelector("#playerPrev");
     var btnNext = bar.querySelector("#playerNext");
+    var btnList = bar.querySelector("#playerList");
+    var playlistPanel = bar.querySelector("#playerPlaylist");
+    var btnCloseList = bar.querySelector("#playlistClose");
+    var playlistList = bar.querySelector("#playlistList");
     var fill = bar.querySelector("#playerFill");
     var timeEl = bar.querySelector("#playerTime");
     var titleEl = bar.querySelector("#playerTitle");
@@ -371,6 +407,28 @@
       return m + ":" + (ss < 10 ? "0" : "") + ss;
     }
 
+    function renderPlaylist() {
+      playlistList.innerHTML = list.map(function(item, idx) {
+        var active = idx === cur ? ' active' : '';
+        var source = item.src.includes('qq.com') ? 'QQ' : item.src.includes('netease') ? '网易' : item.src.includes('archive.org') ? 'Archive' : '本地';
+        return '<div class="player-playlist-item' + active + '" data-idx="' + idx + '">' +
+          '<span class="player-playlist-num">' + (idx + 1) + '</span>' +
+          '<div class="player-playlist-info">' +
+            '<div class="player-playlist-title">' + (item.title || '未命名') + '</div>' +
+            '<div class="player-playlist-artist">' + (item.artist || '') + '</div>' +
+          '</div>' +
+          '<span class="player-playlist-source">' + source + '</span>' +
+        '</div>';
+      }).join('');
+      playlistList.querySelectorAll('.player-playlist-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+          var idx = parseInt(this.dataset.idx, 10);
+          load(idx, true);
+          renderPlaylist();
+        });
+      });
+    }
+
     function load(idx, autoplay) {
       cur = (idx + list.length) % list.length;
       localStorage.setItem(LS_IDX, String(cur));
@@ -381,12 +439,14 @@
       fill.style.width = "0%";
       timeEl.textContent = "0:00";
       audio.load();
-      if (autoplay) audio.play().then(function(){ setPlaying(true); }).catch(function(){ setPlaying(false); });
+      if (autoplay) {
+        audio.play().then(function(){ setPlaying(true); }).catch(function(e){ setPlaying(false); console.log('play failed', e); });
+      }
+      renderPlaylist();
     }
 
     function setPlaying(on) {
       bar.classList.toggle("is-playing", on);
-      if (on) subEl.textContent = (list[cur].artist || "") + (subEl.dataset.tip || "");
     }
 
     btnPlay.addEventListener("click", function () {
@@ -397,6 +457,14 @@
 
     btnPrev.addEventListener("click", function () { load(cur - 1, true); });
     btnNext.addEventListener("click", function () { load(cur + 1, true); });
+
+    btnList.addEventListener("click", function() {
+      playlistPanel.classList.toggle("show");
+      renderPlaylist();
+    });
+    btnCloseList.addEventListener("click", function() {
+      playlistPanel.classList.remove("show");
+    });
 
     audio.addEventListener("timeupdate", function () {
       if (audio.duration) {
@@ -415,7 +483,13 @@
       audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
     });
 
-    // 初始载入（不自动播，等用户点）；若上次在播放则尝试续播进度
+    document.addEventListener("click", function(e) {
+      if (!playlistPanel.contains(e.target) && e.target !== btnList) {
+        playlistPanel.classList.remove("show");
+      }
+    });
+
+    renderPlaylist();
     load(cur, false);
     var savedPos = parseFloat(localStorage.getItem(LS_POS) || "0");
     if (savedPos > 0) { try { audio.currentTime = savedPos; } catch (e) {} }
