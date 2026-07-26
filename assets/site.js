@@ -588,50 +588,37 @@
   /* ---------- 内容区三列布局（左右夹短句）---------- */
   window.SITE_NOTES = window.SITE_NOTES || [];  // 留空，默认占位 placeholder
   
-  // 短句占位符样式
   function _placeholderNote(text) {
     var item = document.createElement('div');
     item.className = 'side-note';
-    item.style.opacity = '0.35';
-    item.style.cursor = 'default';
     var t = document.createElement('div');
     t.className = 'side-note__text';
-    t.textContent = text || '占位短句';
+    t.textContent = text || '占位';
     item.appendChild(t);
     return item;
   }
   
   function initSidebar() {
-    // 查找 main 容器
-    var main = document.querySelector('main.page') ||
-               document.querySelector('main.post-page') ||
-               document.querySelector('main');
-    if (!main) return;
+    // 只在有列表的页面（首页/归档）添加
+    var page = document.querySelector('main.page');
+    if (!page) return;
+    if (page.classList.contains('with-side')) return;
     
-    // 跳过已经是已包装过的页面（如文章页只有主区，不包装）
-    if (main.parentElement && main.parentElement.classList.contains('content-grid')) return;
+    var left = document.createElement('aside');
+    left.className = 'side-notes side-notes--left';
+    left.appendChild(_placeholderNote('占位'));
+    left.appendChild(_placeholderNote('占位'));
+    left.appendChild(_placeholderNote('占位'));
     
-    var leftCol = document.createElement('aside');
-    leftCol.className = 'side-notes side-notes--left';
-    leftCol.appendChild(_placeholderNote('短句占位'));
-    leftCol.appendChild(_placeholderNote('占位'));
-    leftCol.appendChild(_placeholderNote('占位短句占位'));
+    var right = document.createElement('aside');
+    right.className = 'side-notes side-notes--right';
+    right.appendChild(_placeholderNote('占位'));
+    right.appendChild(_placeholderNote('占位'));
+    right.appendChild(_placeholderNote('占位'));
     
-    var rightCol = document.createElement('aside');
-    rightCol.className = 'side-notes side-notes--right';
-    rightCol.appendChild(_placeholderNote('占位'));
-    rightCol.appendChild(_placeholderNote('占位短句'));
-    rightCol.appendChild(_placeholderNote('短句占位占位'));
-    
-    var grid = document.createElement('div');
-    grid.className = 'content-grid';
-    grid.appendChild(leftCol);
-    grid.appendChild(main);
-    grid.appendChild(rightCol);
-    
-    main.parentNode.insertBefore(grid, main);
-    main.parentNode.removeChild(main);
-    grid.appendChild(main);
+    page.classList.add('with-side');
+    page.insertBefore(left, page.firstChild);
+    page.appendChild(right);
   }
   
   /* ---------- 启动 ---------- */

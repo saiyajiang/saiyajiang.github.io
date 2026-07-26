@@ -164,6 +164,9 @@ a { color: inherit; }
 
 /* ---------- 布局 ---------- */
 .page { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 24px; }
+.page.with-side { max-width: 1240px; display: grid; grid-template-columns: 180px 1fr 180px; gap: 32px; padding: 0 24px; align-items: start; }
+.page.with-side > * { min-width: 0; }
+.page.with-side .side-notes { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow-y: auto; padding-top: 8px; }
 .post-page { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 0 24px; }
 
 /* ---------- Hero（首页） ---------- */
@@ -893,21 +896,17 @@ body[data-music="local"] .aplayer { display: none !important; }
 
 /* 侧边短句 */
 .side-notes {
-  display: none;
+  display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   padding-top: 8px;
   position: sticky;
   top: 80px;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
 }
-.side-notes__col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.side-notes__col--left { align-items: stretch; }
-.side-notes__col--right { align-items: stretch; }
-
 .side-note {
-  max-width: 200px;
+  max-width: 180px;
   padding: 10px 14px;
   border-left: 2px solid var(--accent);
   background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent);
@@ -916,24 +915,9 @@ body[data-music="local"] .aplayer { display: none !important; }
   color: var(--text);
   line-height: 1.55;
   transition: transform .15s ease, opacity .15s;
-  opacity: 0.85;
+  opacity: 0.4;
   cursor: default;
 }
-.side-notes__col--left .side-note {
-  border-left: none;
-  border-right: 2px solid var(--accent);
-  border-radius: 6px 0 0 6px;
-  text-align: right;
-}
-.side-note:hover { opacity: 1; transform: translateY(-1px); }
-.side-note__meta {
-  font-size: 10px;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-@media (min-width: 1180px) {
-  .content-grid { grid-template-columns: 180px minmax(0, 1fr) 180px; }
-  .side-notes { display: flex; }
-}
+.side-notes--right .side-note { text-align: right; border-right: 2px solid var(--accent); border-left: none; border-radius: 6px 0 0 6px; }
+.side-note__meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
