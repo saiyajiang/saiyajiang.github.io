@@ -364,9 +364,9 @@
         var audio = ap.querySelector('audio');
         if (audio) audio.volume = 0.5;
         
-        // 初始位置：左侧（APlayer fixed 模式默认设计）
-        ap.style.left = '10px';
-        ap.style.right = 'auto';
+        // 初始位置：右侧
+        ap.style.left = 'auto';
+        ap.style.right = '10px';
         
         // 拖动实现（累积 transform，mouseup 后保持位置）
         var isDragging = false, startX, startY;
@@ -410,14 +410,14 @@
           var vw = window.innerWidth, vh = window.innerHeight;
           var moved = false;
           
-          // 左侧吸附（主要边）
-          if (rect.left < EDGE_SNAP) {
-            transX += rect.left + 10;
+          // 右侧吸附（主要边）
+          if (vw - rect.right < EDGE_SNAP) {
+            transX -= (vw - rect.right) + 10;
             moved = true;
           }
-          // 右侧限制（防止拖出屏幕）
-          else if (rect.right > vw - 10) {
-            transX -= (rect.right - (vw - 10));
+          // 左侧限制（防止拖出屏幕）
+          else if (rect.left < 10) {
+            transX += 10 - rect.left;
             moved = true;
           }
           

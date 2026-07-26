@@ -843,3 +843,24 @@ body[data-music="meting"] .player-bar { display: none !important; }
 .aplayer.aplayer-fixed .aplayer-body {
   user-select: none;
 }
+
+/* APlayer 右侧布局：列表向左展开 */
+.aplayer.aplayer-fixed {
+  left: auto !important;
+  right: 10px !important;
+}
+.aplayer.aplayer-fixed .aplayer-list {
+  left: auto !important;
+  right: 0 !important;
+}
+.aplayer.aplayer-fixed .aplayer-body {
+  flex-direction: row-reverse !important;
+}
+.aplayer.aplayer-fixed .aplayer-info {
+  margin-left: 0 !important;
+  margin-right: 10px !important;
+}
+.aplayer.aplayer-fixed .aplayer-miniswitcher {
+  left: 0 !important;
+  right: auto !important;
+}
