@@ -330,68 +330,82 @@
   }
 
 
-  /* ---------- 全局音乐播放器（本地 + Meting API 获取 QQ音乐）---------- */
+  /* ---------- 全局音乐播放器：APlayer + Meting.js（QQ音乐歌单）---------- */
   function initPlayer() {
-    var cfg = window.SITE_MUSIC_CONFIG || { mode: 'local', playlist: window.SITE_PLAYLIST || [] };
-    
-    if (cfg.mode === 'meting' && cfg.meting) {
-      // Meting 模式：通过 API 获取歌单
-      var m = cfg.meting;
-      var api = 'https://api.injahow.cn/meting/?server=' + m.server + '&type=' + m.type + '&id=' + m.id;
-      
-      // 临时加载提示
-      var tip = document.createElement('div');
-      tip.style.cssText = 'position:fixed;z-index:81;right:20px;bottom:28px;padding:10px 14px;background:var(--bg-elev);border:1px solid var(--border);border-radius:16px;font-size:13px;color:var(--text-muted);opacity:0;transition:opacity.25s ease';
-      tip.textContent = '加载歌单...';
-      document.body.appendChild(tip);
-      setTimeout(function(){ tip.style.opacity = '1'; }, 50);
-      
-      var timeout = setTimeout(function() {
-        tip.textContent = '加载超时，重试中...';
-        // 超时后直接尝试本地备份或忽略
-      }, 8000);
-      
-      fetch(api, { mode: 'cors' })
-        .then(function(r) { return r.arrayBuffer(); })
-        .then(function(buf) {
-          clearTimeout(timeout);
-          tip.remove();
-          // API 返回 GBK 编码，用 gbk 解码
-          var decoder = new TextDecoder('gbk');
-          var text = decoder.decode(buf);
-          var data = JSON.parse(text);
-          var list = data.map(function(item) {
-            return {
-              title: item.name,
-              artist: item.artist,
-              src: item.url,
-              pic: item.pic
-            };
-          });
-          createPlayer(list);
-        })
-        .catch(function(err) {
-          clearTimeout(timeout);
-          console.error('Meting API error:', err);
-          // 兜底：用本地备份歌单
-          var backup = cfg.playlist || window.SITE_PLAYLIST || [];
-          if (backup.length) {
-            tip.remove();
-            createPlayer(backup);
-          } else {
-            tip.textContent = '歌单加载失败，请刷新重试';
-            setTimeout(function(){ tip.remove(); }, 3000);
-          }
-        });
+    if (typeof window.APlayer === 'undefined' || typeof window.metings === 'undefined') {
+      console.log('APlayer/Meting not loaded');
       return;
     }
-    
-    // Local 模式
-    var list = cfg.playlist || window.SITE_PLAYLIST || [];
-    if (list.length) createPlayer(list);
+    // APlayer + Meting 已通过 HTML 加载，meting-js 标签自动渲染
+    // 只做：拖动支持 + 音量默认 50%
+    setTimeout(function() {
+      var ap = document.querySelector('.aplayer.aplayer-fixed');
+      if (!ap) return;
+      
+      // 默认音量 50%
+      try { if (ap.aplayer) ap.aplayer.volume(0.5, false); } catch(e) {}
+      var audio = ap.querySelector('audio');
+      if (audio) audio.volume = 0.5;
+      
+      // 拖动实现
+      var isDragging = false, startX, startY, transX = 0, transY = 0;
+      var EDGE_SNAP = 60;
+      
+      ap.addEventListener('mousedown', function(e) {
+        if (e.target.closest('.aplayer-icon') || 
+            e.target.closest('.aplayer-bar-wrap') ||
+            e.target.closest('.aplayer-list') ||
+            e.target.closest('.aplayer-lrc') ||
+            e.target.closest('.aplayer-pic')) return;
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        ap.style.transition = 'none';
+        ap.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+      
+      document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        var dx = e.clientX - startX;
+        var dy = e.clientY - startY;
+        startX = e.clientX;
+        startY = e.clientY;
+        transX += dx;
+        transY += dy;
+        ap.style.transform = 'translate3d(' + transX + 'px, ' + transY + 'px, 0)';
+      });
+      
+      document.addEventListener('mouseup', function() {
+        if (!isDragging) return;
+        isDragging = false;
+        ap.style.cursor = '';
+        ap.style.transition = 'transform .25s cubic-bezier(.2,.8,.2,1)';
+        var rect = ap.getBoundingClientRect();
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var moved = false;
+        if (rect.left < EDGE_SNAP) {
+          transX += rect.left + 10;
+          moved = true;
+        } else if (vw - rect.right < EDGE_SNAP) {
+          transX -= (vw - rect.right) + 10;
+          moved = true;
+        }
+        if (rect.top < EDGE_SNAP) {
+          transY += rect.top + 10;
+          moved = true;
+        } else if (vh - rect.bottom < EDGE_SNAP) {
+          transY -= (vh - rect.bottom) + 10;
+          moved = true;
+        }
+        if (moved) {
+          ap.style.transform = 'translate3d(' + transX + 'px, ' + transY + 'px, 0)';
+        }
+      });
+    }, 1200);
   }
   
-  function createPlayer(list) {
+  function _legacyCreatePlayer(list) {
     var LS_IDX = "site_player_idx";
     var LS_POS = "site_player_pos";
     var lastPosSave = 0;

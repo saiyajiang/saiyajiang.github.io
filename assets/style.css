@@ -778,6 +778,94 @@ a { color: inherit; }
 .player-bar:active { cursor: grabbing; }
 .player-bar.player-min:active { cursor: pointer !important; }
 
+/* APlayer 拖动优化 */
+.aplayer.aplayer-fixed {
+  will-change: transform;
+  left: 20px !important;
+  right: auto !important;
+}
+.aplayer.aplayer-fixed .aplayer-body {
+  user-select: none;
+}
+.aplayer.aplayer-fixed .aplayer-list {
+  left: 0 !important;
+  right: auto !important;
+  transform-origin: left bottom !important;
+}
+.aplayer {
+  background: color-mix(in srgb, var(--bg-elev) 95%, transparent) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,.45) !important;
+}
+.aplayer .aplayer-list {
+  background: color-mix(in srgb, var(--bg-elev) 98%, transparent) !important;
+  border-top: 1px solid var(--border) !important;
+}
+.aplayer .aplayer-list ol li {
+  color: var(--text) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+.aplayer .aplayer-list ol li:hover {
+  background: var(--accent-soft) !important;
+}
+.aplayer .aplayer-list ol li.aplayer-list-light {
+  background: var(--accent-soft) !important;
+}
+.aplayer .aplayer-list ol li .aplayer-list-index {
+  color: var(--text-muted) !important;
+}
+.aplayer .aplayer-list ol li .aplayer-list-title {
+  color: var(--text) !important;
+}
+.aplayer .aplayer-info .aplayer-music .aplayer-title {
+  color: var(--text) !important;
+}
+.aplayer .aplayer-info .aplayer-music .aplayer-author {
+  color: var(--text-muted) !important;
+}
+.aplayer .aplayer-lrc:before, .aplayer .aplayer-lrc:after {
+  background: linear-gradient(180deg, var(--bg-elev) 0%, transparent 100%) !important;
+}
+.aplayer .aplayer-lrc:after {
+  background: linear-gradient(180deg, transparent 0%, var(--bg-elev) 100%) !important;
+}
+.aplayer .aplayer-lrc p {
+  color: var(--text-muted) !important;
+}
+.aplayer .aplayer-lrc p.aplayer-lrc-current {
+  color: var(--accent) !important;
+}
+.aplayer .aplayer-pic {
+  background-color: var(--bg-elev) !important;
+}
+.aplayer .aplayer-volume-bar-wrap {
+  background: var(--border) !important;
+}
+.aplayer .aplayer-volume-bar {
+  background: var(--accent) !important;
+}
+.aplayer .aplayer-bar-wrap {
+  background: var(--border) !important;
+}
+.aplayer .aplayer-bar {
+  background: var(--accent) !important;
+}
+.aplayer .aplayer-loaded {
+  background: var(--accent-soft) !important;
+}
+.aplayer .aplayer-icon {
+  color: var(--text) !important;
+}
+.aplayer .aplayer-icon:hover path {
+  fill: var(--accent) !important;
+}
+.aplayer.aplayer-fixed .aplayer-miniswitcher {
+  background: var(--bg-elev) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
 /* 音乐模式控制：自定义播放器在两种模式下都显示 */
 body[data-music="local"] .aplayer { display: none !important; }
 
