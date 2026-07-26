@@ -599,7 +599,6 @@
   }
   
   function initSidebar() {
-    // 只在有列表的页面（首页/归档）添加
     var page = document.querySelector('main.page');
     if (!page) return;
     if (page.classList.contains('with-side')) return;
@@ -616,8 +615,14 @@
     right.appendChild(_placeholderNote('占位'));
     right.appendChild(_placeholderNote('占位'));
     
+    // 把原内容包到 .page-main 里
+    var mainWrap = document.createElement('div');
+    mainWrap.className = 'page-main';
+    while (page.firstChild) mainWrap.appendChild(page.firstChild);
+    
     page.classList.add('with-side');
-    page.insertBefore(left, page.firstChild);
+    page.appendChild(left);
+    page.appendChild(mainWrap);
     page.appendChild(right);
   }
   

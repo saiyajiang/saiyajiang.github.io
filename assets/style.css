@@ -166,6 +166,10 @@ a { color: inherit; }
 .page { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 24px; }
 .page.with-side { max-width: 1240px; display: grid; grid-template-columns: 180px 1fr 180px; gap: 32px; padding: 0 24px; align-items: start; }
 .page.with-side > * { min-width: 0; }
+.page.with-side > .side-notes { grid-row: 1; }
+.page.with-side > .side-notes--left { grid-column: 1; }
+.page.with-side > .side-notes--right { grid-column: 3; }
+.page.with-side > .page-main { grid-column: 2; min-width: 0; }
 .page.with-side .side-notes { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow-y: auto; padding-top: 8px; }
 .post-page { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 0 24px; }
 
