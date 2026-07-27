@@ -255,10 +255,10 @@
         if (prog && audio.duration) {
             prog.value = (audio.currentTime / audio.duration) * 100;
         }
-        var modeLabels = { loop: '\u21BB', shuffle: '\u21C4', single: '\u21BA' };
+        var modeLabels = { loop: '\u27A4\uFE0F', shuffle: '\uD83D\uDD00', single: '\uD83D\uDD02' };
         if (modeBtn) {
-            modeBtn.textContent = modeLabels[playMode] || 'loop';
-            modeBtn.title = { loop: '列表循环', shuffle: '随机播放', single: '单曲循环' }[playMode];
+            modeBtn.textContent = modeLabels[playMode] || '\u27A4\uFE0F';
+            modeBtn.title = { loop: '列表循环 (\u27A4\uFE0F)', shuffle: '随机播放 (\uD83D\uDD00)', single: '单曲循环 (\uD83D\uDD02)' }[playMode];
         }
         if (playlistEl) {
             var items = playlistEl.querySelectorAll('.music-playlist-item');
@@ -283,7 +283,11 @@
             '    <button class="music-btn music-btn-play" id="musicPlay" title="播放/暂停">&#9654;</button>' +
             '    <button class="music-btn" id="musicNext" title="下一首">&#9654;</button>' +
             '  </div>' +
-            '  <div class="music-mode"><button class="music-mode-btn" id="musicModeBtn">&#8635;</button></div>' +
+            '  <div class="music-vol-wrap">' +
+            '    <span class="music-vol-icon">&#128266;</span>' +
+            '    <input type="range" class="music-vol" id="musicVol" min="0" max="100" value="50" title="音量" />' +
+            '  </div>' +
+            '  <div class="music-mode"><button class="music-mode-btn" id="musicModeBtn">&#10145;</button></div>' +
             '  <div class="music-playlist" id="musicPlaylistList"></div>' +
             '</div>';
 
@@ -308,6 +312,30 @@
         document.getElementById('musicNext').addEventListener('click', next);
         document.getElementById('musicModeBtn').addEventListener('click', cycleMode);
         document.getElementById('musicProgress').addEventListener('click', seek);
+        document.getElementById('musicVol').addEventListener('input', function() {
+            audio.volume = this.value / 100;
+        });
+        audio.volume = 0.5;
+
+        /* 拖动播放器 */
+        var player = container;
+        var dragging = false, dragStartX, dragStartY, dragStartR, dragStartB;
+        player.addEventListener('mousedown', function(e) {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+            dragging = true;
+            dragStartX = e.clientX; dragStartY = e.clientY;
+            var cs = getComputedStyle(player);
+            dragStartR = parseInt(cs.right, 10) || 0;
+            dragStartB = parseInt(cs.bottom, 10) || 0;
+            e.preventDefault();
+        });
+        document.addEventListener('mousemove', function(e) {
+            if (!dragging) return;
+            player.style.right = (dragStartR - (e.clientX - dragStartX)) + 'px';
+            player.style.bottom = (dragStartB + (e.clientY - dragStartY)) + 'px';
+            player.style.left = 'auto';
+        });
+        document.addEventListener('mouseup', function() { dragging = false; });
 
         document.addEventListener('click', function(e) {
             var panel = document.getElementById('musicPanel');
