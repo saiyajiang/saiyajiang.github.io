@@ -369,8 +369,9 @@
           order: 'list',
           preload: 'auto',
           volume: 0.5,
-          lrcType: 3,
+          lrcType: 0,
           mutex: true,
+          listFolded: true,
           listMaxHeight: '340px',
           audio: audio
         });

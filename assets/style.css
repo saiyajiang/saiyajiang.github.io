@@ -872,9 +872,7 @@ a { color: inherit; }
   fill: var(--accent) !important;
 }
 .aplayer.aplayer-fixed .aplayer-miniswitcher {
-  background: var(--bg-elev) !important;
-  color: var(--text) !important;
-  border: 1px solid var(--border) !important;
+  display: none !important;
 }
 
 /* 音乐模式控制：自定义播放器在两种模式下都显示 */
