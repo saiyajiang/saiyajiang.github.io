@@ -1,5 +1,5 @@
-﻿/* ========================================
-   CSS 变量 — 深色（默认）
+锘?* ========================================
+   CSS 鍙橀噺 鈥?娣辫壊锛堥粯璁わ級
    ======================================== */
 :root,
 [data-theme="dark"] {
@@ -31,7 +31,7 @@
 }
 
 /* ========================================
-   CSS 变量 — 亮色
+   CSS 鍙橀噺 鈥?浜壊
    ======================================== */
 [data-theme="light"] {
     --bg-deep:       #f6f8fa;
@@ -113,7 +113,7 @@ img { max-width: 100%; display: block; }
 }
 .nav-menu a:hover { color: var(--text-primary); }
 
-/* 主题切换按钮 */
+/* 涓婚鍒囨崲鎸夐挳 */
 .theme-toggle {
     position: absolute;
     right: 24px;
@@ -158,7 +158,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* ========================================
-   主体三栏布局
+   涓讳綋涓夋爮甯冨眬
    ======================================== */
 .main-wrapper {
     flex: 1;
@@ -183,7 +183,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* ========================================
-   卡片通用
+   鍗＄墖閫氱敤
    ======================================== */
 .sidebar { display: flex; flex-direction: column; gap: var(--gap); }
 
@@ -209,10 +209,9 @@ img { max-width: 100%; display: block; }
 .card .card-body-sm { padding: 16px 18px; }
 
 /* ========================================
-   左侧栏
-   ======================================== */
+   宸︿晶鏍?   ======================================== */
 
-/* 个人信息 */
+/* 涓汉淇℃伅 */
 .profile-card-wrap { text-align: center; }
 .profile-card-wrap .card-body-sm { padding: 18px 16px; }
 .avatar-placeholder {
@@ -262,7 +261,7 @@ img { max-width: 100%; display: block; }
     color: var(--accent);
 }
 
-/* 标签云 */
+/* 鏍囩浜?*/
 .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag-cloud a {
     font-family: var(--font-mono);
@@ -283,7 +282,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* ========================================
-   右侧栏 — 名言
+   鍙充晶鏍?鈥?鍚嶈█
    ======================================== */
 .quote-box .card-body-sm { padding: 18px 16px; }
 .quote-text {
@@ -301,13 +300,12 @@ img { max-width: 100%; display: block; }
     text-align: right;
     font-family: var(--font-mono);
 }
-.quote-author::before { content: '— '; color: var(--text-dim); }
+.quote-author::before { content: '鈥?'; color: var(--text-dim); }
 
 /* ========================================
-   主体内容区
-   ======================================== */
+   涓讳綋鍐呭鍖?   ======================================== */
 
-/* 搜索框 */
+/* 鎼滅储妗?*/
 .search-wrap {
     margin-bottom: 12px;
     position: relative;
@@ -337,7 +335,7 @@ img { max-width: 100%; display: block; }
     font-family: var(--font-mono);
 }
 
-/* 分类标签栏 */
+/* 鍒嗙被鏍囩鏍?*/
 .category-tabs {
     display: flex;
     gap: 4px;
@@ -372,7 +370,7 @@ img { max-width: 100%; display: block; }
 }
 .category-tab.active .count { color: var(--accent-dim); }
 
-/* 文章列表 */
+/* 鏂囩珷鍒楄〃 */
 .article-list { display: flex; flex-direction: column; }
 .article-item {
     padding: 20px 0;
@@ -462,7 +460,7 @@ img { max-width: 100%; display: block; }
 .footer-links a:hover { color: var(--accent); }
 
 /* ========================================
-   返回顶部
+   杩斿洖椤堕儴
    ======================================== */
 .back-to-top {
     position: fixed;
@@ -493,8 +491,7 @@ img { max-width: 100%; display: block; }
 .back-to-top:hover { border-color: var(--accent); }
 
 /* ========================================
-   响应式
-   ======================================== */
+   鍝嶅簲寮?   ======================================== */
 @media (max-width: 1320px) {
     .main-wrapper > .sidebar { display: none; }
     .main-wrapper { justify-content: center; }
@@ -533,8 +530,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* ========================================
-   子页面通用样式（archive / changelog / about）
-   ======================================== */
+   瀛愰〉闈㈤€氱敤鏍峰紡锛坅rchive / changelog / about锛?   ======================================== */
 .page-content {
     flex: 1;
     width: 100%;
@@ -555,7 +551,7 @@ img { max-width: 100%; display: block; }
     padding: 22px 26px;
 }
 
-/* 归档页年份分组 */
+/* 褰掓。椤靛勾浠藉垎缁?*/
 .year-group { margin-bottom: 20px; }
 .year-group:last-child { margin-bottom: 0; }
 .year-divider {
@@ -567,7 +563,7 @@ img { max-width: 100%; display: block; }
     border-bottom: 1px solid var(--border-subtle);
 }
 
-/* Changelog 时间线 */
+/* Changelog 鏃堕棿绾?*/
 .timeline { position: relative; }
 .timeline-item {
     position: relative;
@@ -608,7 +604,7 @@ img { max-width: 100%; display: block; }
     background: rgba(122,162,247,.08);
 }
 
-/* About 页 */
+/* About 椤?*/
 .about-section { margin-bottom: 28px; }
 .about-section:last-child { margin-bottom: 0; }
 .about-section h2 {
@@ -646,8 +642,7 @@ img { max-width: 100%; display: block; }
 .contact-link:hover { border-color: var(--accent); }
 
 /* ========================================
-   全局音乐播放器 — 终端风格右下角悬浮
-   ======================================== */
+   鍏ㄥ眬闊充箰鎾斁鍣?鈥?缁堢椋庢牸鍙充笅瑙掓偓娴?   ======================================== */
 .music-player {
     position: fixed;
     bottom: 24px;
@@ -871,13 +866,13 @@ img { max-width: 100%; display: block; }
 .music-playlist-item::before { content: '$ '; color: var(--text-dim); margin-right: 4px; }
 .music-playlist-item.active::before { color: var(--accent); }
 
-/* 响应式 */
+/* 鍝嶅簲寮?*/
 @media (max-width: 480px) {
     .music-panel { width: 280px; }
 }
 
 
-/* ---------- 文章页 ---------- */
+/* ---------- 鏂囩珷椤?---------- */
 .post-header { padding: 72px 0 36px; border-bottom: 1px solid var(--border); }
 .post-title { font-size: clamp(26px, 4vw, 38px); font-weight: 800; letter-spacing: -0.8px; line-height: 1.2; margin-bottom: 16px; }
 .post-meta { display: flex; align-items: center; gap: 16px; color: var(--text-dim); font-size: 13px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -922,7 +917,7 @@ img { max-width: 100%; display: block; }
 .step__text { color: var(--text-secondary); font-size: 15px; line-height: 1.7; padding-top: 2px; }
 .step__text strong { color: var(--text); }
 
-/* 评论 + 文章导航 */
+/* 璇勮 + 鏂囩珷瀵艰埅 */
 .comments { padding: 0 0 56px; }
 .comments-head { border-top: 1px solid var(--border); padding: 40px 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .comments-title { font-size: 16px; font-weight: 600; color: var(--text); }
@@ -943,7 +938,7 @@ img { max-width: 100%; display: block; }
 .post-nav-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; }
 .post-nav__item:hover .post-nav-title { color: var(--accent); }
 
-/* 文章内：提示条 / 素材画廊（GIF 卡片） */
+/* 鏂囩珷鍐咃細鎻愮ず鏉?/ 绱犳潗鐢诲粖锛圙IF 鍗＄墖锛?*/
 .plugin-note {
   background: var(--accent2); border: 1px solid var(--accent);
   border-radius: 12px; padding: 14px 18px; margin: 20px 0;
@@ -963,7 +958,7 @@ img { max-width: 100%; display: block; }
 .gif-name { font-size: 14px; font-weight: 600; color: var(--text); }
 .gif-desc { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
 
-/* 文章内：通用提示条 note-box */
+/* 鏂囩珷鍐咃細閫氱敤鎻愮ず鏉?note-box */
 .note-box {
   background: var(--accent2); border: 1px solid var(--accent);
   border-radius: 12px; padding: 14px 18px; margin: 20px 0;
@@ -971,7 +966,7 @@ img { max-width: 100%; display: block; }
 }
 .note-box code { background: var(--bg-elevated); border: 1px solid var(--border); padding: 2px 6px; border-radius: 5px; color: var(--accent); font-size: 13px; }
 
-/* 文章内：资源列表（导航页） */
+/* 鏂囩珷鍐咃細璧勬簮鍒楄〃锛堝鑸〉锛?*/
 .resource-section { margin: 28px 0; }
 .resource-section h3 { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
 .resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
@@ -984,7 +979,7 @@ img { max-width: 100%; display: block; }
 .resource-name { font-size: 14px; font-weight: 600; color: var(--accent); }
 .resource-sub { font-size: 12px; color: var(--text-dim); }
 
-/* 文章内：插件卡片网格 */
+/* 鏂囩珷鍐咃細鎻掍欢鍗＄墖缃戞牸 */
 .plugin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
 .plugin-card {
   display: block; position: relative; padding: 16px 18px 16px;
@@ -1000,7 +995,7 @@ img { max-width: 100%; display: block; }
 .plugin-card:hover .plugin-name { color: var(--accent); }
 .plugin-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; }
 
-/* 文章内：下载框 + 按钮 */
+/* 鏂囩珷鍐咃細涓嬭浇妗?+ 鎸夐挳 */
 .download-box {
   background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 14px;
   padding: 22px 24px; margin: 24px 0; text-align: center;
@@ -1014,7 +1009,7 @@ img { max-width: 100%; display: block; }
 }
 .dl-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--accent); }
 
-/* 文章内：脚本速查网格 */
+/* 鏂囩珷鍐咃細鑴氭湰閫熸煡缃戞牸 */
 .cmd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin: 16px 0; }
 .cmd-item {
   padding: 12px 16px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px;
@@ -1027,12 +1022,105 @@ img { max-width: 100%; display: block; }
 }
 .cmd-desc { font-size: 12.5px; color: var(--text-secondary); }
 
-/* 文章内：诗词样式 */
+/* 鏂囩珷鍐咃細璇楄瘝鏍峰紡 */
 .poem-intro { margin: 24px 0; padding: 18px 22px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; }
 .poem-intro p { margin: 0; font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
 .poem-body { margin: 28px 0; padding: 28px 32px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 14px; text-align: center; }
 .poem-body p { margin: 0 0 10px; font-size: 16px; line-height: 2; color: var(--text); letter-spacing: 0.3px; }
 .poem-body p:last-child { margin-bottom: 0; }
 
-/* ---------- 关于页 ---------- */
+/* ---------- 鍏充簬椤?---------- */
 .tts-bar {
+}
+
+/* 自定义播放器 */
+/* 自定义播放器 */
+#custom-player {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  background: rgba(20, 20, 24, 0.95);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.45);
+  width: 520px;
+  font-size: 14px;
+}
+.cp-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  cursor: move;
+}
+.cp-main button {
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  padding: 6px 0;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cp-main button:hover {
+  opacity: 0.9;
+}
+#cp-title {
+  flex: 1;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 8px;
+}
+#cp-mode, #cp-shuffle {
+  background: transparent !important;
+  font-size: 14px;
+  padding: 4px 6px !important;
+}
+#cp-vol {
+  width: 80px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+  cursor: pointer;
+}
+#cp-vol::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+#cp-vol::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: none;
+}
+.cp-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: none;
+}
+.cp-list.show {
+  display: block;
+}
+.cp-item {
+  padding: 8px 12px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}

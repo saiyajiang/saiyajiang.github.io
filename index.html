@@ -226,6 +226,12 @@
             tagsA.forEach(function(t) { t.classList.remove('active-tag'); });
 
             renderArticles();
+
+        /* ---- 同步到全局，供 site.js 共用功能使用 ---- */
+        window.SITE_POSTS = articles.map(function(a){ return {
+          title: a.title, date: a.date, tags: a.tags,
+          url: a.url, excerpt: a.summary
+        }; });
         });
 
         /* ---- 搜索 ---- */
@@ -276,6 +282,11 @@
 
         /* ---- 初始渲染 ---- */
         renderArticles();
+        /* ---- 同步到全局，供 site.js 共用功能使用 ---- */
+        window.SITE_POSTS = articles.map(function(a){ return {
+          title: a.title, date: a.date, tags: a.tags,
+          url: a.url, excerpt: a.summary
+        }; });
 
     })();
     </script>

@@ -1,356 +1,792 @@
-/* ========================================
-   公共 JS — 主题切换 / 返回顶部 / 菜单折叠
-   所有页面共享
-   ======================================== */
-(function() {
-    'use strict';
+/* 悲歌的小站 · 共用脚本：主题切换 + 数据渲染 + 筛选 */
+(function () {
+  "use strict";
 
-    /* ---- 主题切换 ---- */
-    var themeToggle = document.getElementById('themeToggle');
-    var htmlEl = document.documentElement;
+  var posts = window.SITE_POSTS || [];
 
-    function setTheme(theme) {
-        htmlEl.setAttribute('data-theme', theme);
-        if (themeToggle) {
-            themeToggle.textContent = theme === 'dark' ? '☀' : '☾';
-        }
-        try { localStorage.setItem('theme', theme); } catch (e) {}
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function byDateDesc(a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; }
+
+  function tagSpans(tags) {
+    return tags.map(function (t) { return '<span class="post-card__tag" data-tag="' + esc(t) + '" title="按此标签筛选">' + esc(t) + "</span>"; }).join("");
+  }
+
+  function archiveTagSpans(tags) {
+    return tags.map(function (t) { return '<span class="archive-tag" data-tag="' + esc(t) + '" title="按此标签筛选">' + esc(t) + "</span>"; }).join("");
+  }
+
+  /* ---------- 主题 ---------- */
+  function applyTheme(t) {
+    document.documentElement.setAttribute("data-theme", t);
+    try { localStorage.setItem("theme", t); } catch (e) {}
+  }
+  function initTheme() {
+    var t;
+    try { t = localStorage.getItem("theme"); } catch (e) {}
+    if (!t) t = "dark";
+    document.documentElement.setAttribute("data-theme", t);
+  }
+  function initToggle() {
+    var btn = document.getElementById("themeToggle");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var cur = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+      applyTheme(cur === "light" ? "dark" : "light");
+    });
+  }
+
+  /* ---------- 当前导航高亮 ---------- */
+  function setActiveNav() {
+    var page = document.body.getAttribute("data-page");
+    if (!page) return;
+    var links = document.querySelectorAll(".site-nav a");
+    links.forEach(function (a) {
+      var href = a.getAttribute("href");
+      if (href && href.indexOf(page) !== -1) a.classList.add("active");
+    });
+  }
+
+  /* ---------- 渲染：首页文章卡片 ---------- */
+  function renderPosts() {
+    var el = document.getElementById("postList");
+    if (!el) return;
+    var sorted = posts.slice().sort(byDateDesc);
+    el.innerHTML = sorted.map(function (p, i) {
+      return '' +
+        '<a href="' + esc(p.url) + '" class="post-card" data-tags="' + esc(p.tags.join(" ")) + '" style="animation-delay:' + (i % 8) * 0.05 + 's">' +
+          '<div class="post-card__accent"></div>' +
+          '<div class="post-card__body">' +
+            '<div class="post-card__meta">' +
+              '<span class="post-card__date">' + esc(p.date) + "</span>" +
+              '<div class="post-card__tags">' + tagSpans(p.tags) + "</div>" +
+            "</div>" +
+            '<div class="post-card__title">' + esc(p.title) + "</div>" +
+            '<div class="post-card__excerpt">' + esc(p.excerpt) + "</div>" +
+            '<div class="post-card__more">继续阅读 →</div>' +
+          "</div>" +
+        "</a>";
+    }).join("");
+
+    // 文章数 / 标签数统计
+    var stats = document.querySelectorAll(".hero-stat-num");
+    if (stats.length) {
+      stats[0].textContent = posts.length;
+      var tagSet = {};
+      posts.forEach(function (p) { p.tags.forEach(function (t) { tagSet[t] = true; }); });
+      if (stats[1]) stats[1].textContent = Object.keys(tagSet).length;
+    }
+  }
+
+  /* ---------- 渲染：归档列表 ---------- */
+  function renderArchive() {
+    var el = document.getElementById("archiveList");
+    if (!el) return;
+    var sorted = posts.slice().sort(byDateDesc);
+    el.innerHTML = sorted.map(function (p) {
+      return '' +
+        '<a href="' + esc(p.url) + '" class="archive-item" data-tags="' + esc(p.tags.join(" ")) + '">' +
+          '<span class="archive-date">' + esc(p.date) + "</span>" +
+          '<div class="archive-info">' +
+            '<div class="archive-title">' + esc(p.title) + "</div>" +
+            '<div class="archive-tags">' + archiveTagSpans(p.tags) + "</div>" +
+          "</div>" +
+        "</a>";
+    }).join("");
+
+    var count = document.querySelector(".archive-count");
+    if (count) count.textContent = posts.length;
+  }
+
+  /* ---------- 渲染：标签云 ---------- */
+  function renderTags() {
+    var cloud = document.getElementById("tagCloud");
+    if (!cloud) return;
+    var set = {};
+    posts.forEach(function (p) { p.tags.forEach(function (t) { set[t] = true; }); });
+    var tags = Object.keys(set).sort();
+    cloud.innerHTML = tags.map(function (t) {
+      return '<button class="tag-chip" data-tag="' + esc(t) + '">' + esc(t) + "</button>";
+    }).join("");
+  }
+
+  /* ---------- 搜索 + 标签筛选（首页） ---------- */
+  function initFilter() {
+    var search = document.getElementById("searchInput");
+    var cloud = document.getElementById("tagCloud");
+    var list = document.getElementById("postList");
+    if (!search || !list) return;
+
+    var cards = function () { return list.querySelectorAll(".post-card"); };
+    var tagBtns = cloud ? cloud.querySelectorAll(".tag-chip") : [];
+    var activeTagsEl = document.getElementById("activeTags");
+    var toggleBtn = document.getElementById("tagToggleBtn");
+    var noResults = document.getElementById("noResults");
+    var resultCount = document.getElementById("resultCount");
+    var active = {};
+
+    function renderActive() {
+      if (!activeTagsEl) return;
+      activeTagsEl.innerHTML = "";
+      Object.keys(active).forEach(function (tag) {
+        var s = document.createElement("span");
+        s.className = "active-tag";
+        s.innerHTML = esc(tag) + '<span class="active-tag-clear" data-tag="' + esc(tag) + '">✕</span>';
+        activeTagsEl.appendChild(s);
+      });
+      if (toggleBtn) toggleBtn.classList.toggle("has-active", Object.keys(active).length > 0);
     }
 
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function() {
-            var current = htmlEl.getAttribute('data-theme');
-            setTheme(current === 'dark' ? 'light' : 'dark');
+    function filter() {
+      var q = search.value.trim().toLowerCase();
+      var activeKeys = Object.keys(active);
+      var visible = 0;
+      cards().forEach(function (card) {
+        var tags = (card.getAttribute("data-tags") || "").toLowerCase();
+        var title = card.querySelector(".post-card__title").textContent.toLowerCase();
+        var excerpt = card.querySelector(".post-card__excerpt").textContent.toLowerCase();
+        var okSearch = !q || title.indexOf(q) !== -1 || excerpt.indexOf(q) !== -1;
+        var okTags = activeKeys.length === 0 || activeKeys.some(function (t) { return tags.indexOf(t.toLowerCase()) !== -1; });
+        var show = okSearch && okTags;
+        card.style.display = show ? "" : "none";
+        if (show) visible++;
+      });
+      if (noResults) noResults.style.display = visible === 0 ? "" : "none";
+      if (resultCount) resultCount.textContent = (q || activeKeys.length) ? visible + " / " + cards().length + " 篇" : "";
+    }
+
+    search.addEventListener("input", filter);
+
+    function toggleTag(tag, btn) {
+      if (active[tag]) { delete active[tag]; if (btn) btn.classList.remove("active"); }
+      else { active[tag] = true; if (btn) btn.classList.add("active"); }
+      renderActive();
+      filter();
+    }
+
+    if (cloud) {
+      cloud.addEventListener("click", function (e) {
+        var b = e.target.closest(".tag-chip");
+        if (b) toggleTag(b.getAttribute("data-tag"), b);
+      });
+    }
+    if (toggleBtn && cloud) {
+      toggleBtn.addEventListener("click", function () { cloud.classList.toggle("show"); });
+    }
+    if (activeTagsEl) {
+      activeTagsEl.addEventListener("click", function (e) {
+        var x = e.target.closest(".active-tag-clear");
+        if (!x) return;
+        var t = x.getAttribute("data-tag");
+        delete active[t];
+        if (cloud) cloud.querySelectorAll(".tag-chip").forEach(function (b) {
+          if (b.getAttribute("data-tag") === t) b.classList.remove("active");
         });
+        renderActive();
+        filter();
+      });
     }
 
-    // 初始化：从 localStorage 读取
-    var saved;
-    try { saved = localStorage.getItem('theme'); } catch (e) {}
-    if (saved === 'light' || saved === 'dark') {
-        setTheme(saved);
+    function chipFor(tag) {
+      var found = null;
+      if (cloud) cloud.querySelectorAll(".tag-chip").forEach(function (b) {
+        if (b.getAttribute("data-tag").toLowerCase() === String(tag).toLowerCase()) found = b;
+      });
+      return found;
     }
 
-    /* ---- 返回顶部 ---- */
-    var backToTop = document.getElementById('backToTop');
+    // 卡片内标签直接点选（阻止跳转文章）
+    list.addEventListener("click", function (e) {
+      var t = e.target.closest(".post-card__tag");
+      if (!t) return;
+      e.preventDefault();
+      e.stopPropagation();
+      var chip = chipFor(t.getAttribute("data-tag"));
+      toggleTag(chip ? chip.getAttribute("data-tag") : t.getAttribute("data-tag"), chip);
+    });
 
-    function onScroll() {
-        if (!backToTop) return;
-        if (window.scrollY > 400) {
-            backToTop.classList.add('visible');
-        } else {
-            backToTop.classList.remove('visible');
+    // URL ?tag=xxx 预选标签（来自文章页/归档页的标签点击）
+    var params = new URLSearchParams(location.search);
+    var pre = params.getAll("tag");
+    if (pre.length) {
+      pre.forEach(function (tag) {
+        var chip = chipFor(tag);
+        if (chip && !active[chip.getAttribute("data-tag")]) toggleTag(chip.getAttribute("data-tag"), chip);
+      });
+      if (cloud && Object.keys(active).length) cloud.classList.add("show");
+    }
+  }
+
+  /* ---------- 归档页：标签点击跳转首页筛选 ---------- */
+  function initArchiveTagNav() {
+    var el = document.getElementById("archiveList");
+    if (!el) return;
+    el.addEventListener("click", function (e) {
+      var t = e.target.closest(".archive-tag");
+      if (!t) return;
+      e.preventDefault();
+      e.stopPropagation();
+      location.href = "index.html?tag=" + encodeURIComponent(t.getAttribute("data-tag"));
+    });
+  }
+
+  /* ---------- 文字朗读（Web Speech API）---------- */
+  function initTTS() {
+    // 仅在文章页启用
+    var article = document.querySelector(".post-content");
+    if (!article) return;
+    if (!("speechSynthesis" in window)) return;
+
+    var synth = window.speechSynthesis;
+    var utter = null, timer = null, readChars = 0;
+    var nodes = article.querySelectorAll("h1,h2,h3,h4,p,li,blockquote");
+    var fullText = Array.prototype.map.call(nodes, function(n){ return n.textContent; }).join("\n").replace(/\s*\n\s*/g, "\n").trim();
+    if (!fullText) return;
+    var totalLen = fullText.length;
+    var charMs = 180;
+
+    // 构建控件
+    var bar = document.createElement("div");
+    bar.className = "tts-bar";
+    bar.innerHTML = '<button class="tts-btn" id="ttsPlay" aria-label="朗读">' +
+      '<svg class="tts-icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' +
+      '<svg class="tts-icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>' +
+      '</button>' +
+      '<div class="tts-progress"><div class="tts-progress-fill" id="ttsFill"></div></div>' +
+      '<span class="tts-label" id="ttsLabel">朗读全文</span>';
+    document.body.appendChild(bar);
+    bar.classList.add("show");
+
+    var btn = bar.querySelector("#ttsPlay");
+    var fill = bar.querySelector("#ttsFill");
+    var label = bar.querySelector("#ttsLabel");
+
+    function setPlaying(on){ bar.classList.toggle("is-playing", on); label.textContent = on ? "暂停" : "继续"; }
+    function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+    function startTimer(){ stopTimer(); timer = setInterval(function(){ readChars += Math.max(1, Math.round(120/charMs)); fill.style.width = Math.min(100, (readChars/totalLen)*100) + "%"; }, 120); }
+
+    function pickVoice(voices){
+      var zh = voices.filter(function(v){ return /zh|cmn|Chinese/i.test(v.lang || v.name); });
+      if(!zh.length) return null;
+      var scored = zh.map(function(v){ var sc=0, n=(v.name||"")+" "+(v.lang||""); if(/neural|online|云|神经|premium|enhanced/i.test(n)) sc+=3; if(/female|女|yaoyao|huihui|xiaoxiao|yunyang/i.test(n)) sc+=1; return {v:v,s:sc}; });
+      scored.sort(function(a,b){ return b.s-a.s; });
+      return scored[0].v;
+    }
+
+    function makeUtter(text, startIdx, voices){
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = "zh-CN"; u.rate = 1; u.pitch = 1;
+      var v = pickVoice(voices);
+      if(v) u.voice = v;
+      u.onboundary = function(e){ if(typeof e.charIndex === "number"){ readChars = (startIdx||0)+e.charIndex; fill.style.width = Math.min(100,(readChars/totalLen)*100)+"%"; } };
+      return u;
+    }
+
+    function doSpeak(voices, startAt){
+      readChars = startAt || 0; fill.style.width = (readChars/totalLen*100)+"%";
+      var text = fullText.slice(readChars);
+      if(!text){ label.textContent = "已读完"; setPlaying(false); return; }
+      utter = makeUtter(text, readChars, voices);
+      utter.onend = function(){ stopTimer(); setPlaying(false); fill.style.width = "100%"; label.textContent = "朗读全文"; };
+      utter.onerror = function(e){ stopTimer(); setPlaying(false); label.textContent = "朗读出错"; console.error("TTS error", e); };
+      synth.speak(utter);
+      setPlaying(true); startTimer();
+    }
+
+    function ensureVoicesThen(fn, onWait){
+      if(onWait) onWait();
+      var voices = synth.getVoices();
+      if(voices && voices.length){ fn(voices); return; }
+      // 某些浏览器需等待 voiceschanged
+      var once = function(){ voices = synth.getVoices(); if(voices && voices.length){ synth.removeEventListener("voiceschanged", once); fn(voices); } };
+      synth.addEventListener("voiceschanged", once);
+      // 兜底：500ms 后若仍无则直接跑（用默认嗓音）
+      setTimeout(function(){ if(!(synth.getVoices()||[]).length) fn([]); }, 500);
+    }
+
+    btn.addEventListener("click", function(){
+      if(synth.speaking && !synth.paused){ synth.pause(); stopTimer(); setPlaying(false); }
+      else if(synth.paused){ synth.resume(); setPlaying(true); startTimer(); }
+      else { 
+        label.textContent = "等待加载...";
+        ensureVoicesThen(function(voices){ doSpeak(voices, 0); }, function(){
+          label.textContent = "加载语音...";
+        }); 
+      }
+    });
+
+    bar.querySelector(".tts-progress").addEventListener("click", function(e){
+      var rect = this.getBoundingClientRect();
+      var ratio = (e.clientX - rect.left) / rect.width;
+      synth.cancel(); stopTimer();
+      ensureVoicesThen(function(voices){ doSpeak(voices, Math.floor(totalLen*ratio)); });
+    });
+
+    window.addEventListener("beforeunload", function(){ stopTimer(); synth.cancel(); });
+  }
+
+
+  /* ---------- 全局音乐播放器：本地 playlist.json → 自定义播放器 ---------- */
+  function initPlayer() {
+    var cfg = window.SITE_MUSIC_CONFIG || {};
+    document.body.setAttribute('data-music', cfg.mode || 'local');
+
+    fetch('assets/playlist.json')
+      .then(function(r){ return r.json(); })
+      .then(function(songs){
+        if (!songs || !songs.length) { console.warn('[player] 空歌单'); return; }
+        var audio = songs.map(function(s){
+          return {
+            name: s.name || '未知',
+            artist: s.artist || '',
+            url: s.url || '',
+            cover: s.cover || s.pic || '',
+            lrc: s.lrc || ''
+          };
+        }).filter(function(s){ return s.url; });
+        if (!audio.length) return;
+        console.log('[player] creating custom player...');
+
+        // 创建自定义播放器容器
+        var wrap = document.createElement('div');
+        wrap.id = 'custom-player';
+        wrap.innerHTML = '<div class="cp-main"><button id="cp-prev">⏮</button><button id="cp-play">▶</button><button id="cp-next">⏭</button><span id="cp-title">点击播放</span><input type="range" id="cp-vol" min="0" max="100" value="50" title="音量"><button id="cp-mode" title="顺序播放">➡️</button><button id="cp-listbtn">☰</button></div><div class="cp-list"></div>';
+        document.body.appendChild(wrap);
+        
+        var curIdx = 0;
+        var audioEl = new Audio();
+        audioEl.volume = 0.5;
+        var loopMode = 0; // 0=all, 1=one, 2=none
+        var isShuffle = false;
+        var playedIdx = [];
+        
+        function loadSong(idx) {
+          curIdx = (idx + audio.length) % audio.length;
+          var s = audio[curIdx];
+          audioEl.src = s.url;
+          document.getElementById('cp-title').textContent = s.name + ' - ' + s.artist;
+          // 记录已播放
+          if (isShuffle && playedIdx.indexOf(curIdx) === -1) playedIdx.push(curIdx);
         }
-    }
-
-    if (backToTop) {
-        backToTop.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        function nextSong() {
+          if (isShuffle) {
+            if (playedIdx.length >= audio.length) playedIdx = [];
+            var remain = audio.map(function(_,i){return i;}).filter(function(i){return playedIdx.indexOf(i)===-1;});
+            var next = remain[Math.floor(Math.random()*remain.length)];
+            loadSong(next);
+          } else {
+            loadSong(curIdx + 1);
+          }
+          audioEl.play();
+          document.getElementById('cp-play').textContent = '❚❚';
+        }
+        
+        document.getElementById('cp-play').onclick = function() {
+          if (audioEl.paused) { audioEl.play(); this.textContent = '❚❚'; }
+          else { audioEl.pause(); this.textContent = '▶'; }
+        };
+        document.getElementById('cp-prev').onclick = function() { loadSong(curIdx - 1); audioEl.play(); document.getElementById('cp-play').textContent = '❚❚'; };
+        document.getElementById('cp-next').onclick = nextSong;
+        document.getElementById('cp-listbtn').onclick = function() { listEl.classList.toggle('show'); };
+        
+        // 播放模式切换：顺序→循环全部→单曲循环→随机
+        var playModes = [
+          {icon: '➡️', title: '顺序播放', loop: false, shuffle: false},
+          {icon: '🔁', title: '循环全部', loop: false, shuffle: false},
+          {icon: '🔂', title: '单曲循环', loop: true, shuffle: false},
+          {icon: '🔀', title: '随机播放', loop: false, shuffle: true}
+        ];
+        var modeIdx = 0;
+        document.getElementById('cp-mode').onclick = function() {
+          modeIdx = (modeIdx + 1) % 4;
+          var m = playModes[modeIdx];
+          this.textContent = m.icon;
+          this.title = m.title;
+          audioEl.loop = m.loop;
+          isShuffle = m.shuffle;
+          if (isShuffle) playedIdx = [curIdx];
+        };
+        
+        // 音量控制
+        document.getElementById('cp-vol').oninput = function() {
+          audioEl.volume = this.value / 100;
+        };
+        
+        // 播放结束处理
+        audioEl.onended = function() {
+          if (audioEl.loop) return; // 单曲循环由浏览器处理
+          if (isShuffle || modeIdx === 1 || (modeIdx === 0 && curIdx < audio.length - 1)) {
+            nextSong();
+          } else {
+            document.getElementById('cp-play').textContent = '▶';
+          }
+        };
+        
+        // 列表
+        var listEl = document.querySelector('.cp-list');
+        audio.forEach(function(s, i) {
+          var div = document.createElement('div');
+          div.className = 'cp-item';
+          div.textContent = s.name;
+          div.onclick = function() { loadSong(i); audioEl.play(); document.getElementById('cp-play').textContent = '❚❚'; };
+          listEl.appendChild(div);
         });
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    /* ---- 移动端菜单 ---- */
-    var menuToggle = document.getElementById('menuToggle');
-    var navMenu    = document.getElementById('navMenu');
-
-    if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', function() {
-            navMenu.classList.toggle('open');
-        });
-        document.addEventListener('click', function(e) {
-            if (!menuToggle.contains(e.target) && !navMenu.contains(e.target)) {
-                navMenu.classList.remove('open');
-            }
-        });
-    }
-
-    /* ========================================
-       全局音乐播放器 — Meting API QQ 音乐 + 本地回退
-       ======================================== */
-    var PLAYLIST_JSON = 'assets/playlist.json';
-    var DEFAULT_PLAYLIST = [
-        { title: '$ play 悠忽舞于梦中 --artist 鸣潮先约电台', src: '' },
-        { title: '$ play 星炬不熄 --artist 鸣潮先约电台', src: '' },
-        { title: '$ play Running For Your Life --artist Casey Lee Williams', src: '' }
-    ];
-
-    var audio       = new Audio();
-    var playlist    = DEFAULT_PLAYLIST;
-    var currentIdx  = 0;
-    var playMode    = 'loop'; // loop | shuffle | single
-    var isPlaying   = false;
-    var panelHeader = 'player';
-
-    function initPlayer() {
-        fetch(PLAYLIST_JSON)
-            .then(function(r) {
-                if (!r.ok) throw new Error('HTTP ' + r.status);
-                return r.json();
-            })
-            .then(function(data) {
-                if (Array.isArray(data) && data.length) {
-                    var mapped = data.map(function(s) {
-                        return {
-                            title: '$ play ' + (s.name || '未知') + ' --artist ' + (s.artist || '未知'),
-                            src: s.url || ''
-                        };
-                    }).filter(function(s) { return s.src; });
-                    if (mapped.length) {
-                        playlist = mapped;
-                        panelHeader = '~/playlist.json';
-                        console.log('[music] playlist.json OK, ' + playlist.length + ' songs');
-                    }
-                }
-                doInit();
-            })
-            .catch(function(err) {
-                console.warn('[music] playlist.json failed (' + err.message + '), using defaults');
-                doInit();
-            });
-    }
-
-    function doInit() {
-        /* restore state */
-        var savedIdx;
-        try { savedIdx = parseInt(localStorage.getItem('music_idx'), 10); } catch(e) {}
-        if (!isNaN(savedIdx) && savedIdx >= 0 && savedIdx < playlist.length) {
-            currentIdx = savedIdx;
-        }
-        try { var savedTime = parseFloat(localStorage.getItem('music_time')); } catch(e) {}
-        if (savedTime && savedTime > 0) {
-            audio.currentTime = savedTime;
-        }
-        try { var savedMode = localStorage.getItem('music_mode'); } catch(e) {}
-        if (savedMode && /^(loop|shuffle|single)$/.test(savedMode)) {
-            playMode = savedMode;
-        }
-
-        audio.src = playlist[currentIdx].src;
-        audio.preload = 'metadata';
-
-        /* events */
-        audio.addEventListener('timeupdate', onTimeUpdate);
-        audio.addEventListener('loadedmetadata', updateUI);
-        audio.addEventListener('ended', onEnded);
-        audio.addEventListener('play', function() { isPlaying = true; updateUI(); });
-        audio.addEventListener('pause', function() { isPlaying = false; updateUI(); });
-        audio.addEventListener('error', function() {
-            console.warn('Music load error:', playlist[currentIdx].src);
-            updateUI();
-        });
-
-        /* save */
-        audio.addEventListener('timeupdate', saveState);
-        window.addEventListener('beforeunload', saveState);
-
-        /* build UI */
-        buildPlayerUI();
-        updateUI();
-    }
-
-    function saveState() {
-        try { localStorage.setItem('music_idx', currentIdx); } catch(e) {}
-        try { localStorage.setItem('music_time', audio.currentTime || 0); } catch(e) {}
-        try { localStorage.setItem('music_mode', playMode); } catch(e) {}
-    }
-
-    function togglePanel() {
-        var panel = document.getElementById('musicPanel');
-        if (!panel) return;
-        panel.classList.toggle('open');
-    }
-
-    function play(idx) {
-        if (idx >= 0 && idx < playlist.length) {
-            currentIdx = idx;
-            audio.src = playlist[currentIdx].src;
-            audio.play().catch(function(){});
-        }
-    }
-
-    function togglePlay() {
-        if (audio.paused) {
-            audio.play().catch(function(){});
-        } else {
-            audio.pause();
-        }
-    }
-
-    function prev() {
-        if (playMode === 'shuffle') {
-            currentIdx = Math.floor(Math.random() * playlist.length);
-        } else {
-            currentIdx = (currentIdx - 1 + playlist.length) % playlist.length;
-        }
-        audio.src = playlist[currentIdx].src;
-        audio.play().catch(function(){});
-    }
-
-    function next() {
-        if (playMode === 'shuffle') {
-            currentIdx = Math.floor(Math.random() * playlist.length);
-        } else {
-            currentIdx = (currentIdx + 1) % playlist.length;
-        }
-        audio.src = playlist[currentIdx].src;
-        audio.play().catch(function(){});
-    }
-
-    function onEnded() {
-        if (playMode === 'single') {
-            audio.currentTime = 0;
-            audio.play().catch(function(){});
-        } else {
-            next();
-        }
-    }
-
-    function cycleMode() {
-        var modes = ['loop', 'shuffle', 'single'];
-        var idx = modes.indexOf(playMode);
-        playMode = modes[(idx + 1) % modes.length];
-        saveState();
-        updateUI();
-    }
-
-    function seek(e) {
-        var progress = document.getElementById('musicProgress');
-        if (!progress || !audio.duration) return;
-        var rect = progress.getBoundingClientRect();
-        var pct  = (e.clientX - rect.left) / rect.width;
-        audio.currentTime = pct * audio.duration;
-    }
-
-    function onTimeUpdate() {
-        var progress = document.getElementById('musicProgress');
-        var curEl    = document.getElementById('musicCurTime');
-        var durEl    = document.getElementById('musicDurTime');
-        if (progress && audio.duration) progress.value = (audio.currentTime / audio.duration) * 100;
-        if (curEl) curEl.textContent = fmtTime(audio.currentTime);
-        if (durEl) durEl.textContent = fmtTime(audio.duration || 0);
-    }
-
-    function fmtTime(sec) {
-        if (isNaN(sec)) return '0:00';
-        var m = Math.floor(sec / 60);
-        var s = Math.floor(sec % 60);
-        return m + ':' + (s < 10 ? '0' : '') + s;
-    }
-
-    function updateUI() {
-        var toggle   = document.getElementById('musicToggle');
-        var nowEl    = document.getElementById('musicNowPlaying');
-        var prog     = document.getElementById('musicProgress');
-        var modeBtn  = document.getElementById('musicModeBtn');
-        var playlistEl = document.getElementById('musicPlaylistList');
-
-        if (toggle) {
-            if (isPlaying) toggle.classList.add('playing');
-            else toggle.classList.remove('playing');
-        }
-        if (nowEl && playlist[currentIdx]) {
-            nowEl.textContent = playlist[currentIdx].title;
-        }
-        if (prog && audio.duration) {
-            prog.value = (audio.currentTime / audio.duration) * 100;
-        }
-        var modeLabels = { loop: '\u27A4\uFE0F', shuffle: '\uD83D\uDD00', single: '\uD83D\uDD02' };
-        if (modeBtn) {
-            modeBtn.textContent = modeLabels[playMode] || '\u27A4\uFE0F';
-            modeBtn.title = { loop: '列表循环 (\u27A4\uFE0F)', shuffle: '随机播放 (\uD83D\uDD00)', single: '单曲循环 (\uD83D\uDD02)' }[playMode];
-        }
-        if (playlistEl) {
-            var items = playlistEl.querySelectorAll('.music-playlist-item');
-            items.forEach(function(item, i) {
-                item.classList.toggle('active', i === currentIdx);
-            });
-        }
-    }
-
-    function buildPlayerUI() {
-        var container = document.createElement('div');
-        container.className = 'music-player';
-        container.innerHTML =
-            '<button class="music-toggle" id="musicToggle" aria-label="音乐播放器" title="打开音乐">&#9835;</button>' +
-            '<div class="music-panel" id="musicPanel">' +
-            '  <div class="music-panel-header">' + panelHeader + '</div>' +
-            '  <div class="music-now-playing" id="musicNowPlaying">--</div>' +
-            '  <div class="music-progress-wrap"><input type="range" class="music-progress" id="musicProgress" min="0" max="100" value="0" /></div>' +
-            '  <div class="music-time"><span id="musicCurTime">0:00</span><span id="musicDurTime">0:00</span></div>' +
-            '  <div class="music-controls">' +
-            '    <button class="music-btn" id="musicPrev" title="上一首">&#9664;</button>' +
-            '    <button class="music-btn music-btn-play" id="musicPlay" title="播放/暂停">&#9654;</button>' +
-            '    <button class="music-btn" id="musicNext" title="下一首">&#9654;</button>' +
-            '  </div>' +
-            '  <div class="music-vol-wrap">' +
-            '    <span class="music-vol-icon">&#128266;</span>' +
-            '    <input type="range" class="music-vol" id="musicVol" min="0" max="100" value="50" title="音量" />' +
-            '  </div>' +
-            '  <div class="music-mode"><button class="music-mode-btn" id="musicModeBtn">&#10145;</button></div>' +
-            '  <div class="music-playlist" id="musicPlaylistList"></div>' +
-            '</div>';
-
-        document.body.appendChild(container);
-
-        /* build playlist */
-        var plEl = document.getElementById('musicPlaylistList');
-        playlist.forEach(function(item, i) {
-            var div = document.createElement('div');
-            div.className = 'music-playlist-item';
-            div.textContent = item.title;
-            (function(j) {
-                div.addEventListener('click', function() { play(j); });
-            })(i);
-            plEl.appendChild(div);
-        });
-
-        /* bind events */
-        document.getElementById('musicToggle').addEventListener('click', function(e) { e.stopPropagation(); togglePanel(); });
-        document.getElementById('musicPlay').addEventListener('click', togglePlay);
-        document.getElementById('musicPrev').addEventListener('click', prev);
-        document.getElementById('musicNext').addEventListener('click', next);
-        document.getElementById('musicModeBtn').addEventListener('click', cycleMode);
-        document.getElementById('musicProgress').addEventListener('click', seek);
-        document.getElementById('musicVol').addEventListener('input', function() {
-            audio.volume = this.value / 100;
-        });
-        audio.volume = 0.5;
-
-        /* 拖动播放器 */
-        var player = container;
-        var dragging = false, dragStartX, dragStartY, dragStartR, dragStartB;
-        player.addEventListener('mousedown', function(e) {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
-            dragging = true;
-            dragStartX = e.clientX; dragStartY = e.clientY;
-            var cs = getComputedStyle(player);
-            dragStartR = parseInt(cs.right, 10) || 0;
-            dragStartB = parseInt(cs.bottom, 10) || 0;
-            e.preventDefault();
+        
+        // 拖动
+        var dragging = false, startX, startY, startR, startB;
+        wrap.querySelector('.cp-main').addEventListener('mousedown', function(e) {
+          if (e.target.tagName === 'BUTTON') return;
+          dragging = true;
+          startX = e.clientX; startY = e.clientY;
+          var s = getComputedStyle(wrap);
+          startR = parseInt(s.right) || 20;
+          startB = parseInt(s.bottom) || 20;
+          e.preventDefault();
         });
         document.addEventListener('mousemove', function(e) {
-            if (!dragging) return;
-            player.style.right = (dragStartR - (e.clientX - dragStartX)) + 'px';
-            player.style.bottom = (dragStartB + (e.clientY - dragStartY)) + 'px';
-            player.style.left = 'auto';
+          if (!dragging) return;
+          wrap.style.right = Math.max(10, startR + startX - e.clientX) + 'px';
+          wrap.style.bottom = Math.max(10, startB + startY - e.clientY) + 'px';
         });
         document.addEventListener('mouseup', function() { dragging = false; });
+        
+        // 初始加载
+        loadSong(0);
 
-        document.addEventListener('click', function(e) {
-            var panel = document.getElementById('musicPanel');
-            var player = document.querySelector('.music-player');
-            if (panel && player && !player.contains(e.target) && panel.classList.contains('open')) {
-                panel.classList.remove('open');
-            }
+        console.log('[player] loaded', audio.length, 'songs from local JSON');
+      })
+      .catch(function(err){
+        console.error('[player] playlist.json 加载失败:', err);
+      });
+  }
+
+    function _legacyCreatePlayer(list) {
+    var LS_IDX = "site_player_idx";
+    var LS_POS = "site_player_pos";
+    var lastPosSave = 0;
+
+    var cur = parseInt(localStorage.getItem(LS_IDX) || "0", 10) || 0;
+    if (cur >= list.length) cur = 0;
+
+    var bar = document.createElement("div");
+    bar.className = "player-bar";
+    bar.innerHTML =
+      '<button class="player-btn" id="playerPlay" aria-label="播放/暂停">' +
+        '<svg class="player-icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' +
+        '<svg class="player-icon-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>' +
+      '</button>' +
+      '<div class="player-meta">' +
+        '<div class="player-title" id="playerTitle">未选择</div>' +
+        '<div class="player-sub" id="playerSub">点击播放</div>' +
+      '</div>' +
+      '<div class="player-progress" id="playerProgress"><div class="player-progress-fill" id="playerFill"></div></div>' +
+      '<span class="player-time" id="playerTime">0:00</span>' +
+      '<button class="player-btn player-btn--sm" id="playerPrev" aria-label="上一首">⏮</button>' +
+      '<button class="player-btn player-btn--sm" id="playerNext" aria-label="下一首">⏭</button>' +
+      '<button class="player-btn player-btn--sm" id="playerMin" aria-label="最小化" title="最小化" style="margin-left:4px">−</button>' +
+      '<button class="player-btn player-btn--sm player-btn--list" id="playerList" aria-label="播放列表" title="播放列表">☰</button>' +
+      '<div class="player-playlist" id="playerPlaylist">' +
+        '<div class="player-playlist-header">' +
+          '<span>播放列表 (' + list.length + ')</span>' +
+          '<button class="player-playlist-close" id="playlistClose">×</button>' +
+        '</div>' +
+        '<div class="player-playlist-list" id="playlistList"></div>' +
+      '</div>';
+    document.body.appendChild(bar);
+    bar.classList.add("show");
+
+    var audio = new Audio();
+    audio.preload = "metadata";
+    audio.volume = 0.5;
+    
+    var btnPlay = bar.querySelector("#playerPlay");
+    var btnPrev = bar.querySelector("#playerPrev");
+    var btnNext = bar.querySelector("#playerNext");
+    var btnList = bar.querySelector("#playerList");
+    var btnMin = bar.querySelector("#playerMin");
+    var playlistPanel = bar.querySelector("#playerPlaylist");
+    var btnCloseList = bar.querySelector("#playlistClose");
+    var playlistList = bar.querySelector("#playlistList");
+    var fill = bar.querySelector("#playerFill");
+    var timeEl = bar.querySelector("#playerTime");
+    var titleEl = bar.querySelector("#playerTitle");
+    var subEl = bar.querySelector("#playerSub");
+    var prog = bar.querySelector("#playerProgress");
+
+    function fmt(t) {
+      if (!isFinite(t)) t = 0;
+      var m = Math.floor(t / 60), ss = Math.floor(t % 60);
+      return m + ":" + (ss < 10 ? "0" : "") + ss;
+    }
+
+    function renderPlaylist() {
+      playlistList.innerHTML = list.map(function(item, idx) {
+        var active = idx === cur ? ' active' : '';
+        var source = item.src.indexOf('injahow') > 0 ? 'QQ' : '直链';
+        return '<div class="player-playlist-item' + active + '" data-idx="' + idx + '">' +
+          '<span class="player-playlist-num">' + (idx + 1) + '</span>' +
+          '<div class="player-playlist-info">' +
+            '<div class="player-playlist-title">' + (item.title || '未命名') + '</div>' +
+            '<div class="player-playlist-artist">' + (item.artist || '') + '</div>' +
+          '</div>' +
+          '<span class="player-playlist-source">' + source + '</span>' +
+        '</div>';
+      }).join('');
+      playlistList.querySelectorAll('.player-playlist-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+          var idx = parseInt(this.dataset.idx, 10);
+          load(idx, true);
         });
+      });
     }
 
-    /* init on DOM ready */
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initPlayer);
-    } else {
-        initPlayer();
+    function load(idx, autoplay) {
+      cur = (idx + list.length) % list.length;
+      localStorage.setItem(LS_IDX, String(cur));
+      var item = list[cur];
+      audio.src = item.src;
+      titleEl.textContent = item.title || "未命名";
+      subEl.textContent = "加载中...";
+      fill.style.width = "0%";
+      timeEl.textContent = "0:00";
+      bar.classList.add("is-loading");
+      audio.load();
+      if (autoplay) tryPlay(item);
+      renderPlaylist();
     }
 
+    function tryPlay(item) {
+      var playTimer = setTimeout(function() {
+        if (audio.paused) {
+          bar.classList.remove("is-loading");
+          subEl.textContent = "加载超时，跳到下一首";
+          load(cur + 1, true);
+        }
+      }, 12000);
+      audio.play().then(function(){
+        clearTimeout(playTimer);
+        setPlaying(true);
+        bar.classList.remove("is-loading");
+        subEl.textContent = item.artist || "";
+      }).catch(function(e){
+        clearTimeout(playTimer);
+        setPlaying(false);
+        bar.classList.remove("is-loading");
+        subEl.textContent = "加载失败";
+      });
+    }
+
+    function setPlaying(on) { bar.classList.toggle("is-playing", on); }
+
+    btnPlay.addEventListener("click", function () {
+      if (audio.paused) {
+        bar.classList.add("is-loading");
+        subEl.textContent = "加载中...";
+        tryPlay(list[cur]);
+      } else { audio.pause(); setPlaying(false); }
+    });
+    btnPrev.addEventListener("click", function () { load(cur - 1, true); });
+    btnNext.addEventListener("click", function () { load(cur + 1, true); });
+
+    var isMin = false;
+    btnMin.addEventListener("click", function(e) {
+      e.stopPropagation();
+      isMin = !isMin;
+      bar.classList.toggle("player-min", isMin);
+      btnMin.innerHTML = isMin ? "+" : "−";
+      if (!isMin) playlistPanel.classList.remove("show");
+    });
+
+    btnList.addEventListener("click", function() {
+      playlistPanel.classList.toggle("show");
+      renderPlaylist();
+    });
+    btnCloseList.addEventListener("click", function() { playlistPanel.classList.remove("show"); });
+
+    audio.addEventListener("timeupdate", function () {
+      if (audio.duration) {
+        fill.style.width = (audio.currentTime / audio.duration) * 100 + "%";
+        timeEl.textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration);
+      }
+      lastPosSave = Date.now();
+      localStorage.setItem(LS_POS, String(audio.currentTime));
+    });
+    audio.addEventListener("ended", function () { load(cur + 1, true); });
+    audio.addEventListener("play", function () { setPlaying(true); });
+    audio.addEventListener("pause", function () { setPlaying(false); });
+    audio.addEventListener("error", function() {
+      setPlaying(false);
+      bar.classList.remove("is-loading");
+      subEl.textContent = "加载失败，点击下一首";
+    });
+    audio.addEventListener("stalled", function() {
+      subEl.textContent = "缓冲中...";
+    });
+    audio.addEventListener("waiting", function() {
+      subEl.textContent = "缓冲中...";
+    });
+    audio.addEventListener("playing", function() {
+      bar.classList.remove("is-loading");
+      subEl.textContent = list[cur].artist || "";
+    });
+
+    prog.addEventListener("click", function (e) {
+      if (!audio.duration) return;
+      var r = this.getBoundingClientRect();
+      audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+    });
+
+    document.addEventListener("click", function(e) {
+      if (playlistPanel && !playlistPanel.contains(e.target) && e.target !== btnList) {
+        playlistPanel.classList.remove("show");
+      }
+    });
+
+    renderPlaylist();
+    load(cur, false);
+    var savedPos = parseFloat(localStorage.getItem(LS_POS) || "0");
+    if (savedPos > 0) { try { audio.currentTime = savedPos; } catch (e) {} }
+    
+    // 拖动
+    bar.style.userSelect = 'none';
+    var isDragging = false, dragStartX, dragStartY, startRight, startBottom;
+    bar.addEventListener('mousedown', function(e) {
+      if (e.target.closest('button') || e.target.closest('.player-progress') || e.target.closest('.player-playlist')) return;
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      var rect = bar.getBoundingClientRect();
+      startRight = window.innerWidth - rect.right;
+      startBottom = window.innerHeight - rect.bottom;
+      bar.style.cursor = 'grabbing';
+      bar.style.transition = 'none';
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      var dx = e.clientX - dragStartX;
+      var dy = e.clientY - dragStartY;
+      bar.style.right = Math.max(10, Math.min(window.innerWidth - 100, startRight - dx)) + 'px';
+      bar.style.bottom = Math.max(10, Math.min(window.innerHeight - 100, startBottom - dy)) + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (isDragging) {
+        isDragging = false;
+        bar.style.cursor = '';
+        bar.style.transition = '';
+      }
+    });
+  }
+  
+  /* ---------- 内容区三列布局（左右夹短句）---------- */
+  window.SITE_NOTES = window.SITE_NOTES || [];  // 留空，默认占位 placeholder
+  
+  function _placeholderNote(text) {
+    var item = document.createElement('div');
+    item.className = 'side-note';
+    var t = document.createElement('div');
+    t.className = 'side-note__text';
+    t.textContent = text || '占位';
+    item.appendChild(t);
+    return item;
+  }
+  
+  function initSidebar() {
+    var page = document.querySelector('main.page');
+    if (!page) return;
+    if (page.classList.contains('with-side')) return;
+    
+    var postList = document.getElementById('postList') ||
+                   document.getElementById('archiveList');
+    if (!postList) return;
+    
+    var cards = Array.prototype.slice.call(postList.children);
+    if (!cards.length) return;
+    
+    var left = document.createElement('aside');
+    left.className = 'side-notes side-notes--left';
+    
+    var right = document.createElement('aside');
+    right.className = 'side-notes side-notes--right';
+    
+    var mainWrap = document.createElement('div');
+    mainWrap.className = 'page-main';
+    
+    // 每张卡片包一层 row，row 是 grid 三列
+    cards.forEach(function(card){
+      var row = document.createElement('div');
+      row.className = 'content-row';
+      var ln = document.createElement('div');
+      ln.className = 'content-row__side';
+      var mid = document.createElement('div');
+      mid.className = 'content-row__main';
+      var rn = document.createElement('div');
+      rn.className = 'content-row__side';
+      var nl = _placeholderNote('占位');
+      var nr = _placeholderNote('占位');
+      ln.appendChild(nl);
+      rn.appendChild(nr);
+      mid.appendChild(card);
+      row.appendChild(ln);
+      row.appendChild(mid);
+      row.appendChild(rn);
+      mainWrap.appendChild(row);
+      // 保存引用以便后续 JS 同步高度
+      row._leftNote = nl;
+      row._rightNote = nr;
+      row._card = card;
+    });
+    
+    // 先把 mainWrap 附加到 page 末尾，再把前面的内容依次放在它之前
+    page.appendChild(mainWrap);
+    var preNodes = [];
+    while (page.firstChild && page.firstChild !== mainWrap) {
+      preNodes.push(page.firstChild);
+      page.removeChild(page.firstChild);
+    }
+    preNodes.forEach(function(n){ page.insertBefore(n, mainWrap); });
+    
+    page.classList.add('with-side');
+    
+    // 高度同步：每张占位卡的高度等于同行文章卡高度
+    function syncHeights(){
+      mainWrap.querySelectorAll('.content-row').forEach(function(row){
+        var h = row._card.offsetHeight;
+        if (h) {
+          row._leftNote.style.height = h + 'px';
+          row._rightNote.style.height = h + 'px';
+        }
+      });
+    }
+    syncHeights();
+    window.addEventListener('resize', syncHeights);
+    // 卡片加载完后图片 / 字高变化可能引起高度变，再同步一次
+    setTimeout(syncHeights, 300);
+    setTimeout(syncHeights, 1000);
+  }
+  
+  /* ---------- 启动 ---------- */
+  function init() {
+    // 设置音乐模式标记，CSS 据此显示/隐藏对应播放器
+    var cfg = window.SITE_MUSIC_CONFIG || {};
+    document.body.setAttribute('data-music', cfg.mode || 'local');
+    initTheme();
+    initToggle();
+    setActiveNav();
+    // renderPosts(); // index.html has its own renderArticles()
+    // renderArchive(); // archive.html has its own inline script
+    // renderTags(); // each page renders its own tags
+    // initFilter(); // index.html has its own filter logic
+    // initArchiveTagNav(); // archive.html has its own
+    initTTS();
+    initPlayer();
+    initSidebar();
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
 })();
