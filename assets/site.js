@@ -330,24 +330,67 @@
   }
 
 
-  /* ---------- 全局音乐播放器：APlayer + Meting.js（<meting-js> 标签自动生成）---------- */
+  /* ---------- 全局音乐播放器：本地 playlist.json → APlayer ---------- */
   function initPlayer() {
     var cfg = window.SITE_MUSIC_CONFIG || {};
     document.body.setAttribute('data-music', cfg.mode || 'local');
 
-    // 播放器由 <meting-js> 标签 + Meting.js 自动生成（JSONP 拉歌单，无 CORS 问题）
-    // 这里只做列表方向的视觉修正：让列表在播放条上方展开
-    var tries = 0;
-    function fixListDir() {
-      tries++;
-      var lists = document.querySelectorAll('.aplayer.aplayer-fixed .aplayer-list');
-      lists.forEach(function(list) {
-        list.style.cssText = 'left:auto!important;right:0!important;bottom:100%!important;top:auto!important;';
-      });
-      if (tries < 20) setTimeout(fixListDir, 300);
+    if (typeof window.APlayer === 'undefined') {
+      console.warn('[player] APlayer 未加载');
+      return;
     }
-    setTimeout(fixListDir, 300);
-    console.log('[player] meting mode, waiting for Meting.js to build player');
+
+    fetch('assets/playlist.json')
+      .then(function(r){ return r.json(); })
+      .then(function(songs){
+        if (!songs || !songs.length) { console.warn('[player] 空歌单'); return; }
+        var audio = songs.map(function(s){
+          return {
+            name: s.name || '未知',
+            artist: s.artist || '',
+            url: s.url || '',
+            cover: s.cover || s.pic || '',
+            lrc: s.lrc || ''
+          };
+        }).filter(function(s){ return s.url; });
+        if (!audio.length) return;
+
+        var wrap = document.createElement('div');
+        wrap.id = 'aplayer-wrap';
+        document.body.appendChild(wrap);
+
+        var ap = new APlayer({
+          container: wrap,
+          fixed: true,
+          mini: false,
+          autoplay: false,
+          theme: '#8b8cff',
+          loop: 'all',
+          order: 'list',
+          preload: 'auto',
+          volume: 0.5,
+          lrcType: 3,
+          mutex: true,
+          listMaxHeight: '340px',
+          audio: audio
+        });
+        window.__ap = ap;
+
+        // 列表向上展开
+        function fixListDir(){
+          var lists = document.querySelectorAll('.aplayer.aplayer-fixed .aplayer-list');
+          lists.forEach(function(list){
+            list.style.cssText = 'left:auto!important;right:0!important;bottom:100%!important;top:auto!important;';
+          });
+        }
+        setTimeout(fixListDir, 100);
+        setTimeout(fixListDir, 1000);
+        setTimeout(fixListDir, 3000);
+        console.log('[player] loaded', audio.length, 'songs from local JSON');
+      })
+      .catch(function(err){
+        console.error('[player] playlist.json 加载失败:', err);
+      });
   }
 
     function _legacyCreatePlayer(list) {
