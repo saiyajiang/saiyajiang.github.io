@@ -358,18 +358,36 @@
         // 创建自定义播放器容器
         var wrap = document.createElement('div');
         wrap.id = 'custom-player';
-        wrap.innerHTML = '<div class="cp-main"><button id="cp-prev">◄</button><button id="cp-play">▶</button><button id="cp-next">►</button><span id="cp-title">点击播放</span><button id="cp-listbtn">☰</button></div><div class="cp-list"></div>';
+        wrap.innerHTML = '<div class="cp-main"><button id="cp-prev">◄</button><button id="cp-play">▶</button><button id="cp-next">►</button><span id="cp-title">点击播放</span><button id="cp-mode" title="循环模式">🔁</button><button id="cp-shuffle" title="随机">🔀</button><button id="cp-listbtn">☰</button></div><div class="cp-list"></div>';
         document.body.appendChild(wrap);
         
         var curIdx = 0;
         var audioEl = new Audio();
         audioEl.volume = 0.5;
+        var loopMode = 0; // 0=all, 1=one, 2=none
+        var isShuffle = false;
+        var playedIdx = [];
         
         function loadSong(idx) {
           curIdx = (idx + audio.length) % audio.length;
           var s = audio[curIdx];
           audioEl.src = s.url;
           document.getElementById('cp-title').textContent = s.name + ' - ' + s.artist;
+          // 记录已播放
+          if (isShuffle && playedIdx.indexOf(curIdx) === -1) playedIdx.push(curIdx);
+        }
+        
+        function nextSong() {
+          if (isShuffle) {
+            if (playedIdx.length >= audio.length) playedIdx = [];
+            var remain = audio.map(function(_,i){return i;}).filter(function(i){return playedIdx.indexOf(i)===-1;});
+            var next = remain[Math.floor(Math.random()*remain.length)];
+            loadSong(next);
+          } else {
+            loadSong(curIdx + 1);
+          }
+          audioEl.play();
+          document.getElementById('cp-play').textContent = '❚❚';
         }
         
         document.getElementById('cp-play').onclick = function() {
@@ -377,8 +395,35 @@
           else { audioEl.pause(); this.textContent = '▶'; }
         };
         document.getElementById('cp-prev').onclick = function() { loadSong(curIdx - 1); audioEl.play(); document.getElementById('cp-play').textContent = '❚❚'; };
-        document.getElementById('cp-next').onclick = function() { loadSong(curIdx + 1); audioEl.play(); document.getElementById('cp-play').textContent = '❚❚'; };
+        document.getElementById('cp-next').onclick = nextSong;
         document.getElementById('cp-listbtn').onclick = function() { listEl.classList.toggle('show'); };
+        
+        // 循环模式切换
+        document.getElementById('cp-mode').onclick = function() {
+          loopMode = (loopMode + 1) % 3;
+          var modes = ['🔁', '🔂', '➡️'];
+          var titles = ['循环全部', '单曲循环', '不循环'];
+          this.textContent = modes[loopMode];
+          this.title = titles[loopMode];
+          audioEl.loop = (loopMode === 1);
+        };
+        
+        // 随机切换
+        document.getElementById('cp-shuffle').onclick = function() {
+          isShuffle = !isShuffle;
+          this.style.opacity = isShuffle ? '1' : '0.5';
+          if (isShuffle) playedIdx = [curIdx];
+        };
+        document.getElementById('cp-shuffle').style.opacity = '0.5';
+        
+        // 播放结束处理
+        audioEl.onended = function() {
+          if (loopMode === 0 || (loopMode === 2 && (curIdx < audio.length - 1 || isShuffle))) {
+            nextSong();
+          } else if (loopMode === 2) {
+            document.getElementById('cp-play').textContent = '▶';
+          }
+        };
         
         // 列表
         var listEl = document.querySelector('.cp-list');
