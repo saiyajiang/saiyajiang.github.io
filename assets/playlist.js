@@ -10,11 +10,6 @@
  * 歌单 ID: 9750122774（鸣潮先约电台）
  */
 window.SITE_MUSIC_CONFIG = {
-  mode: 'meting',
-  meting: {
-    server: 'tencent',
-    type: 'playlist',
-    id: '9750122774'
-  },
+  mode: 'local',
   playlist: []
 };

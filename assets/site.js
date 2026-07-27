@@ -330,15 +330,10 @@
   }
 
 
-  /* ---------- 全局音乐播放器：本地 playlist.json → APlayer ---------- */
+  /* ---------- 全局音乐播放器：本地 playlist.json → 自定义播放器 ---------- */
   function initPlayer() {
     var cfg = window.SITE_MUSIC_CONFIG || {};
     document.body.setAttribute('data-music', cfg.mode || 'local');
-
-    if (typeof window.APlayer === 'undefined') {
-      console.warn('[player] APlayer 未加载');
-      return;
-    }
 
     fetch('assets/playlist.json')
       .then(function(r){ return r.json(); })
