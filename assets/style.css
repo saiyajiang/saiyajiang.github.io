@@ -876,6 +876,64 @@ a { color: inherit; }
   display: none !important;
 }
 
+/* 自定义播放器 */
+#custom-player {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  background: rgba(20, 20, 24, 0.95);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.45);
+  width: 320px;
+  font-size: 14px;
+}
+.cp-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  cursor: move;
+}
+.cp-main button {
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.cp-main button:hover {
+  opacity: 0.9;
+}
+#cp-title {
+  flex: 1;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 8px;
+}
+.cp-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: none;
+}
+.cp-list.show {
+  display: block;
+}
+.cp-item {
+  padding: 8px 12px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.cp-item:hover {
+  background: var(--accent-soft);
+}
+
 /* 音乐模式控制 */
 body[data-music="local"] .aplayer { display: none !important; }
 
