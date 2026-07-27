@@ -330,101 +330,24 @@
   }
 
 
-  /* ---------- 全局音乐播放器：APlayer + Meting / 本地歌单 ---------- */
+  /* ---------- 全局音乐播放器：APlayer + Meting.js（<meting-js> 标签自动生成）---------- */
   function initPlayer() {
     var cfg = window.SITE_MUSIC_CONFIG || {};
     document.body.setAttribute('data-music', cfg.mode || 'local');
 
-    if (cfg.mode === 'qqmusic' && cfg.qqmusic) {
-      // 模式1：iframe 嵌 QQ 音乐 web 播放器（国内网络推荐）
-      initQQMusicIframe(cfg.qqmusic);
-      return;
-    }
-
-    if (typeof window.APlayer === 'undefined') {
-      console.warn('[player] APlayer JS 未加载，播放器隐藏');
-      return;
-    }
-
-    var wrapper = document.createElement('div');
-    wrapper.id = 'aplayer-wrap';
-    document.body.appendChild(wrapper);
-
-    var ap = new APlayer({
-      container: wrapper,
-      fixed: true,
-      mini: false,
-      autoplay: false,
-      theme: '#8b8cff',
-      loop: 'all',
-      order: 'list',
-      preload: 'auto',
-      volume: 0.5,
-      lrcType: 0,
-      mutex: true,
-      audio: []
-    });
-    window.__ap = ap;
-
-    // 强制把列表方向改为向上展开
+    // 播放器由 <meting-js> 标签 + Meting.js 自动生成（JSONP 拉歌单，无 CORS 问题）
+    // 这里只做列表方向的视觉修正：让列表在播放条上方展开
+    var tries = 0;
     function fixListDir() {
-      var list = wrapper.querySelector('.aplayer-list');
-      if (list) list.style.cssText = 'left:auto!important;right:0!important;bottom:100%!important;top:auto!important;';
-    }
-    setTimeout(fixListDir, 100);
-    setTimeout(fixListDir, 1000);
-
-    console.log('[player] APlayer ready, mode=' + cfg.mode);
-
-    if (cfg.mode === 'meting' && cfg.meting) {
-      var m = cfg.meting;
-      var api = 'https://api.injahow.cn/meting/?server=' + m.server + '&type=' + m.type + '&id=' + m.id;
-      fetch(api).then(function(r){ return r.arrayBuffer(); }).then(function(buf){
-        var text = new TextDecoder('gbk').decode(buf);
-        var songs = JSON.parse(text);
-        var list = songs.map(function(s){ return {
-          name: s.name || s.title || '',
-          artist: s.artist || '',
-          url: s.url || s.src || '',
-          cover: s.cover || s.pic || ''
-        }; }).filter(function(s){ return s.url; });
-        if (list.length) ap.list.add(list);
-      }).catch(function(err){
-        console.error('Meting fetch failed:', err);
-        addBackup(ap, cfg.playlist);
+      tries++;
+      var lists = document.querySelectorAll('.aplayer.aplayer-fixed .aplayer-list');
+      lists.forEach(function(list) {
+        list.style.cssText = 'left:auto!important;right:0!important;bottom:100%!important;top:auto!important;';
       });
-    } else {
-      addBackup(ap, cfg.playlist);
+      if (tries < 20) setTimeout(fixListDir, 300);
     }
-  }
-
-  function addBackup(ap, playlist) {
-    var local = playlist || [];
-    if (local.length) ap.list.add(local.map(function(it){
-      return { name: it.title, artist: it.artist, url: it.src, cover: it.pic };
-    }));
-  }
-
-  function initQQMusicIframe(qqcfg) {
-    // 创建固定在右下角的 iframe 播放器
-    var iframe = document.createElement('iframe');
-    iframe.id = 'qqmusic-frame';
-    iframe.style.cssText = [
-      'position:fixed',
-      'bottom:0',
-      'right:20px',
-      'width:300px',
-      'height:86px',
-      'border:0',
-      'border-radius:8px 8px 0 0',
-      'box-shadow:0 -2px 16px rgba(0,0,0,0.25)',
-      'z-index:2147483646',
-      'background:#1a1a2e',
-      'allow','autoplay'
-    ].join(';');
-    iframe.src = 'https://y.qq.com/portal/widget/fm.html?id=' + qqcfg.playlistId + '&uin=&type=1&autoplay=0&platform=wk';
-    document.body.appendChild(iframe);
-    console.log('[player] QQ Music iframe loaded, id=' + qqcfg.playlistId);
+    setTimeout(fixListDir, 300);
+    console.log('[player] meting mode, waiting for Meting.js to build player');
   }
 
     function _legacyCreatePlayer(list) {
