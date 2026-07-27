@@ -354,7 +354,7 @@
         // 创建自定义播放器容器
         var wrap = document.createElement('div');
         wrap.id = 'custom-player';
-        wrap.innerHTML = '<div class="cp-main"><button id="cp-prev">◄</button><button id="cp-play">▶</button><button id="cp-next">►</button><span id="cp-title">点击播放</span><button id="cp-mode" title="循环模式">🔁</button><button id="cp-shuffle" title="随机">🔀</button><button id="cp-listbtn">☰</button></div><div class="cp-list"></div>';
+        wrap.innerHTML = '<div class="cp-main"><button id="cp-prev">◄</button><button id="cp-play">▶</button><button id="cp-next">►</button><span id="cp-title">点击播放</span><input type="range" id="cp-vol" min="0" max="100" value="50" title="音量"><button id="cp-mode" title="循环模式">🔁</button><button id="cp-shuffle" title="随机">🔀</button><button id="cp-listbtn">☰</button></div><div class="cp-list"></div>';
         document.body.appendChild(wrap);
         
         var curIdx = 0;
@@ -411,6 +411,11 @@
           if (isShuffle) playedIdx = [curIdx];
         };
         document.getElementById('cp-shuffle').style.opacity = '0.5';
+        
+        // 音量控制
+        document.getElementById('cp-vol').oninput = function() {
+          audioEl.volume = this.value / 100;
+        };
         
         // 播放结束处理
         audioEl.onended = function() {

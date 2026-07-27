@@ -886,7 +886,7 @@ a { color: inherit; }
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0,0,0,.45);
-  width: 420px;
+  width: 520px;
   font-size: 14px;
 }
 .cp-main {
@@ -919,6 +919,29 @@ a { color: inherit; }
   background: transparent !important;
   font-size: 14px;
   padding: 4px 6px !important;
+}
+#cp-vol {
+  width: 80px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+  cursor: pointer;
+}
+#cp-vol::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+#cp-vol::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: none;
 }
 .cp-list {
   max-height: 200px;
