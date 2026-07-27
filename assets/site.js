@@ -354,7 +354,7 @@
         // 创建自定义播放器容器
         var wrap = document.createElement('div');
         wrap.id = 'custom-player';
-        wrap.innerHTML = '<div class="cp-main"><button id="cp-prev">◄</button><button id="cp-play">▶</button><button id="cp-next">►</button><span id="cp-title">点击播放</span><input type="range" id="cp-vol" min="0" max="100" value="50" title="音量"><button id="cp-mode" title="循环模式">🔁</button><button id="cp-shuffle" title="随机">🔀</button><button id="cp-listbtn">☰</button></div><div class="cp-list"></div>';
+        wrap.innerHTML = '<div class="cp-main"><button id="cp-prev">⏮</button><button id="cp-play">▶</button><button id="cp-next">⏭</button><span id="cp-title">点击播放</span><input type="range" id="cp-vol" min="0" max="100" value="50" title="音量"><button id="cp-mode" title="顺序播放">➡️</button><button id="cp-listbtn">☰</button></div><div class="cp-list"></div>';
         document.body.appendChild(wrap);
         
         var curIdx = 0;
@@ -394,23 +394,23 @@
         document.getElementById('cp-next').onclick = nextSong;
         document.getElementById('cp-listbtn').onclick = function() { listEl.classList.toggle('show'); };
         
-        // 循环模式切换
+        // 播放模式切换：顺序→循环全部→单曲循环→随机
+        var playModes = [
+          {icon: '➡️', title: '顺序播放', loop: false, shuffle: false},
+          {icon: '🔁', title: '循环全部', loop: false, shuffle: false},
+          {icon: '🔂', title: '单曲循环', loop: true, shuffle: false},
+          {icon: '🔀', title: '随机播放', loop: false, shuffle: true}
+        ];
+        var modeIdx = 0;
         document.getElementById('cp-mode').onclick = function() {
-          loopMode = (loopMode + 1) % 3;
-          var modes = ['🔁', '🔂', '➡️'];
-          var titles = ['循环全部', '单曲循环', '不循环'];
-          this.textContent = modes[loopMode];
-          this.title = titles[loopMode];
-          audioEl.loop = (loopMode === 1);
-        };
-        
-        // 随机切换
-        document.getElementById('cp-shuffle').onclick = function() {
-          isShuffle = !isShuffle;
-          this.style.opacity = isShuffle ? '1' : '0.5';
+          modeIdx = (modeIdx + 1) % 4;
+          var m = playModes[modeIdx];
+          this.textContent = m.icon;
+          this.title = m.title;
+          audioEl.loop = m.loop;
+          isShuffle = m.shuffle;
           if (isShuffle) playedIdx = [curIdx];
         };
-        document.getElementById('cp-shuffle').style.opacity = '0.5';
         
         // 音量控制
         document.getElementById('cp-vol').oninput = function() {
@@ -419,9 +419,10 @@
         
         // 播放结束处理
         audioEl.onended = function() {
-          if (loopMode === 0 || (loopMode === 2 && (curIdx < audio.length - 1 || isShuffle))) {
+          if (audioEl.loop) return; // 单曲循环由浏览器处理
+          if (isShuffle || modeIdx === 1 || (modeIdx === 0 && curIdx < audio.length - 1)) {
             nextSong();
-          } else if (loopMode === 2) {
+          } else {
             document.getElementById('cp-play').textContent = '▶';
           }
         };
