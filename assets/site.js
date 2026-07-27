@@ -387,6 +387,34 @@
         setTimeout(fixListDir, 100);
         setTimeout(fixListDir, 1000);
         setTimeout(fixListDir, 3000);
+
+        // 播放器拖动
+        (function makeDraggable(){
+          var bar = document.querySelector('.aplayer.aplayer-fixed');
+          if (!bar) return setTimeout(makeDraggable, 500);
+          var handle = bar.querySelector('.aplayer-body') || bar;
+          var dragging = false, startX, startY, startRight, startBottom;
+          handle.style.cursor = 'move';
+          handle.addEventListener('mousedown', function(e){
+            dragging = true;
+            startX = e.clientX; startY = e.clientY;
+            var s = getComputedStyle(bar);
+            startRight = parseInt(s.right) || 20;
+            startBottom = parseInt(s.bottom) || 0;
+            bar.style.transition = 'none';
+          });
+          document.addEventListener('mousemove', function(e){
+            if (!dragging) return;
+            var dx = startX - e.clientX;
+            var dy = e.clientY - startY;
+            bar.style.right = (startRight + dx) + 'px';
+            bar.style.bottom = (startBottom - dy) + 'px';
+            bar.style.left = 'auto';
+            bar.style.top = 'auto';
+          });
+          document.addEventListener('mouseup', function(){ dragging = false; });
+        })();
+
         console.log('[player] loaded', audio.length, 'songs from local JSON');
       })
       .catch(function(err){

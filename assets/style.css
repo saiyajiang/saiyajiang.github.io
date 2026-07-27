@@ -810,8 +810,12 @@ a { color: inherit; }
   box-shadow: 0 10px 40px rgba(0,0,0,.45) !important;
 }
 .aplayer .aplayer-list {
-  background: color-mix(in srgb, var(--bg-elev) 98%, transparent) !important;
-  border-top: 1px solid var(--border) !important;
+  background: rgba(20, 20, 24, 0.98) !important;
+  border-top: 1px solid rgba(255,255,255,0.1) !important;
+  color: #ededf0 !important;
+}
+.aplayer .aplayer-list ol li {
+  color: #ededf0 !important;
 }
 .aplayer .aplayer-list ol li {
   color: var(--text) !important;
