@@ -355,16 +355,9 @@
         }).filter(function(s){ return s.url; });
         if (!audio.length) return;
 
-        var wrap = document.createElement('div');
-        wrap.id = 'aplayer-wrap';
-        document.body.appendChild(wrap);
-
-        // 自定义定位容器
-        wrap.style.cssText = 'position:fixed;right:20px;bottom:20px;z-index:9999;width:360px;';
-        
         var ap = new APlayer({
-          container: wrap,
-          fixed: false,
+          container: document.body,
+          fixed: true,
           mini: false,
           autoplay: false,
           theme: '#8b8cff',
@@ -380,47 +373,52 @@
         });
         window.__ap = ap;
 
-        // 列表向上展开 (只改位置，不改display)
-        setTimeout(function(){
-          var list = wrap.querySelector('.aplayer-list');
-          if (list) {
-            list.style.position = 'absolute';
-            list.style.left = '0';
-            list.style.right = '0';
-            list.style.bottom = '100%';
-            list.style.top = 'auto';
-            list.style.maxHeight = '300px';
-            list.style.overflowY = 'auto';
-          }
-        }, 200);
-
-        // 播放器拖动 - 绑定到整个aplayer
-        (function makeDraggable(){
-          var bar = wrap.querySelector('.aplayer');
-          if (!bar) return setTimeout(makeDraggable, 500);
-          // 拖动句柄：aplayer-info区域（标题栏）
-          var handle = bar.querySelector('.aplayer-info') || bar.querySelector('.aplayer-body') || bar;
+        // 强制定位到右侧 + 可拖动
+        (function setupPlayer(){
+          var bar = document.querySelector('.aplayer.aplayer-fixed');
+          if (!bar) return setTimeout(setupPlayer, 300);
+          
+          // 初始位置：右侧
+          bar.style.left = 'auto';
+          bar.style.right = '20px';
+          
+          // 拖动实现
+          var handle = bar.querySelector('.aplayer-body');
+          if (!handle) return;
           var dragging = false, startX, startY, startRight, startBottom;
           handle.style.cursor = 'move';
+          
           handle.addEventListener('mousedown', function(e){
-            // 排除按钮点击触发拖动
-            if (e.target.closest('button, .aplayer-icon, .aplayer-bar-wrap')) return;
+            if (e.target.closest('button, .aplayer-icon, .aplayer-bar-wrap, .aplayer-list')) return;
             dragging = true;
-            startX = e.clientX; startY = e.clientY;
-            var s = getComputedStyle(wrap);
+            startX = e.clientX;
+            startY = e.clientY;
+            var s = getComputedStyle(bar);
             startRight = parseInt(s.right) || 20;
-            startBottom = parseInt(s.bottom) || 20;
-            wrap.style.transition = 'none';
+            startBottom = parseInt(s.bottom) || 0;
+            bar.style.transition = 'none';
             e.preventDefault();
           });
+          
           document.addEventListener('mousemove', function(e){
             if (!dragging) return;
             var dx = startX - e.clientX;
             var dy = e.clientY - startY;
-            wrap.style.right = Math.max(0, startRight + dx) + 'px';
-            wrap.style.bottom = Math.max(0, startBottom - dy) + 'px';
+            bar.style.left = 'auto';
+            bar.style.right = Math.max(10, Math.min(window.innerWidth - 400, startRight + dx)) + 'px';
+            bar.style.bottom = Math.max(10, Math.min(window.innerHeight - 100, startBottom - dy)) + 'px';
           });
+          
           document.addEventListener('mouseup', function(){ dragging = false; });
+          
+          // 列表向上展开
+          var list = bar.querySelector('.aplayer-list');
+          if (list) {
+            list.style.left = 'auto';
+            list.style.right = '0';
+            list.style.bottom = '100%';
+            list.style.top = 'auto';
+          }
         })();
 
         console.log('[player] loaded', audio.length, 'songs from local JSON');

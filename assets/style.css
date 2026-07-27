@@ -794,6 +794,19 @@ a { color: inherit; }
   user-select: none;
   margin: 0 !important;
 }
+/* APlayer fixed 模式强制右侧 */
+.aplayer.aplayer-fixed {
+  left: auto !important;
+  right: 20px !important;
+}
+/* APlayer 列表向上展开 */
+.aplayer.aplayer-fixed .aplayer-list {
+  left: auto !important;
+  right: 0 !important;
+  bottom: 100% !important;
+  top: auto !important;
+  transform-origin: right bottom !important;
+}
 .aplayer {
   background: rgba(20, 20, 24, 0.95) !important;
   border: 1px solid rgba(255,255,255,0.1) !important;
