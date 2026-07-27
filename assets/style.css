@@ -789,19 +789,10 @@ a { color: inherit; }
 .player-bar:active { cursor: grabbing; }
 .player-bar.player-min:active { cursor: pointer !important; }
 
-/* APlayer 拖动优化 */
-.aplayer.aplayer-fixed {
-  will-change: transform;
-  left: 20px !important;
-  right: auto !important;
-}
-.aplayer.aplayer-fixed .aplayer-body {
+/* APlayer 样式 */
+.aplayer {
   user-select: none;
-}
-.aplayer.aplayer-fixed .aplayer-list {
-  left: 0 !important;
-  right: auto !important;
-  transform-origin: left bottom !important;
+  margin: 0 !important;
 }
 .aplayer {
   background: rgba(20, 20, 24, 0.95) !important;
@@ -872,24 +863,13 @@ a { color: inherit; }
 .aplayer .aplayer-icon:hover path {
   fill: var(--accent) !important;
 }
-.aplayer.aplayer-fixed .aplayer-miniswitcher {
+/* 隐藏APlayer最小化按钮 */
+.aplayer .aplayer-miniswitcher {
   display: none !important;
 }
 
-/* 音乐模式控制：自定义播放器在两种模式下都显示 */
+/* 音乐模式控制 */
 body[data-music="local"] .aplayer { display: none !important; }
-
-/* APlayer 主体位置：JS拖动控制，CSS仅初始值 */
-.aplayer.aplayer-fixed {
-  left: auto;
-  right: 20px;
-}
-.aplayer.aplayer-fixed .aplayer-list {
-  left: auto !important;
-  right: 0 !important;
-  bottom: 100% !important;
-  top: auto !important;
-}
 
 /* 内容主区：窄列表两侧夹短句 */
 .content-grid {

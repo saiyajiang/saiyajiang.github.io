@@ -359,9 +359,12 @@
         wrap.id = 'aplayer-wrap';
         document.body.appendChild(wrap);
 
+        // 自定义定位容器
+        wrap.style.cssText = 'position:fixed;right:20px;bottom:20px;z-index:9999;width:360px;';
+        
         var ap = new APlayer({
           container: wrap,
-          fixed: true,
+          fixed: false,
           mini: false,
           autoplay: false,
           theme: '#8b8cff',
@@ -372,25 +375,20 @@
           lrcType: 0,
           mutex: true,
           listFolded: true,
-          listMaxHeight: '340px',
+          listMaxHeight: '300px',
           audio: audio
         });
         window.__ap = ap;
 
         // 列表向上展开
-        function fixListDir(){
-          var lists = document.querySelectorAll('.aplayer.aplayer-fixed .aplayer-list');
-          lists.forEach(function(list){
-            list.style.cssText = 'left:auto!important;right:0!important;bottom:100%!important;top:auto!important;';
-          });
-        }
-        setTimeout(fixListDir, 100);
-        setTimeout(fixListDir, 1000);
-        setTimeout(fixListDir, 3000);
+        setTimeout(function(){
+          var list = wrap.querySelector('.aplayer-list');
+          if (list) list.style.cssText = 'position:absolute;left:0;right:0;bottom:100%;top:auto;max-height:300px;overflow-y:auto;';
+        }, 100);
 
         // 播放器拖动
         (function makeDraggable(){
-          var bar = document.querySelector('.aplayer.aplayer-fixed');
+          var bar = wrap.querySelector('.aplayer');
           if (!bar) return setTimeout(makeDraggable, 500);
           var handle = bar.querySelector('.aplayer-body') || bar;
           var dragging = false, startX, startY, startRight, startBottom;
@@ -398,19 +396,17 @@
           handle.addEventListener('mousedown', function(e){
             dragging = true;
             startX = e.clientX; startY = e.clientY;
-            var s = getComputedStyle(bar);
+            var s = getComputedStyle(wrap);
             startRight = parseInt(s.right) || 20;
-            startBottom = parseInt(s.bottom) || 0;
-            bar.style.transition = 'none';
+            startBottom = parseInt(s.bottom) || 20;
+            wrap.style.transition = 'none';
           });
           document.addEventListener('mousemove', function(e){
             if (!dragging) return;
             var dx = startX - e.clientX;
             var dy = e.clientY - startY;
-            bar.style.right = (startRight + dx) + 'px';
-            bar.style.bottom = (startBottom - dy) + 'px';
-            bar.style.left = 'auto';
-            bar.style.top = 'auto';
+            wrap.style.right = (startRight + dx) + 'px';
+            wrap.style.bottom = (startBottom - dy) + 'px';
           });
           document.addEventListener('mouseup', function(){ dragging = false; });
         })();
