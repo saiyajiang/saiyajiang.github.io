@@ -799,13 +799,10 @@ a { color: inherit; }
   left: auto !important;
   right: 20px !important;
 }
-/* APlayer 列表向上展开 */
-.aplayer.aplayer-fixed .aplayer-list {
-  left: auto !important;
-  right: 0 !important;
-  bottom: 100% !important;
-  top: auto !important;
-  transform-origin: right bottom !important;
+/* APlayer 列表样式 - 不干预定位，只改颜色 */
+.aplayer .aplayer-list {
+  background: rgba(20, 20, 24, 0.98) !important;
+  border-top: 1px solid rgba(255,255,255,0.1) !important;
 }
 .aplayer {
   background: rgba(20, 20, 24, 0.95) !important;
@@ -814,8 +811,6 @@ a { color: inherit; }
   box-shadow: 0 10px 40px rgba(0,0,0,.45) !important;
 }
 .aplayer .aplayer-list {
-  background: rgba(20, 20, 24, 0.98) !important;
-  border-top: 1px solid rgba(255,255,255,0.1) !important;
   color: #ededf0 !important;
 }
 .aplayer .aplayer-list ol li {

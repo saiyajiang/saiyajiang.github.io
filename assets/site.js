@@ -411,14 +411,7 @@
           
           document.addEventListener('mouseup', function(){ dragging = false; });
           
-          // 列表向上展开
-          var list = bar.querySelector('.aplayer-list');
-          if (list) {
-            list.style.left = 'auto';
-            list.style.right = '0';
-            list.style.bottom = '100%';
-            list.style.top = 'auto';
-          }
+          // 列表样式由APlayer自己控制
         })();
 
         console.log('[player] loaded', audio.length, 'songs from local JSON');
