@@ -445,7 +445,7 @@
         document.addEventListener('mousemove', function(e) {
           if (!dragging) return;
           wrap.style.right = Math.max(10, startR + startX - e.clientX) + 'px';
-          wrap.style.bottom = Math.max(10, startB - startY + e.clientY) + 'px';
+          wrap.style.bottom = Math.max(10, startB + startY - e.clientY) + 'px';
         });
         document.addEventListener('mouseup', function() { dragging = false; });
         
