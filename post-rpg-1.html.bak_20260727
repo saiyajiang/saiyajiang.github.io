@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RPG Maker 插件汉化列表 · 悲歌的小站</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  
+<script>
+    (function () {
+      var t; try { t = localStorage.getItem("theme"); } catch (e) {}
+      document.documentElement.setAttribute("data-theme", t || "dark");
+    })();
+  </script>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body data-page="post">
+  <div class="bg-layer">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-grid"></div>
+  </div>
+  
+
+<header class="site-header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">悲歌的小站</a>
+      <nav class="site-nav">
+        <a href="../index.html">Blog</a>
+        <a href="../archive.html">Archive</a>
+        <a href="../about.html">About</a>
+        <a href="../changelog.html">Changelog</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </header>
+
+<main class="post-page">
+<div class="post-header">
+  <h1 class="post-title">RPG Maker MV 插件汉化列表</h1>
+  <div class="post-meta">
+    <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2026年4月1日</span>
+    <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 约 2 分钟阅读</span>
+  </div>
+  <div class="post-tags">
+    <a href="../index.html?tag=RPG-Maker" class="post-tag">#RPG-Maker</a>
+    <a href="../index.html?tag=插件汉化" class="post-tag">#插件汉化</a>
+  </div>
+</div>
+<article class="post-content">
+  <p>整理了所有汉化过的 RPG Maker 插件。按类别分组，点击文件名直接下载。</p>
+  <div class="plugin-note">📌 所有文件均放置于博客主站目录，下载后放入项目的 <code>js/plugins/</code> 文件夹即可使用。</div>
+
+  <h2>自带插件汉化</h2>
+  <div class="plugin-grid">
+    <a href="../resources/plugins/builtin/AltMenuScreen.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">自带</span>
+      <div class="plugin-name">AltMenuScreen.js</div>
+      <div class="plugin-desc">自定义菜单画面布局</div>
+    </a>
+    <a href="../resources/plugins/builtin/AltSaveScreen.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">自带</span>
+      <div class="plugin-name">AltSaveScreen.js</div>
+      <div class="plugin-desc">自定义存档画面布局</div>
+    </a>
+    <a href="../resources/plugins/builtin/Community_Basic.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">自带</span>
+      <div class="plugin-name">Community_Basic.js</div>
+      <div class="plugin-desc">社区基础插件（必装）</div>
+    </a>
+    <a href="../resources/plugins/builtin/EnemyBook.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">自带</span>
+      <div class="plugin-name">EnemyBook.js</div>
+      <div class="plugin-desc">敌人图鉴插件</div>
+    </a>
+    <a href="../resources/plugins/builtin/ItemBook.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">自带</span>
+      <div class="plugin-name">ItemBook.js</div>
+      <div class="plugin-desc">物品图鉴插件</div>
+    </a>
+    <a href="../resources/plugins/builtin/WeaponSkill.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">自带</span>
+      <div class="plugin-name">WeaponSkill.js</div>
+      <div class="plugin-desc">武器技能关联</div>
+    </a>
+  </div>
+
+  <h2>QPlugins 汉化</h2>
+  <div class="plugin-grid">
+    <a href="../resources/plugins/QPlus.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">QPlugins</span>
+      <div class="plugin-name">QPlus.js</div>
+      <div class="plugin-desc">QPlugins 系列核心框架（必装）</div>
+    </a>
+  </div>
+
+  <h2>Yanfly Engine Plugins 汉化</h2>
+  <div class="plugin-grid">
+    <a href="../resources/plugins/yanfly/YEP_ItemCore.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">Yanfly</span>
+      <div class="plugin-name">YEP_ItemCore.js</div>
+      <div class="plugin-desc">物品核心系统，增强物品数据</div>
+    </a>
+    <a href="../resources/plugins/yanfly/YEP_ItemSynthesis.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">Yanfly</span>
+      <div class="plugin-name">YEP_ItemSynthesis.js</div>
+      <div class="plugin-desc">物品合成系统</div>
+    </a>
+  </div>
+
+  <h2>SRD 汉化</h2>
+  <div class="plugin-grid">
+    <a href="../resources/plugins/srd/SRD_AutoUpdater.js" target="_blank" class="plugin-card">
+      <span class="plugin-cat">SRD</span>
+      <div class="plugin-name">SRD_AutoUpdater.js</div>
+      <div class="plugin-desc">自动更新插件</div>
+    </a>
+  </div>
+</article>
+
+<div class="comments">
+  <div class="comments-head">
+    <div><div class="comments-title">💬 评论</div></div>
+    <a href="https://github.com/saiyajiang/saiyajiang.github.io/issues/new?title=讨论：RPG-Maker插件汉化列表" target="_blank" class="comments-link"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 去 GitHub 发表讨论</a>
+  </div>
+  <div class="no-comments">暂无评论。点击上方链接去 GitHub 发表第一评论。</div>
+</div>
+<nav class="post-nav">
+  <a href="post-old-rpg.html" class="post-nav__item"><div class="post-nav-label">← 上一篇</div><div class="post-nav-title">RPG Maker MV 资源导航页</div></a>
+  <a href="post-rpg-2.html" class="post-nav__item post-nav__item--next" style="text-align:right"><div class="post-nav-label">下一篇 →</div><div class="post-nav-title">RPG Maker 事件 GIF 示例</div></a>
+</nav>
+</main>
+
+<footer class="site-footer">
+    <p><a href="../index.html">首页</a> · <a href="https://github.com/saiyajiang" target="_blank">GitHub</a></p>
+  </footer>
+<script src="../assets/posts.js?v=20260727bb"></script>
+  
+  <script src="../assets/playlist.js?v=20260727b"></script>
+  <script src="../assets/site.js?v=20260727cc"></script>
+
+</body>
+</html>
