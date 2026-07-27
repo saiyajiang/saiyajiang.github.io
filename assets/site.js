@@ -354,6 +354,7 @@
           };
         }).filter(function(s){ return s.url; });
         if (!audio.length) return;
+        console.log('[player] creating custom player...');
 
         // 创建自定义播放器容器
         var wrap = document.createElement('div');
