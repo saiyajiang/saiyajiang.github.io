@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>更新日志 · 悲歌的小站</title>
-    <link rel="stylesheet" href="assets/style.css?v=20260728b">
+    <link rel="stylesheet" href="assets/style.v2.css">
 </head>
 <body>
 
@@ -86,49 +86,7 @@
                 date: '2026-07-25',
                 hash: '789ghij',
                 title: '数据驱动重构 + 首页统计修复 + 新增文章',
-                desc: '全站重构：抽离共用 assets/style.css?v=20260728b 与 assets/site.js，文章列表改为 posts.js 数据驱动。新增《摸鱼儿·恨人间情是何物》诗词赏析文章。修复 posts.js 语法错误导致首页统计显示 0 的问题。',
-                tags: ['New', 'UI', 'Fix']
-            },
-            {
-                date: '2026-06-04',
-                hash: '012klmn',
-                title: '全站 UI 统一',
-                desc: '首页/关于/归档/日志四个页面统一为新设计语言：动态背景光球、顶部彩虹装饰条、文章卡片动画、毛玻璃导航栏。所有外部链接改为新标签打开。',
-                tags: ['New', 'UI', 'Fix']
-            },
-            {
-                date: '2026-05-06',
-                hash: '345opqr',
-                title: '改版：个人博客风格',
-                desc: '从工具导航站改版为个人博客，删除测试文章，标签改为下拉收纳式，统一配色为深色主题 + 绿紫色调。',
-                tags: ['New', 'UI']
-            },
-            {
-                date: '2026-04-29',
-                hash: '678stuv',
-                title: 'NVIDIA APP 注册表修复文章',
-                desc: '发布《NVIDIA APP 怎么也无法更新或卸载？可以尝试删除这个注册表项》，记录注册表路径与操作步骤。',
-                tags: ['New', 'Doc']
-            },
-            {
-                date: '2026-04-19',
-                hash: '901wxyz',
-                title: '博客迁移 + RPG Maker 内容整合',
-                desc: '将博客从子目录迁移至根目录，整合原有 RPG Maker 插件/素材页面，新增更新日志页面。',
-                tags: ['Fix', 'Doc']
-            },
-            {
-                date: '2026-04-01',
-                hash: '234abcd',
-                title: '博客上线',
-                desc: '基于 GitHub Pages 搭建个人博客，发布 RPG Maker MV 资源导航、插件汉化列表、GIF 素材汇总、脚本调用参考等文章。',
-                tags: ['New']
-            }
-        ];
-
-        var html = '';
-        changelog.forEach(function(entry) {
-            html += '<div class="timeline-item">';
+                desc: '全站重构：抽离共用 assets/style.v2.css"timeline-item">';
             html += '  <div class="timeline-commit">* <span class="hash">' + entry.hash + '</span> (' + entry.date + ') ' + entry.title + '</div>';
             if (entry.desc) {
                 html += '  <div class="timeline-desc">' + entry.desc + '</div>';
