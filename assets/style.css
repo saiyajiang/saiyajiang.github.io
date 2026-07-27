@@ -804,8 +804,8 @@ a { color: inherit; }
   transform-origin: left bottom !important;
 }
 .aplayer {
-  background: color-mix(in srgb, var(--bg-elev) 95%, transparent) !important;
-  border: 1px solid var(--border) !important;
+  background: rgba(20, 20, 24, 0.95) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
   border-radius: 12px !important;
   box-shadow: 0 10px 40px rgba(0,0,0,.45) !important;
 }
@@ -816,10 +816,7 @@ a { color: inherit; }
 }
 .aplayer .aplayer-list ol li {
   color: #ededf0 !important;
-}
-.aplayer .aplayer-list ol li {
-  color: var(--text) !important;
-  border-bottom: 1px solid var(--border) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.08) !important;
 }
 .aplayer .aplayer-list ol li:hover {
   background: var(--accent-soft) !important;
@@ -861,13 +858,13 @@ a { color: inherit; }
   background: var(--accent) !important;
 }
 .aplayer .aplayer-bar-wrap {
-  background: var(--border) !important;
+  background: rgba(255,255,255,0.15) !important;
 }
 .aplayer .aplayer-bar {
-  background: var(--accent) !important;
+  background: #8b8cff !important;
 }
 .aplayer .aplayer-loaded {
-  background: var(--accent-soft) !important;
+  background: rgba(139,140,255,0.25) !important;
 }
 .aplayer .aplayer-icon {
   color: var(--text) !important;
@@ -882,10 +879,10 @@ a { color: inherit; }
 /* 音乐模式控制：自定义播放器在两种模式下都显示 */
 body[data-music="local"] .aplayer { display: none !important; }
 
-/* APlayer 主体位置：右下方，列表向上展开 */
+/* APlayer 主体位置：JS拖动控制，CSS仅初始值 */
 .aplayer.aplayer-fixed {
-  left: auto !important;
-  right: 20px !important;
+  left: auto;
+  right: 20px;
 }
 .aplayer.aplayer-fixed .aplayer-list {
   left: auto !important;
