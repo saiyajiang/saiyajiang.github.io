@@ -380,33 +380,45 @@
         });
         window.__ap = ap;
 
-        // 列表向上展开
+        // 列表向上展开 (只改位置，不改display)
         setTimeout(function(){
           var list = wrap.querySelector('.aplayer-list');
-          if (list) list.style.cssText = 'position:absolute;left:0;right:0;bottom:100%;top:auto;max-height:300px;overflow-y:auto;';
-        }, 100);
+          if (list) {
+            list.style.position = 'absolute';
+            list.style.left = '0';
+            list.style.right = '0';
+            list.style.bottom = '100%';
+            list.style.top = 'auto';
+            list.style.maxHeight = '300px';
+            list.style.overflowY = 'auto';
+          }
+        }, 200);
 
-        // 播放器拖动
+        // 播放器拖动 - 绑定到整个aplayer
         (function makeDraggable(){
           var bar = wrap.querySelector('.aplayer');
           if (!bar) return setTimeout(makeDraggable, 500);
-          var handle = bar.querySelector('.aplayer-body') || bar;
+          // 拖动句柄：aplayer-info区域（标题栏）
+          var handle = bar.querySelector('.aplayer-info') || bar.querySelector('.aplayer-body') || bar;
           var dragging = false, startX, startY, startRight, startBottom;
           handle.style.cursor = 'move';
           handle.addEventListener('mousedown', function(e){
+            // 排除按钮点击触发拖动
+            if (e.target.closest('button, .aplayer-icon, .aplayer-bar-wrap')) return;
             dragging = true;
             startX = e.clientX; startY = e.clientY;
             var s = getComputedStyle(wrap);
             startRight = parseInt(s.right) || 20;
             startBottom = parseInt(s.bottom) || 20;
             wrap.style.transition = 'none';
+            e.preventDefault();
           });
           document.addEventListener('mousemove', function(e){
             if (!dragging) return;
             var dx = startX - e.clientX;
             var dy = e.clientY - startY;
-            wrap.style.right = (startRight + dx) + 'px';
-            wrap.style.bottom = (startBottom - dy) + 'px';
+            wrap.style.right = Math.max(0, startRight + dx) + 'px';
+            wrap.style.bottom = Math.max(0, startBottom - dy) + 'px';
           });
           document.addEventListener('mouseup', function(){ dragging = false; });
         })();
