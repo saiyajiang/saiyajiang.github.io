@@ -115,10 +115,10 @@
 
             <!-- 随机摘抄 / Wiki -->
             <div class="card fortune-box">
-                <div class="card-header">$ fortune</div>
+                <div class="card-header">$ fortune <button class="fortune-refresh" id="fortuneRefresh" title="换一条">&#x21bb;</button></div>
                 <div class="card-body-sm">
                     <div class="fortune-category" id="fortuneCategory"></div>
-                    <div class="fortune-text" id="fortuneText"></div>
+                    <a class="fortune-text" id="fortuneText" href="#" target="_blank"></a>
                 </div>
             </div>
         </aside>
@@ -291,17 +291,31 @@
             // 从摘抄文章中提取
             for (var i = 0; i < articles.length; i++) {
                 if (articles[i].tags.indexOf('摘抄') !== -1) {
-                    pool.push({ category: '摘抄', text: articles[i].summary });
+                    pool.push({ category: '摘抄', text: articles[i].summary, url: articles[i].url });
                 }
             }
             // 合并 wiki 条目
             if (window.WIKI_ENTRIES && window.WIKI_ENTRIES.length) {
                 pool = pool.concat(window.WIKI_ENTRIES);
             }
-            if (pool.length > 0) {
+
+            function showRandom() {
+                if (pool.length === 0) return;
                 var item = pool[Math.floor(Math.random() * pool.length)];
                 document.getElementById('fortuneCategory').textContent = item.category;
-                document.getElementById('fortuneText').textContent = item.text;
+                var textEl = document.getElementById('fortuneText');
+                textEl.textContent = item.text;
+                textEl.href = item.url || '#';
+            }
+
+            showRandom();
+
+            var btn = document.getElementById('fortuneRefresh');
+            if (btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showRandom();
+                });
             }
         })();
 

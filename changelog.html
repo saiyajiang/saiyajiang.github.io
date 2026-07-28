@@ -57,6 +57,13 @@
         var changelog = [
             {
                 date: '2026-07-28',
+                hash: 'fortune',
+                title: '右侧栏 fortune 卡片增加刷新与跳转',
+                desc: '右侧栏 fortune 卡片新增 [↻] 刷新按钮（纯 JS 局部重抽）。条目文字改为可点击链接：wiki 条目跳转到 wiki/index.html 对应分类锚点，摘抄文章跳转到对应 post 页面。更新 wiki/index.html 分类锚点 id，wiki-data.js 每条增加 url 字段。同步 style.v2.css 按钮和链接样式。',
+                tags: ['UI', 'JS']
+            },
+            {
+                date: '2026-07-28',
                 hash: 'layout',
                 title: '首页布局优化 + 右侧栏随机展示',
                 desc: '首页中间区域添加 max-height 限制并启用内部滚动，三栏高度对齐。右侧栏改为随机展示：从 8 篇摘抄文章和 42 条 wiki 条目（共 50 条）中随机抽取，终端风 $ fortune 卡片，每次刷新切换。新增 assets/wiki-data.js 数据文件。',
