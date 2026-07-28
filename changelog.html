@@ -57,6 +57,13 @@
         var changelog = [
             {
                 date: '2026-07-28',
+                hash: 'layout',
+                title: '首页布局优化 + 右侧栏随机展示',
+                desc: '首页中间区域添加 max-height 限制并启用内部滚动，三栏高度对齐。右侧栏改为随机展示：从 8 篇摘抄文章和 42 条 wiki 条目（共 50 条）中随机抽取，终端风 $ fortune 卡片，每次刷新切换。新增 assets/wiki-data.js 数据文件。',
+                tags: ['UI', 'New']
+            },
+            {
+                date: '2026-07-28',
                 hash: 'wiki',
                 title: '新增 wiki 笔记专区',
                 desc: '新建 wiki/index.html，将零散知识点按 8 个分类整理为百科式笔记：佛学典故、诗词典故、成语习语、字义辨析（听）、医学与心理、行话与缩写、神话与民俗、词源拾零。更新 index.html / archive.html / changelog.html 导航栏及 sitemap.xml。',

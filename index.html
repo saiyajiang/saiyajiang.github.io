@@ -113,12 +113,12 @@
         <!-- 右侧栏 -->
         <aside class="sidebar" id="rightSidebar">
 
-            <!-- 名言 -->
-            <div class="card quote-box">
-                <div class="card-header">$ fortune | cowsay</div>
+            <!-- 随机摘抄 / Wiki -->
+            <div class="card fortune-box">
+                <div class="card-header">$ fortune</div>
                 <div class="card-body-sm">
-                    <div class="quote-text" id="quoteText"></div>
-                    <div class="quote-author" id="quoteAuthor"></div>
+                    <div class="fortune-category" id="fortuneCategory"></div>
+                    <div class="fortune-text" id="fortuneText"></div>
                 </div>
             </div>
         </aside>
@@ -140,6 +140,7 @@
 
     <!-- ==================== 公共 JS ==================== -->
     <script src="assets/site.js"></script>
+    <script src="assets/wiki-data.js"></script>
 
     <!-- ==================== 页面专属 JS ==================== -->
     <script>
@@ -166,16 +167,6 @@
             { title: 'RPG Maker MV 常用脚本调用参考',          date: '2026-03-20', cat: 'rpgmaker', tags: ['RPG-Maker', '脚本', '教程'],           summary: 'RPG Maker MV 中常用脚本命令的调用方法与参考手册。', url: 'posts/post-rpg-3.html' }
         ];
 
-        /* ---- 名言数据 ---- */
-        var quotes = [
-            { text: 'Simplicity is prerequisite for reliability.', author: 'Edsger W. Dijkstra' },
-            { text: 'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.', author: 'Martin Fowler' },
-            { text: 'First, solve the problem. Then, write the code.', author: 'John Johnson' },
-            { text: 'Talk is cheap. Show me the code.', author: 'Linus Torvalds' },
-            { text: 'The best way to predict the future is to invent it.', author: 'Alan Kay' },
-            { text: '代码如诗，架构如画。', author: '无名' },
-            { text: 'Debugging is twice as hard as writing the code in the first place.', author: 'Brian Kernighan' }
-        ];
 
         /* ---- 状态 ---- */
         var articleList   = document.getElementById('articleList');
@@ -294,16 +285,25 @@
             });
         }
 
-        /* ---- 名言轮播 ---- */
-        var quoteIdx = Math.floor(Math.random() * quotes.length);
-        function showQuote() {
-            var q = quotes[quoteIdx];
-            document.getElementById('quoteText').textContent   = q.text;
-            document.getElementById('quoteAuthor').textContent = q.author;
-            quoteIdx = (quoteIdx + 1) % quotes.length;
-        }
-        showQuote();
-        setInterval(showQuote, 12000);
+        /* ---- 随机摘抄 / Wiki ---- */
+        (function() {
+            var pool = [];
+            // 从摘抄文章中提取
+            for (var i = 0; i < articles.length; i++) {
+                if (articles[i].tags.indexOf('摘抄') !== -1) {
+                    pool.push({ category: '摘抄', text: articles[i].summary });
+                }
+            }
+            // 合并 wiki 条目
+            if (window.WIKI_ENTRIES && window.WIKI_ENTRIES.length) {
+                pool = pool.concat(window.WIKI_ENTRIES);
+            }
+            if (pool.length > 0) {
+                var item = pool[Math.floor(Math.random() * pool.length)];
+                document.getElementById('fortuneCategory').textContent = item.category;
+                document.getElementById('fortuneText').textContent = item.text;
+            }
+        })();
 
         /* ---- 初始渲染 ---- */
         renderArticles();
