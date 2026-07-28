@@ -1,6 +1,48 @@
 /* 文章数据源 —— 新增文章只需在此数组添加一项，首页与归档页会自动更新 */
 window.SITE_POSTS = [
   {
+    title: "昔日我曾苍老",
+    date: "2026-07-28",
+    url: "posts/post-quote-1.html",
+    tags: ["名句", "鲍勃·迪伦", "音乐"],
+    excerpt: "鲍勃·迪伦《My Back Pages》名句：昔日我曾如此苍老，如今才是风华正茂。"
+  },
+  {
+    title: "讲真话",
+    date: "2026-07-28",
+    url: "posts/post-quote-2.html",
+    tags: ["名言", "政治", "奥威尔"],
+    excerpt: "一句被无数次归于乔治·奥威尔的名言，却是历史上最著名的张冠李戴之一。"
+  },
+  {
+    title: "无名情话",
+    date: "2026-07-28",
+    url: "posts/post-quote-3.html",
+    tags: ["名言", "爱情", "网络流传"],
+    excerpt: "中文互联网上传播最广的伪林徽因语录之一，以极致的卑微与清醒击中当代情感困境。"
+  },
+  {
+    title: "春风秋水辞",
+    date: "2026-07-28",
+    url: "posts/post-quote-4.html",
+    tags: ["诗词", "黄启远", "当代"],
+    excerpt: "吾与春风皆过客，君携秋水揽星河。黄启远新古典主义乐府诗，常被误传为林徽因所作。"
+  },
+  {
+    title: "影视台词三则",
+    date: "2026-07-28",
+    url: "posts/post-quote-5.html",
+    tags: ["台词", "影视", "美剧", "韩剧", "港片"],
+    excerpt: "三句来自美剧《邪恶》《倩女幽魂II》《坏家伙们》的台词，跨越二十余年。"
+  },
+  {
+    title: "历史",
+    date: "2026-07-28",
+    url: "posts/post-quote-6.html",
+    tags: ["名言", "文学", "朱利安·巴恩斯"],
+    excerpt: "朱利安·巴恩斯：不可靠的记忆与不充分的材料相遇所产生的确定性就是历史。"
+  },
+  {
     title: "一生所爱",
     date: "2026-07-26",
     url: "posts/post-song-1.html",

@@ -890,6 +890,7 @@ img { max-width: 100%; display: block; }
 .post-content ul, .post-content ol { color: var(--text-secondary); padding-left: 24px; margin-bottom: 18px; }
 .post-content li { margin-bottom: 8px; }
 .post-content blockquote { border-left: 3px solid var(--accent-2); padding: 16px 20px; margin: 24px 0; background: var(--accent2); border-radius: 0 10px 10px 0; color: var(--text-secondary); font-style: italic; }
+.post-content .lyric-block { background: var(--bg-elevated); border-left: 3px solid var(--accent-2); padding: 16px 20px; margin: 16px 0; border-radius: 0 10px 10px 0; color: var(--text-primary); line-height: 2.0; font-size: 15px; }
 .post-content code { background: var(--bg-elevated); border: 1px solid var(--border); padding: 2px 6px; border-radius: 5px; font-size: 13.5px; font-family: "Fira Code", ui-monospace, monospace; color: var(--accent); }
 .post-content pre { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin: 24px 0; overflow-x: auto; }
 .post-content pre code { background: none; border: none; padding: 0; font-size: 13.5px; color: var(--text-secondary); }
