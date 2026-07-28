@@ -8,6 +8,13 @@ window.SITE_POSTS = [
     excerpt: "电影《大话西游》片尾曲，唐书琛作词、卢冠廷作曲，写尽错过与命运。"
   },
   {
+    title: "且听风吟",
+    date: "2026-07-28",
+    url: "posts/post-song-2.html",
+    tags: ["歌词", "鸣潮", "且听风吟", "万声弥新"],
+    excerpt: "《鸣潮》万声弥新原声带，云之泣演唱，冉语优作词，写风与远方。"
+  },
+  {
     title: "摸鱼儿·恨人间情是何物",
     date: "2026-07-25",
     url: "posts/post-poem-1.html",
