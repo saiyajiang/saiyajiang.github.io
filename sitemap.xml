@@ -42,7 +42,17 @@
   </url>
   <url>
     <loc>https://saiyajiang.github.io/posts/post-rpg-3.html</loc>
-    <lastmod>2026-07-25</lastmod>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://saiyajiang.github.io/posts/post-poem-1.html</loc>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://saiyajiang.github.io/posts/post-song-1.html</loc>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>monthly</changefreq>
   </url>
 </urlset>
