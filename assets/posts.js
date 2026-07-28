@@ -5,42 +5,56 @@ window.SITE_POSTS = [
     date: "2026-07-28",
     url: "posts/post-quote-1.html",
     tags: ["摘抄"],
-    excerpt: "鲍勃·迪伦《My Back Pages》名句：昔日我曾如此苍老，如今才是风华正茂。"
+    excerpt: "昔日我曾如此苍老，如今才是风华正茂。"
   },
   {
     title: "摘抄",
     date: "2026-07-28",
     url: "posts/post-quote-2.html",
     tags: ["摘抄"],
-    excerpt: "一句被无数次归于乔治·奥威尔的名言，却是历史上最著名的张冠李戴之一。"
+    excerpt: "在普天下皆骗的时代，讲真话就是一种革命行为。"
   },
   {
     title: "摘抄",
     date: "2026-07-28",
     url: "posts/post-quote-3.html",
     tags: ["摘抄"],
-    excerpt: "中文互联网上传播最广的伪林徽因语录之一，以极致的卑微与清醒击中当代情感困境。"
+    excerpt: "你若拥我入怀，疼我入骨，护我周全；我愿意蒙上双眼，不去分辩你是人是鬼。"
   },
   {
     title: "摘抄",
     date: "2026-07-28",
     url: "posts/post-quote-4.html",
     tags: ["摘抄"],
-    excerpt: "吾与春风皆过客，君携秋水揽星河。黄启远新古典主义乐府诗，常被误传为林徽因所作。"
+    excerpt: "吾与春风皆过客，君携秋水揽星河。"
   },
   {
     title: "摘抄",
     date: "2026-07-28",
     url: "posts/post-quote-5.html",
     tags: ["摘抄"],
-    excerpt: "三句来自美剧《邪恶》《倩女幽魂II》《坏家伙们》的台词，跨越二十余年。"
+    excerpt: "世界变得越来越糟，因为邪恶不再是孤立的。坏人在相互交流。"
   },
   {
     title: "摘抄",
     date: "2026-07-28",
     url: "posts/post-quote-6.html",
     tags: ["摘抄"],
-    excerpt: "朱利安·巴恩斯：不可靠的记忆与不充分的材料相遇所产生的确定性就是历史。"
+    excerpt: "朝廷里的恩怨，非我一介武夫所能干预。通常的是非，都是真相不白的。"
+  },
+  {
+    title: "摘抄",
+    date: "2026-07-28",
+    url: "posts/post-quote-7.html",
+    tags: ["摘抄"],
+    excerpt: "到底是世界疯掉之后让人们变得疯狂呢，还是人们疯掉之后让世界显得疯狂呢。"
+  },
+  {
+    title: "摘抄",
+    date: "2026-07-28",
+    url: "posts/post-quote-8.html",
+    tags: ["摘抄"],
+    excerpt: "不可靠的记忆与不充分的材料相遇所产生的确定性就是历史。"
   },
   {
     title: "一生所爱",
