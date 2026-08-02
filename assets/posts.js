@@ -1,62 +1,6 @@
 /* 文章数据源 —— 新增文章只需在此数组添加一项，首页与归档页会自动更新 */
 window.SITE_POSTS = [
   {
-    title: "摘抄",
-    date: "2026-07-28",
-    url: "posts/post-quote-1.html",
-    tags: ["摘抄", "鲍勃·迪伦", "My Back Pages"],
-    excerpt: "昔日我曾如此苍老，如今才是风华正茂。"
-  },
-  {
-    title: "摘抄",
-    date: "2026-07-28",
-    url: "posts/post-quote-2.html",
-    tags: ["摘抄", "乔治·奥威尔"],
-    excerpt: "在普天下皆骗的时代，讲真话就是一种革命行为。"
-  },
-  {
-    title: "摘抄",
-    date: "2026-07-28",
-    url: "posts/post-quote-3.html",
-    tags: ["摘抄", "网络流传"],
-    excerpt: "你若拥我入怀，疼我入骨，护我周全；我愿意蒙上双眼，不去分辩你是人是鬼。"
-  },
-  {
-    title: "摘抄",
-    date: "2026-07-28",
-    url: "posts/post-quote-4.html",
-    tags: ["摘抄", "黄启远", "春风秋水辞"],
-    excerpt: "吾与春风皆过客，君携秋水揽星河。"
-  },
-  {
-    title: "摘抄",
-    date: "2026-07-28",
-    url: "posts/post-quote-5.html",
-    tags: ["摘抄", "邪恶", "Evil"],
-    excerpt: "世界变得越来越糟，因为邪恶不再是孤立的。坏人在相互交流。"
-  },
-  {
-    title: "摘抄",
-    date: "2026-07-28",
-    url: "posts/post-quote-6.html",
-    tags: ["摘抄", "倩女幽魂II"],
-    excerpt: "朝廷里的恩怨，非我一介武夫所能干预。通常的是非，都是真相不白的。"
-  },
-  {
-    title: "摘抄",
-    date: "2026-07-28",
-    url: "posts/post-quote-7.html",
-    tags: ["摘抄", "坏家伙们"],
-    excerpt: "到底是世界疯掉之后让人们变得疯狂呢，还是人们疯掉之后让世界显得疯狂呢。"
-  },
-  {
-    title: "摘抄",
-    date: "2026-07-28",
-    url: "posts/post-quote-8.html",
-    tags: ["摘抄", "朱利安·巴恩斯", "终结的感觉"],
-    excerpt: "不可靠的记忆与不充分的材料相遇所产生的确定性就是历史。"
-  },
-  {
     title: "一生所爱",
     date: "2026-07-26",
     url: "posts/post-song-1.html",
