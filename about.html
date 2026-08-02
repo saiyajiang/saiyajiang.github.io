@@ -1,75 +1,64 @@
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>关于 · 悲歌的小站</title>
-    <link rel="stylesheet" href="assets/style.v2.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>关于 · 悲歌的小站</title>
+  <link rel="stylesheet" href="assets/style.v2.css" />
 </head>
-<body>
+<body data-page="about">
 
-    <!-- ==================== HEADER ==================== -->
-    <header class="site-header" id="header">
-        <div class="header-inner">
-            <button class="menu-toggle" id="menuToggle" aria-label="菜单">
-                <span></span><span></span><span></span>
-            </button>
-            <nav class="nav-menu" id="navMenu">
-                <a href="index.html">~/blog</a>
-                <a href="archive.html">~/archive</a>
-                <a href="wiki/index.html">~/wiki</a>
-                <a href="about.html">~/about</a>
-                <a href="quotes.html">~/quotes</a>
-                <a href="changelog.html">~/changelog</a>
-            </nav>
-            <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">☀</button>
+<header class="site-header" id="header">
+  <div class="header-inner">
+    <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    <nav class="nav-menu" id="navMenu">
+      <a href="index.html">~/blog</a>
+      <a href="archive.html">~/archive</a>
+      <a href="wiki/index.html">~/wiki</a>
+      <a href="about.html">~/about</a>
+      <a href="quotes.html">~/quotes</a>
+      <a href="changelog.html">~/changelog</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">&#9788;</button>
+  </div>
+</header>
+
+<main id="app" class="page-content">
+  <section class="page-card">
+    <div class="card-header">$ cat README.md</div>
+    <div class="card-body">
+      <div class="about-section">
+        <h2>内容方向</h2>
+        <p>现在主要是 RPG Maker 相关资源整理、Windows 使用记录、NVIDIA 硬件故障排查，以及偶尔的其他折腾记录。不限主题，想到什么写什么。</p>
+      </div>
+      <div class="about-section">
+        <h2>如何评论</h2>
+        <p>每篇文章底部有「去 GitHub 发表讨论」按钮，跳转到对应 Issue 页面，用 GitHub 账号登录后可以留言。</p>
+        <div class="about-steps">
+          <div class="about-step">点击文章底部的「去 GitHub 发表讨论」</div>
+          <div class="about-step">用 GitHub 账号登录（没有的话注册一个，免费）</div>
+          <div class="about-step">填写内容提交即可</div>
         </div>
-    </header>
+      </div>
+      <div class="about-section">
+        <h2>联系</h2>
+        <a href="https://github.com/saiyajiang" class="contact-link" target="_blank">~/github &rarr; saiyajiang</a>
+      </div>
+    </div>
+  </section>
+</main>
 
-    <!-- ==================== 主体 ==================== -->
-    <main class="page-content">
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>$ echo "&copy; 2026 悲歌的小站 &middot; Powered by GitHub Pages"</span>
+    <div class="footer-links">
+      <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
+    </div>
+  </div>
+</footer>
 
-        <section class="page-card">
-            <div class="card-header">$ cat README.md</div>
-            <div class="card-body">
+<button class="back-to-top" id="backToTop" aria-label="返回顶部" title="返回顶部">cd /</button>
 
-                <div class="about-section">
-                    <h2>内容方向</h2>
-                    <p>现在主要是 RPG Maker 相关资源整理、Windows 使用记录、NVIDIA 硬件故障排查，以及偶尔的其他折腾记录。不限主题，想到什么写什么。</p>
-                </div>
-
-                <div class="about-section">
-                    <h2>如何评论</h2>
-                    <p>每篇文章底部有「去 GitHub 发表讨论」按钮，跳转到对应 Issue 页面，用 GitHub 账号登录后可以留言。</p>
-                    <div class="about-steps">
-                        <div class="about-step">点击文章底部的「去 GitHub 发表讨论」</div>
-                        <div class="about-step">用 GitHub 账号登录（没有的话注册一个，免费）</div>
-                        <div class="about-step">填写内容提交即可</div>
-                    </div>
-                </div>
-
-                <div class="about-section">
-                    <h2>联系</h2>
-                    <a href="https://github.com/saiyajiang" class="contact-link" target="_blank">~/github &rarr; saiyajiang</a>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ==================== FOOTER ==================== -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <span>$ echo "&copy; 2026 悲歌的小站 &middot; Powered by GitHub Pages"</span>
-            <div class="footer-links">
-                <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
-            </div>
-        </div>
-    </footer>
-
-    <button class="back-to-top" id="backToTop" aria-label="返回顶部" title="返回顶部">cd /</button>
-
-    <script src="assets/site.js"></script>
+<script src="assets/site.js"></script>
 </body>
 </html>

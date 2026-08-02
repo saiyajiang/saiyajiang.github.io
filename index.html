@@ -1,326 +1,82 @@
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>悲歌的小站</title>
-    <link rel="stylesheet" href="assets/style.v2.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>悲歌的小站</title>
+  <link rel="stylesheet" href="assets/style.v2.css" />
 </head>
-<body>
+<body data-page="blog">
 
-    <!-- ==================== HEADER ==================== -->
-    <header class="site-header" id="header">
-        <div class="header-inner">
-            <button class="menu-toggle" id="menuToggle" aria-label="菜单">
-                <span></span><span></span><span></span>
-            </button>
-            <nav class="nav-menu" id="navMenu">
-                <a href="index.html">~/blog</a>
-                <a href="archive.html">~/archive</a>
-                <a href="wiki/index.html">~/wiki</a>
-                <a href="about.html">~/about</a>
-                <a href="quotes.html">~/quotes</a>
-                <a href="changelog.html">~/changelog</a>
-            </nav>
-            <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">☀</button>
-        </div>
-    </header>
+<!-- ==================== HEADER ==================== -->
+<header class="site-header" id="header">
+  <div class="header-inner">
+    <button class="menu-toggle" id="menuToggle" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-menu" id="navMenu">
+      <a href="index.html">~/blog</a>
+      <a href="archive.html">~/archive</a>
+      <a href="wiki/index.html">~/wiki</a>
+      <a href="about.html">~/about</a>
+      <a href="quotes.html">~/quotes</a>
+      <a href="changelog.html">~/changelog</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">&#9788;</button>
+  </div>
+</header>
 
-    <!-- ==================== 主体三栏 ==================== -->
-    <div class="main-wrapper">
+<!-- ==================== 三栏布局 ==================== -->
+<div class="main-wrapper">
 
-        <!-- 左侧栏 -->
-        <aside class="sidebar" id="leftSidebar">
-
-            <!-- 个人信息 -->
-            <div class="card profile-card-wrap">
-                <div class="card-header">$ cat profile.json</div>
-                <div class="card-body-sm">
-                    <div class="avatar-placeholder">悲</div>
-                    <div class="name">悲歌</div>
-                    <div class="bio">随便写写，记录一些东西。<br>游戏开发、编程随笔、折腾记录，<br>以及偶尔的一些碎碎念。</div>
-                    <div class="social-links">
-                        <a href="https://github.com/saiyajiang" target="_blank" title="GitHub" style="width:auto;padding:0 12px;">~/github</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 标签云 -->
-            <div class="card">
-                <div class="card-header">$ ls tags/</div>
-                <div class="card-body-sm">
-                    <div class="tag-cloud" id="tagCloud">
-                        <a data-tag="RPG-Maker">RPG-Maker</a>
-                        <a data-tag="插件汉化">插件汉化</a>
-                        <a data-tag="GIF">GIF</a>
-                        <a data-tag="素材">素材</a>
-                        <a data-tag="脚本">脚本</a>
-                        <a data-tag="教程">教程</a>
-                        <a data-tag="Windows">Windows</a>
-                        <a data-tag="NVIDIA">NVIDIA</a>
-                        <a data-tag="故障排查">故障排查</a>
-                        <a data-tag="歌词">歌词</a>
-                        <a data-tag="一生所爱">一生所爱</a>
-                        <a data-tag="大话西游">大话西游</a>
-                        <a data-tag="诗词">诗词</a>
-                        <a data-tag="元好问">元好问</a>
-                        <a data-tag="赏析">赏析</a>
-                        <a data-tag="鸣潮">鸣潮</a>
-                        <a data-tag="且听风吟">且听风吟</a>
-                        <a data-tag="万声弥新">万声弥新</a>
-                        <a data-tag="摘抄">摘抄</a>
-                        <a data-tag="鲍勃·迪伦">鲍勃·迪伦</a>
-                        <a data-tag="My Back Pages">My Back Pages</a>
-                        <a data-tag="乔治·奥威尔">乔治·奥威尔</a>
-                        <a data-tag="网络流传">网络流传</a>
-                        <a data-tag="黄启远">黄启远</a>
-                        <a data-tag="春风秋水辞">春风秋水辞</a>
-                        <a data-tag="邪恶">邪恶</a>
-                        <a data-tag="Evil">Evil</a>
-                        <a data-tag="倩女幽魂II">倩女幽魂II</a>
-                        <a data-tag="坏家伙们">坏家伙们</a>
-                        <a data-tag="朱利安·巴恩斯">朱利安·巴恩斯</a>
-                        <a data-tag="终结的感觉">终结的感觉</a>
-                </div>
-            </div>
-        </aside>
-
-        <!-- 中间主体 -->
-        <main class="content-main">
-
-            <!-- 文章列表区 -->
-            <section class="card" id="posts">
-                <div class="card-header">$ ls posts/</div>
-                <div class="card-body">
-                    <!-- 搜索框 -->
-                    <div class="search-wrap">
-                        <input type="text" class="search-input" id="searchInput" placeholder="$ grep -i ..." />
-                        <span class="search-icon">$</span>
-                    </div>
-                    <!-- 分类标签 -->
-                    <div class="category-tabs" id="categoryTabs">
-                        <span class="category-tab active" data-cat="all">/* <span class="count">(14)</span></span>
-                        <span class="category-tab" data-cat="rpgmaker">./rpgmaker/ <span class="count">(4)</span></span>
-                        <span class="category-tab" data-cat="tech">./tech/ <span class="count">(1)</span></span>
-                        <span class="category-tab" data-cat="literature">./literature/ <span class="count">(11)</span></span>
-                    </div>
-                    <!-- 文章列表 -->
-                    <div class="article-list" id="articleList"></div>
-                </div>
-            </section>
-
-        </main>
-
-        <!-- 右侧栏 -->
-        <aside class="sidebar" id="rightSidebar">
-
-            <!-- 随机摘抄 / Wiki -->
-            <div class="card fortune-box">
-                <div class="card-header">$ fortune <button class="fortune-refresh" id="fortuneRefresh" title="换一条">&#x21bb;</button></div>
-                <div class="card-body-sm">
-                    <div class="fortune-category" id="fortuneCategory"></div>
-                    <a class="fortune-text" id="fortuneText" href="#"></a>
-                </div>
-            </div>
-        </aside>
-
+  <aside class="sidebar sidebar-left">
+    <div class="card">
+      <div class="card-header">$ tags</div>
+      <div class="card-body-sm">
+        <div class="tag-cloud" id="tagCloud"></div>
+      </div>
     </div>
+    <div class="card">
+      <div class="card-header">$ whoami</div>
+      <div class="card-body-sm profile-card">
+        <div class="profile-avatar">&#9998;</div>
+        <div class="profile-name">悲歌</div>
+        <div class="profile-bio">随便写写，记录一些东西。<br>游戏开发、编程随笔、折腾记录，以及偶尔的一些碎碎念。</div>
+        <div class="profile-links"><a href="https://github.com/saiyajiang" target="_blank">GitHub</a></div>
+      </div>
+    </div>
+  </aside>
 
-    <!-- ==================== FOOTER ==================== -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <span>$ echo "&copy; 2026 悲歌的小站 &middot; Powered by GitHub Pages"</span>
-            <div class="footer-links">
-                <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
-            </div>
-        </div>
-    </footer>
+  <main id="app" class="content-main"></main>
 
-    <!-- 返回顶部 -->
-    <button class="back-to-top" id="backToTop" aria-label="返回顶部" title="返回顶部">cd /</button>
+  <aside class="sidebar sidebar-right">
+    <div class="card">
+      <div class="card-header">$ fortune <a href="#" class="fortune-refresh" id="fortuneRefresh" title="再抽一条">&#8635;</a></div>
+      <div class="card-body-sm fortune-card">
+        <div class="fortune-cat" id="fortuneCategory"></div>
+        <a class="fortune-text" id="fortuneText" href="#" target="_blank"></a>
+      </div>
+    </div>
+  </aside>
 
-    <!-- ==================== 公共 JS ==================== -->
-    <script src="assets/site.js"></script>
-    <script src="assets/wiki-data.js"></script>
+</div>
 
-    <!-- ==================== 页面专属 JS ==================== -->
-    <script>
-    (function() {
-        'use strict';
+<!-- ==================== FOOTER ==================== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>$ echo "&copy; 2026 悲歌的小站 &middot; Powered by GitHub Pages"</span>
+    <div class="footer-links">
+      <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
+    </div>
+  </div>
+</footer>
 
-        /* ---- 文章数据 ---- */
-        var articles = [
-            { title: '且听风吟',                              date: '2026-07-28', cat: 'literature', tags: ['歌词', '鸣潮', '且听风吟', '万声弥新'], summary: '《鸣潮》万声弥新原声带，云之泣演唱，冉语优作词，写风与远方。', url: 'posts/post-song-2.html' },
-            { title: '一生所爱',                              date: '2026-07-26', cat: 'literature', tags: ['歌词', '一生所爱', '大话西游'],         summary: '电影《大话西游》片尾曲，唐书琛作词、卢冠廷作曲，写尽错过与命运。', url: 'posts/post-song-1.html' },
-            { title: '摸鱼儿·恨人间情是何物',                 date: '2026-07-25', cat: 'literature', tags: ['诗词', '元好问', '赏析'],              summary: '金·元好问《摸鱼儿·雁丘词》，因一只大雁殉情而作，成为"情"字的极致表达。', url: 'posts/post-poem-1.html' },
-            { title: 'NVIDIA APP 怎么也无法更新或卸载？可以尝试删除这个注册表项', date: '2026-02-10', cat: 'tech', tags: ['Windows', 'NVIDIA', '故障排查'], summary: '记录一次 NVIDIA APP 无法更新与卸载的解决过程，通过删除注册表项解决问题。', url: 'posts/post-7.html' },
-            { title: 'RPG Maker MV 资源导航页',               date: '2026-04-01', cat: 'rpgmaker', tags: ['RPG-Maker', '插件汉化', '素材', 'GIF'],  summary: 'RPG Maker MV 相关插件汉化、GIF 素材、脚本资源的整理导航。', url: 'posts/post-old-rpg.html' },
-            { title: 'RPG Maker MV 插件汉化列表',              date: '2026-04-02', cat: 'rpgmaker', tags: ['RPG-Maker', '插件汉化'],               summary: '整理 RPG Maker MV 常用插件的汉化版本列表及下载地址。', url: 'posts/post-rpg-1.html' },
-            { title: 'RPG Maker 事件 GIF 素材汇总',            date: '2026-03-15', cat: 'rpgmaker', tags: ['RPG-Maker', 'GIF', '素材'],             summary: '收集整理 RPG Maker 事件系统常用的 GIF 动图素材。', url: 'posts/post-rpg-2.html' },
-            { title: 'RPG Maker MV 常用脚本调用参考',          date: '2026-03-20', cat: 'rpgmaker', tags: ['RPG-Maker', '脚本', '教程'],           summary: 'RPG Maker MV 中常用脚本命令的调用方法与参考手册。', url: 'posts/post-rpg-3.html' }
-        ];
+<button class="back-to-top" id="backToTop" aria-label="返回顶部" title="返回顶部">cd /</button>
 
-
-        /* ---- 状态 ---- */
-        var articleList   = document.getElementById('articleList');
-        var categoryTabs  = document.getElementById('categoryTabs');
-        var searchInput   = document.getElementById('searchInput');
-        var tagCloud      = document.getElementById('tagCloud');
-        var currentCat    = 'all';
-        var currentSearch = '';
-        var currentTag    = '';
-
-        /* ---- 搜索过滤 ---- */
-        function matchesSearch(article) {
-            if (!currentSearch) return true;
-            var q = currentSearch.toLowerCase();
-            if (article.title.toLowerCase().indexOf(q) !== -1) return true;
-            if (article.summary.toLowerCase().indexOf(q) !== -1) return true;
-            for (var i = 0; i < article.tags.length; i++) {
-                if (article.tags[i].toLowerCase().indexOf(q) !== -1) return true;
-            }
-            return false;
-        }
-
-        function matchesTag(article) {
-            if (!currentTag) return true;
-            for (var i = 0; i < article.tags.length; i++) {
-                if (article.tags[i] === currentTag) return true;
-            }
-            return false;
-        }
-
-        function renderArticles() {
-            var cat    = currentCat;
-            var filtered = articles;
-
-            if (cat !== 'all') {
-                filtered = filtered.filter(function(a) { return a.cat === cat; });
-            }
-            filtered = filtered.filter(matchesSearch).filter(matchesTag);
-
-            if (filtered.length === 0) {
-                articleList.innerHTML = '<div class="article-empty">$ find . -name "*' + (currentSearch || '*') + '" => 0 results</div>';
-                return;
-            }
-
-            var html = '';
-            filtered.forEach(function(a) {
-                html += '<div class="article-item">';
-                html += '  <div class="article-title"><a href="' + a.url + '">$ cat ' + a.title + '</a></div>';
-                html += '  <div class="article-meta">';
-                html += '    <span class="article-date">' + a.date + '</span>';
-                for (var i = 0; i < a.tags.length; i++) {
-                    html += '    <span class="article-cat">' + a.tags[i] + '</span>';
-                }
-                html += '  </div>';
-                html += '  <div class="article-summary">' + a.summary + '</div>';
-                html += '</div>';
-            });
-            articleList.innerHTML = html;
-        }
-
-        /* ---- 分类切换 ---- */
-        categoryTabs.addEventListener('click', function(e) {
-            var tab = e.target.closest('.category-tab');
-            if (!tab) return;
-            currentCat = tab.getAttribute('data-cat');
-            currentTag = '';
-
-            var tabs = categoryTabs.querySelectorAll('.category-tab');
-            tabs.forEach(function(t) { t.classList.remove('active'); });
-            tab.classList.add('active');
-
-            var tagsA = tagCloud.querySelectorAll('a');
-            tagsA.forEach(function(t) { t.classList.remove('active-tag'); });
-
-            renderArticles();
-
-        /* ---- 同步到全局，供 site.js 共用功能使用 ---- */
-        window.SITE_POSTS = articles.map(function(a){ return {
-          title: a.title, date: a.date, tags: a.tags,
-          url: a.url, excerpt: a.summary
-        }; });
-        });
-
-        /* ---- 搜索 ---- */
-        searchInput.addEventListener('input', function() {
-            currentSearch = searchInput.value.trim();
-            renderArticles();
-        });
-
-        /* ---- 标签云点击 ---- */
-        if (tagCloud) {
-            tagCloud.addEventListener('click', function(e) {
-                var tagEl = e.target.closest('a');
-                if (!tagEl) return;
-                var tag = tagEl.getAttribute('data-tag');
-                if (!tag) return;
-
-                if (currentTag === tag) {
-                    currentTag = '';
-                    tagEl.classList.remove('active-tag');
-                } else {
-                    currentTag = tag;
-                    var tagsA = tagCloud.querySelectorAll('a');
-                    tagsA.forEach(function(t) { t.classList.remove('active-tag'); });
-                    tagEl.classList.add('active-tag');
-
-                    currentCat = 'all';
-                    var tabs = categoryTabs.querySelectorAll('.category-tab');
-                    tabs.forEach(function(t) { t.classList.remove('active'); });
-                    var allTab = categoryTabs.querySelector('[data-cat="all"]');
-                    if (allTab) allTab.classList.add('active');
-                }
-
-                renderArticles();
-                document.getElementById('posts').scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-
-        /* ---- 随机摘抄 / Wiki ---- */
-        (function() {
-            var pool = [];
-            // 从摘抄文章中提取
-            for (var i = 0; i < articles.length; i++) {
-                if (articles[i].tags.indexOf('摘抄') !== -1) {
-                    pool.push({ category: '摘抄', text: articles[i].summary, url: articles[i].url });
-                }
-            }
-            // 合并 wiki 条目
-            if (window.WIKI_ENTRIES && window.WIKI_ENTRIES.length) {
-                pool = pool.concat(window.WIKI_ENTRIES);
-            }
-
-            function showRandom() {
-                if (pool.length === 0) return;
-                var item = pool[Math.floor(Math.random() * pool.length)];
-                document.getElementById('fortuneCategory').textContent = item.category;
-                var textEl = document.getElementById('fortuneText');
-                textEl.textContent = item.text;
-                textEl.href = item.url || '#';
-            }
-
-            showRandom();
-
-            var btn = document.getElementById('fortuneRefresh');
-            if (btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    showRandom();
-                });
-            }
-        })();
-
-        /* ---- 初始渲染 ---- */
-        renderArticles();
-        /* ---- 同步到全局，供 site.js 共用功能使用 ---- */
-        window.SITE_POSTS = articles.map(function(a){ return {
-          title: a.title, date: a.date, tags: a.tags,
-          url: a.url, excerpt: a.summary
-        }; });
-
-    })();
-    </script>
+<script src="assets/data/site-config.js"></script>
+<script src="assets/data/blog.js"></script>
+<script src="assets/data/quotes.js"></script>
+<script src="assets/data/wiki.js"></script>
+<script src="assets/site.js"></script>
 </body>
 </html>

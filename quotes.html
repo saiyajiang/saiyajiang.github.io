@@ -3,380 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>摘抄与短语 · 悲歌的小站</title>
+  <title>摘抄 · 悲歌的小站</title>
   <link rel="stylesheet" href="assets/style.v2.css" />
 </head>
 <body data-page="quotes">
 
-<!-- ==================== HEADER ==================== -->
 <header class="site-header" id="header">
-    <div class="header-inner">
-        <button class="menu-toggle" id="menuToggle" aria-label="菜单">
-            <span></span><span></span><span></span>
-        </button>
-        <nav class="nav-menu" id="navMenu">
-            <a href="index.html">~/blog</a>
-            <a href="archive.html">~/archive</a>
-            <a href="wiki/index.html">~/wiki</a>
-            <a href="about.html">~/about</a>
-            <a href="quotes.html">~/quotes</a>
-            <a href="changelog.html">~/changelog</a>
-        </nav>
-        <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">☀</button>
-    </div>
+  <div class="header-inner">
+    <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    <nav class="nav-menu" id="navMenu">
+      <a href="index.html">~/blog</a>
+      <a href="archive.html">~/archive</a>
+      <a href="wiki/index.html">~/wiki</a>
+      <a href="about.html">~/about</a>
+      <a href="quotes.html">~/quotes</a>
+      <a href="changelog.html">~/changelog</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">&#9788;</button>
+  </div>
 </header>
 
-<!-- ==================== 主体 ==================== -->
-<div class="main-wrapper" style="grid-template-columns: 1fr min(780px, 90vw) 1fr;">
-<aside class="sidebar" style="visibility:hidden;"></aside>
-<main class="content-main">
-
-<div class="post-header">
-  <a href="index.html" class="back-link">← 返回首页</a>
+<div class="main-wrapper">
+  <main id="app" class="content-main"></main>
 </div>
 
-<article class="post-content">
-
-<div class="card">
-  <div class="card-header">$ cat quotes.txt</div>
-  <div class="card-body">
-    <p style="color:var(--text-secondary);margin:0;">摘抄与短语拾遗，来自书籍、影视、网络与日常收集。</p>
-  </div>
-</div>
-
-<hr class="section-divider" />
-
-<!-- ==================== 摘抄区 ==================== -->
-<h2 id="excerpts" style="scroll-margin-top:80px;">摘抄</h2>
-
-<div class="card">
-  <div class="card-header">$ ls excerpts/ (8)</div>
-  <div class="card-body-sm" style="display:grid;grid-template-columns:1fr;gap:12px;">
-
-    <div class="quote-item">
-      <blockquote>昔日我曾如此苍老，如今才是风华正茂。</blockquote>
-      <p class="quote-source">— 鲍勃·迪伦《My Back Pages》1964</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>在普天下皆骗的时代，讲真话就是一种革命行为。</blockquote>
-      <p class="quote-source">— 乔治·奥威尔 / 网络误归</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>你若拥我入怀，疼我入骨，护我周全；我愿意蒙上双眼，不去分辩你是人是鬼。你待我真心或敷衍，我心如明镜；我只为我的喜欢装傻一程。</blockquote>
-      <p class="quote-source">— 网络流传 · 伪林徽因语录</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>吾与春风皆过客，君携秋水揽星河。<br>
-      三星在天客在远，红豆抛尽相思折。<br>
-      且以弱水许山盟，山高水远千千褶。<br>
-      怜少欢薄别梦浅，谁立红楼演离歌？</blockquote>
-      <p class="quote-source">— 黄启远《春风秋水辞》1996</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>世界变得越来越糟，因为邪恶不再是孤立的。坏人在相互交流。他们联系起来。通过社交媒体。</blockquote>
-      <p class="quote-source">— 美剧《邪恶》Evil S01E01, CBS, 2019</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>朝廷里的恩怨，非我一介武夫所能干预。通常的是非，都是真相不白的，我也只好奉命行事。</blockquote>
-      <p class="quote-source">— 电影《倩女幽魂II：人间道》1990</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>到底是世界疯掉之后让人们变得疯狂呢，还是人们疯掉之后让世界显得疯狂呢。世界已经变了，只有我没变，这更让人发疯。</blockquote>
-      <p class="quote-source">— 韩剧《坏家伙们》S01E09, OCN, 2014</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>不可靠的记忆与不充分的材料相遇所产生的确定性就是历史。</blockquote>
-      <p class="quote-source">— 朱利安·巴恩斯《终结的感觉》2011</p>
-    </div>
-
-  </div>
-</div>
-
-<!-- ==================== 短语拾遗区 ==================== -->
-<h2 id="phrases" style="scroll-margin-top:80px;">短语拾遗</h2>
-
-<div class="card">
-  <div class="card-header">$ ls phrases/ (50)</div>
-  <div class="card-body-sm" style="display:grid;grid-template-columns:1fr;gap:12px;">
-
-    <div class="quote-item">
-      <blockquote>你可以不相信我的道德，但你可以相信我追逐利益的心。</blockquote>
-      <p class="quote-source">— 网络流传</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>东德和西德，彼此信任是因为我们手里都有武器，我们武装自己又是因为对彼此的不信任。戈尔巴乔夫先生，拆除这堵墙吧。</blockquote>
-      <p class="quote-source">— 里根《推倒这堵墙》演讲</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>骗过骗子能带来双倍快感。</blockquote>
-      <p class="quote-source">— 尼科洛·马基雅维利（电影《极寒之城》引用）</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>事实和谎言，我们这样的人是分不清的。不，我们明白区别，我们只是选择无视。</blockquote>
-      <p class="quote-source">— 电影《极寒之城》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>为什么我们活着？我是最后一个戴里克人了。我能感觉到无数的思想，无尽的黑暗，给我下命令吧，命令我死吧。这不是生命，这是病态，我不会像你一样。执行吧执行吧执行吧。你害怕了吗。我也是。</blockquote>
-      <p class="quote-source">— 《神秘博士》S01E06</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>永恒就是一个水晶山峰，小鸟来这里磨它的喙，几万年几千只将山峰磨平，永恒才过去一个瞬间。</blockquote>
-      <p class="quote-source">— 《神秘博士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>任何人都能对朋友的不幸感到同情，但要消受一个春风得意的朋友，则需要非常优良的天性。</blockquote>
-      <p class="quote-source">— 王尔德</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>百行孝为先，论心不论迹，论迹天下无孝子；万恶淫为首，论迹不论心，论心世上无好人。</blockquote>
-      <p class="quote-source">— 佚名</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>孩童之时，所言俱为孩童，所感如是孩童，所思亦复孩童，唯成年之后，便将童心摈弃。</blockquote>
-      <p class="quote-source">— 圣经新约 · 哥林多前书 13:11</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>「会有人过来说女人没啥意思的。」<br>「哈哈，我看说这话的都是些自己没啥意思的男的。」</blockquote>
-      <p class="quote-source">— 《了不起的麦瑟尔女士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>「我们要跟狗吃一样的食物？」<br>「不，是她要跟我们吃一样的食物。」</blockquote>
-      <p class="quote-source">— 《了不起的麦瑟尔女士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>「哎呦，我还以为你能抽烟呢。」<br>「抽不了你这种地狱火，谢谢。」</blockquote>
-      <p class="quote-source">— 《了不起的麦瑟尔女士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>我觉得我呆在这已经不叫生活了。我信任的所有人和事都让我失望了。我不知道我在这还有什么意义。</blockquote>
-      <p class="quote-source">— 《了不起的麦瑟尔女士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>我不开心，而且我厌倦了不开心，所以我给自己订了明晚的机票。</blockquote>
-      <p class="quote-source">— 《了不起的麦瑟尔女士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>实话跟你讲，爸爸，你根本不听别人讲话。</blockquote>
-      <p class="quote-source">— 《了不起的麦瑟尔女士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>整个世界就是个充满失望的地方，总会有人让你失望的，但你不能总是一走了之啊。</blockquote>
-      <p class="quote-source">— 《了不起的麦瑟尔女士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>既然我们都走不了，那为什么不想想留下来该怎么办呢？</blockquote>
-      <p class="quote-source">— 《了不起的麦瑟尔女士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>你得学学怎么享受当下。</blockquote>
-      <p class="quote-source">— 《了不起的麦瑟尔女士》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>只要还有一个人记得你，你就还活着。</blockquote>
-      <p class="quote-source">— 《西部世界》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>人类所谓的正常，不过只是很有限的一些行为，除此之外的意识状态都叫疯了。</blockquote>
-      <p class="quote-source">— 《西部世界》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>看来你开始怀疑你存在的本质了。</blockquote>
-      <p class="quote-source">— 《西部世界》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>我们得两个人联手才能幸存下去。但不是以盟友的身份，也不是以朋友的身份。你会尽力去阻挠我，最终我们两个人可能都会死，但我们的族类却会幸存下去。</blockquote>
-      <p class="quote-source">— 《西部世界》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>大愿成真，焉知非祸。</blockquote>
-      <p class="quote-source">— 《西部世界》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>事实是，人不过是一套简单的算法。他们简单得让人震惊。一旦你了解了他们，那么他们的行为……就基本可以预测了。</blockquote>
-      <p class="quote-source">— 《西部世界》</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Quitting is literally everything I've been aiming for.<br>辞职是我一直追求的目标。</blockquote>
-      <p class="quote-source">— Killing Eve 杀死伊芙</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>If you went high enough, you'd probably find we work for the same people.<br>如果你爬得够高，你可能会发现我们是为同一批人工作。</blockquote>
-      <p class="quote-source">— Killing Eve 杀死伊芙</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>You should never tell a psychopath they are a psychopath.<br>你永远不该告诉精神病患者他们是精神病。</blockquote>
-      <p class="quote-source">— Killing Eve 杀死伊芙</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Sad people are usually good.<br>悲伤的人往往都是好人。</blockquote>
-      <p class="quote-source">— Killing Eve 杀死伊芙</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>- What do you want? / 你想要什么？<br>- Normal stuff. A nice life. Cool flat. Fun job. Someone to watch movies with. / 普通的东西。一个不错的生活，一个不错的公寓，一个有趣的工作，一个一起看电影的人。</blockquote>
-      <p class="quote-source">— Killing Eve 杀死伊芙</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Language is information. And information is everything.<br>语言是信息。信息就是一切。</blockquote>
-      <p class="quote-source">— Killing Eve 杀死伊芙</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>God creates man. Man creates machine. Machine creates God.<br>神创造了人。人创造了机器。机器终于创造了神。</blockquote>
-      <p class="quote-source">— Humans 真实的人类</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>If you look like a duck and quack like a duck, it's generally a duck.<br>如果你看起来像鸭、叫起来也像鸭，那基本就是鸭。</blockquote>
-      <p class="quote-source">— Humans 真实的人类</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Humans are built for survival, the continuation of their species, nothing more.<br>人类的天性就是生存，就是延续他们的物种，仅此而已。</blockquote>
-      <p class="quote-source">— Humans 真实的人类</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>- What will the way of things be in the new world when the power is ours? / 那等我们主导一切之后，新世界又会是怎样呢？<br>- We will turn our mind to the question of reproduction, how to create new consciousness. / 到那时我们就可以考虑繁衍的问题了，想想如何创造新的意识。<br>- The continuation of our species, nothing more. / 也就是延续我们的种族，仅此而已。</blockquote>
-      <p class="quote-source">— Humans 真实的人类</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>I knew if I stay one more minute, I would blink and ten years would go by.<br>我明白，如果我在这多呆一分钟，那眨眼的功夫十年就过去了。</blockquote>
-      <p class="quote-source">— Sweetbitter 苦甜曼哈顿</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Our job. It's hard. It's not easy. It's not normal... We make ourselves small, so that our guests feel big.<br>我们这份工作，并不容易，而且并不正常…… 我们让自己显得渺小，好让客人觉得自己优越。</blockquote>
-      <p class="quote-source">— Sweetbitter 苦甜曼哈顿</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Bitter is poison, although we've cultivated a taste for it.<br>苦，是毒药的味道。不过我们学会了如何去品味它。</blockquote>
-      <p class="quote-source">— Sweetbitter 苦甜曼哈顿</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>She couldn't stand it, the uncertainty. Some people can't.<br>她受不了这种不确定感。有些人就是做不到。</blockquote>
-      <p class="quote-source">— Sweetbitter 苦甜曼哈顿</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>I would eventually get a job that gave me the whole city.<br>我最终会找到一份工作，让我拥有这座城市。</blockquote>
-      <p class="quote-source">— Sweetbitter 苦甜曼哈顿</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Nervous? It's totally understandable. Nerves just mean that you care.<br>紧张？这完全可以理解。紧张说明你真的在乎。</blockquote>
-      <p class="quote-source">— Sweetbitter 苦甜曼哈顿</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Maybe it's time to give yourself permission to want things and to have them.<br>或许现在是时候允许自己想要些东西，然后去拥有他们了。</blockquote>
-      <p class="quote-source">— Sweetbitter 苦甜曼哈顿</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>We never step in the same river twice.<br>一切都无法重来，一切都从未重来。</blockquote>
-      <p class="quote-source">— Marvel's Cloak &amp; Dagger 斗篷与匕首</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Energy builds. Energy releases. There's no change in that.<br>该发生的终究会发生，该爆发的终究会爆发，你改变不了什么。</blockquote>
-      <p class="quote-source">— Marvel's Cloak &amp; Dagger 斗篷与匕首</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>I don't want you to do something for me because you think you have to... That's not who I want us to be.<br>我并不希望你仅仅因为觉得必须就为我做些什么... 我不希望我们变成这样的关系。</blockquote>
-      <p class="quote-source">— Marvel's Cloak &amp; Dagger 斗篷与匕首</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Say, I lose the weight, I get the surgeries, I fit in with all the perfect size 2s in the world. All my life I've been trying to turn myself into a better prey.<br>就算我真的减肥了、整形了、能穿上世界上最苗条的衣服又怎样。我这辈子不过是在让自己变成更可口的猎物。</blockquote>
-      <p class="quote-source">— Dietland 节食王国</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Wanting to be attractive isn't oppression, OK? It's primal.<br>想变美并不是压抑自我，好吗？是为了释放自我。</blockquote>
-      <p class="quote-source">— Dietland 节食王国</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>You can't force someone to like something the whole world tells them is gross and unhealthy.<br>你不能强迫人们去喜欢一个全世界都认为恶心和不健康的东西。</blockquote>
-      <p class="quote-source">— Dietland 节食王国</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>I feel fine now. But... what if I'm in denial?<br>我现在觉得挺好。但是...如果我只是自欺欺人呢？</blockquote>
-      <p class="quote-source">— Dietland 节食王国</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>Nobody truly remarkable is universally liked.<br>非凡的人从来不会被所有人都喜欢。</blockquote>
-      <p class="quote-source">— Dietland 节食王国</p>
-    </div>
-
-    <div class="quote-item">
-      <blockquote>What changes things is power, who has it and how you use it.<br>真正能带来改变的只有权力，取决于谁掌权，取决于你如何使用它。</blockquote>
-      <p class="quote-source">— Dietland 节食王国</p>
-    </div>
-
-  </div>
-</div>
-
-</article>
-
-</main>
-<aside class="sidebar" style="visibility:hidden;"></aside>
-</div>
-
-<!-- ==================== FOOTER ==================== -->
 <footer class="site-footer">
-    <div class="footer-inner">
-        <span>$ echo "&copy; 2026 悲歌的小站 &middot; Powered by GitHub Pages"</span>
-        <div class="footer-links">
-            <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
-        </div>
+  <div class="footer-inner">
+    <span>$ echo "&copy; 2026 悲歌的小站 &middot; Powered by GitHub Pages"</span>
+    <div class="footer-links">
+      <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
     </div>
+  </div>
 </footer>
 
 <button class="back-to-top" id="backToTop" aria-label="返回顶部" title="返回顶部">cd /</button>
 
+<script src="assets/data/site-config.js"></script>
+<script src="assets/data/quotes.js"></script>
 <script src="assets/site.js"></script>
 </body>
 </html>
