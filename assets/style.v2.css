@@ -1549,6 +1549,11 @@ h2:hover .heading-anchor { opacity: 1; }
 /* ========================================
    数据驱动渲染 — 通用锚点偏移
    ======================================== */
+[data-page="quotes"] .content-main {
+    max-height: none;
+    overflow-y: visible;
+}
+
 [data-page="quotes"] h2,
 [data-page="wiki"] h2 {
     scroll-margin-top: calc(var(--header-height) + 20px);

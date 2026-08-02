@@ -2,6 +2,13 @@
 window.CHANGELOG_DATA = [
   {
     date: '2026-08-02',
+    hash: 'fix',
+    title: '修复 Quotes 页滚动条、返回首页、数据合并与引文',
+    desc: 'CSS：添加 [data-page="quotes"] .content-main max-height:none + overflow-y:visible 修复双滚动条。渲染：site.js renderQuotesPage 移除"返回首页"链接，摘抄与短语统一单列表渲染。数据：quotes.js 全部 type 合并为"摘抄"，鲍勃·迪伦引文修正为"昔日我如此苍老，如今才风华正茂。"。',
+    tags: ['Fix', 'Doc']
+  },
+  {
+    date: '2026-08-02',
     hash: 'refactor',
     title: '全站模块化数据驱动重构',
     desc: '数据层拆分：创建 assets/data/ 目录，提取 blog.js/quotes.js/wiki.js/changelog.js/site-config.js 五个独立数据文件。渲染引擎：增强 assets/site.js 实现 renderBlogList/renderArchiveList/renderQuotesPage/renderWikiPage/renderChangelogPage 统一渲染。页面精简：所有 HTML 页面改为 shell 模板，body 保留 main#app 容器 + data-page 属性，由 site.js 检测后动态渲染。CSS 整理：style.v2.css 新增 .quote-item/.wiki-section/.changelog-entry 等数据驱动配套样式。',

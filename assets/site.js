@@ -235,31 +235,15 @@
     var el = document.getElementById("app");
     if (!el) return;
 
-    var excerpts = data.filter(function(q){ return q.type === "摘抄"; });
-    var phrases = data.filter(function(q){ return q.type === "短语"; });
-
     var html = '';
-    html += '<div class="post-header"><a href="index.html" class="back-link">\u2190 返回首页</a></div>';
     html += '<article class="post-content">';
 
     html += '<div class="card"><div class="card-header">$ cat quotes.txt</div><div class="card-body"><p style="color:var(--text-secondary);margin:0;">摘抄与短语拾遗，来自书籍、影视、网络与日常收集。</p></div></div>';
     html += '<hr class="section-divider" />';
 
-    // 摘抄区
-    html += '<h2 id="excerpts" style="scroll-margin-top:80px;">摘抄</h2>';
-    html += '<div class="card"><div class="card-header">$ ls excerpts/ (' + excerpts.length + ')</div>';
-    html += '<div class="card-body-sm" style="display:grid;grid-template-columns:1fr;gap:12px;">';
-    excerpts.forEach(function(q){
-      html += '<div class="quote-item"><blockquote>' + esc(q.text.join('<br>')) + '</blockquote>';
-      html += '<p class="quote-source">\u2014 ' + esc(q.source) + '</p></div>';
-    });
-    html += '</div></div>';
-
-    // 短语区
-    html += '<h2 id="phrases" style="scroll-margin-top:80px;">短语拾遗</h2>';
-    html += '<div class="card"><div class="card-header">$ ls phrases/ (' + phrases.length + ')</div>';
-    html += '<div class="card-body-sm" style="display:grid;grid-template-columns:1fr;gap:12px;">';
-    phrases.forEach(function(q){
+    html += '<h2 id="quotes" style="scroll-margin-top:80px;">摘抄 (' + data.length + ')</h2>';
+    html += '<div class="card"><div class="card-body-sm" style="display:grid;grid-template-columns:1fr;gap:12px;">';
+    data.forEach(function(q){
       html += '<div class="quote-item"><blockquote>' + esc(q.text.join('<br>')) + '</blockquote>';
       html += '<p class="quote-source">\u2014 ' + esc(q.source) + '</p></div>';
     });
