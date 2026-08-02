@@ -57,6 +57,13 @@
         var changelog = [
             {
                 date: '2026-08-02',
+                hash: 'fix',
+                title: '修复 wiki 多余滚动条及锚点偏移',
+                desc: '移除 wiki 页面 .content-main 的 max-height 限制避免双层滚动条；为 h2 添加 scroll-margin-top 避免锚点跳转后标题被 sticky header 遮挡。',
+                tags: ['Fix', 'CSS']
+            },
+            {
+                date: '2026-08-02',
                 hash: 'feat',
                 title: '短语拾遗新增哥林多前书13:11',
                 desc: '短语拾遗板块新增一条：哥林多前书13:11（中文译文 + KJV 英文原文），出自圣经新约。',
