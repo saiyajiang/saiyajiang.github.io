@@ -892,8 +892,8 @@ img { max-width: 100%; display: block; }
 .post-content strong { color: var(--text); font-weight: 600; }
 .post-content ul, .post-content ol { color: var(--text-secondary); padding-left: 24px; margin-bottom: 18px; }
 .post-content li { margin-bottom: 8px; }
-.post-content blockquote { border-left: 3px solid var(--accent-2); padding: 16px 20px; margin: 24px 0; background: var(--accent2); border-radius: 0 10px 10px 0; color: var(--text-secondary); font-style: italic; }
-.post-content .lyric-block { background: var(--bg-elevated); border-left: 3px solid var(--accent-2); padding: 16px 20px; margin: 16px 0; border-radius: 0 10px 10px 0; color: var(--text-primary); line-height: 2.0; font-size: 15px; }
+.post-content blockquote { border-left: 3px solid var(--accent); padding: 16px 20px; margin: 24px 0; background: rgba(255,184,108,0.1); border-radius: 0 10px 10px 0; color: var(--text-primary); font-style: italic; }
+.post-content .lyric-block { background: var(--bg-elevated); border-left: 3px solid var(--accent2); padding: 16px 20px; margin: 16px 0; border-radius: 0 10px 10px 0; color: var(--text-primary); line-height: 2.0; font-size: 15px; }
 .post-content code { background: var(--bg-elevated); border: 1px solid var(--border); padding: 2px 6px; border-radius: 5px; font-size: 13.5px; font-family: "Fira Code", ui-monospace, monospace; color: var(--accent); }
 .post-content pre { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin: 24px 0; overflow-x: auto; }
 .post-content pre code { background: none; border: none; padding: 0; font-size: 13.5px; color: var(--text-secondary); }
@@ -1169,3 +1169,28 @@ img { max-width: 100%; display: block; }
   text-decoration: underline;
   text-decoration-color: var(--accent);
 }
+
+/* 目录导航 */
+.wiki-toc { display: flex; flex-direction: column; gap: 2px; }
+.wiki-toc a {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: color var(--transition), background var(--transition);
+}
+.wiki-toc a:hover,
+.wiki-toc a.active { color: var(--accent); background: rgba(255,184,108,0.1); }
+
+/* 段落锚点 */
+.heading-anchor {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.85em;
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-right: 6px;
+}
+h2:hover .heading-anchor { opacity: 1; }
