@@ -675,6 +675,26 @@
     setTimeout(syncHeights, 1000);
   }
   
+  /* ---------- 回到顶部按钮 ---------- */
+  function initBackToTop() {
+    var btn = document.getElementById('backToTop');
+    if (!btn) return;
+    var ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(function () {
+          btn.classList.toggle('visible', window.scrollY > 400);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    btn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
   /* ---------- 启动 ---------- */
   function init() {
     // 设置音乐模式标记，CSS 据此显示/隐藏对应播放器
@@ -690,6 +710,7 @@
     // initArchiveTagNav(); // archive.html has its own
     initPlayer();
     initSidebar();
+    initBackToTop();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

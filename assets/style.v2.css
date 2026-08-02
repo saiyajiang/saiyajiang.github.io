@@ -1195,12 +1195,32 @@ img { max-width: 100%; display: block; }
 }
 h2:hover .heading-anchor { opacity: 1; }
 
-/* wiki 页面修复：取消内容区高度限制，避免双层滚动条 */
-[data-page="wiki"] .content-main {
-    max-height: none;
-    overflow-y: visible;
-}
 /* wiki 锚点偏移：避免标题被 sticky header 遮挡 */
 [data-page="wiki"] h2 {
     scroll-margin-top: calc(var(--header-height) + 20px);
+}
+
+/* wiki 三列 grid 布局：主内容居中，侧栏居左 */
+[data-page="wiki"] .main-wrapper {
+    display: grid;
+    grid-template-columns: 1fr var(--main-width) 1fr;
+    gap: 0;
+    margin: var(--gap) auto;
+    padding: 0 24px;
+    align-items: start;
+}
+[data-page="wiki"] .content-main {
+    grid-column: 2;
+    max-height: none;
+    overflow-y: visible;
+}
+/* wiki 侧栏固定：挂左列、靠右对齐，点击目录跳转时不滚出视口 */
+[data-page="wiki"] .main-wrapper > .sidebar {
+    grid-column: 1;
+    justify-self: end;
+    margin-right: var(--gap);
+    position: sticky;
+    top: calc(var(--header-height) + 20px);
+    max-height: calc(100vh - var(--header-height) - 40px);
+    overflow-y: auto;
 }
