@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-13',
     hash: 'feat',
+    title: '数据库迁移至 db/ 子目录并改为多游戏板块架构',
+    desc: '数据库页面整体迁移到独立目录 db/（db/index.html + db/db.css + db/db.js + db/data/games.js），删除根目录旧版 db.html 及 assets/db.css、assets/db.js。数据源改为 window.GAME_DB 多游戏板块结构（game → categories → items），每个游戏一个独立板块，板块切换、搜索、分类筛选、卡片/表格双视图、统计图表均按当前板块动态渲染。不再引用 wiki.js / quotes.js。db/data/games.js 内置模板示例，后续游戏整理内容按模板追加即可。',
+    tags: ['New', 'Refactor']
+  },
+  {
+    date: '2026-08-13',
+    hash: 'feat',
     title: '新增独立知识数据库页 db.html（类 Notion 交互式看板）',
     desc: '新建 db.html + assets/db.css + assets/db.js：独立于个人站终端风的深色科幻仪表盘设计。复用 assets/data/ 下 wiki.js/quotes.js/site-config.js 数据源，实现统计概览（环形图分类占比、柱状图条目分布）、全文搜索（/ 快捷键聚焦）、分类 chip 筛选、卡片/表格双视图切换、条目点击展开详情、底部分类 Dock 快捷导航。纯静态实现，无构建步骤，不依赖外部图表库。',
     tags: ['New', 'UI']
