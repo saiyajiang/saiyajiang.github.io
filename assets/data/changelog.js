@@ -2,6 +2,13 @@
 window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
+    hash: 'fix',
+    title: '修正《修改文件名工具》文章结构与链接命名',
+    desc: '修正文章结构：PowerRename 为 PowerToys 内置模块，二者是包含关系而非并列方案，文章改为单一方案结构。文章链接按既有 post-<类别>-<序号> 命名规律重命名为 post-tool-1.html，同步更新 blog.js 与导航链接。',
+    tags: ['Fix', 'Doc']
+  },
+  {
+    date: '2026-08-16',
     hash: 'feat',
     title: '新增文章：修改文件名工具',
     desc: '发布《修改文件名工具》效率工具笔记：批量修改文件名推荐微软官方开源工具 PowerToys，其内置 PowerRename 模块支持搜索替换、正则表达式、大小写转换、序号追加等，重命名前实时预览；附官方仓库与官方文档链接。',
