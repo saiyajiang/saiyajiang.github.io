@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>程序优先级 · 悲歌的小站</title>
+  <title>解决游戏左侧的黑色方框 · 悲歌的小站</title>
   <link rel="stylesheet" href="../assets/style.css" />
 </head>
 <body data-page="post">
@@ -26,52 +26,38 @@
 <main class="page-content">
 
 <div class="post-header">
-  <h1 class="post-title">程序优先级</h1>
+  <h1 class="post-title">解决游戏左侧的黑色方框</h1>
   <div class="post-meta">
     <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2026年8月16日</span>
     <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 约 1 分钟阅读</span>
   </div>
   <div class="post-tags">
-    <a href="../index.html?tag=Windows" class="post-tag">#Windows</a>
-    <a href="../index.html?tag=注册表" class="post-tag">#注册表</a>
-    <a href="../index.html?tag=系统技巧" class="post-tag">#系统技巧</a>
-    <a href="../index.html?tag=性能" class="post-tag">#性能</a>
+    <a href="../index.html?tag=NVIDIA" class="post-tag">#NVIDIA</a>
+    <a href="../index.html?tag=游戏" class="post-tag">#游戏</a>
+    <a href="../index.html?tag=显卡" class="post-tag">#显卡</a>
+    <a href="../index.html?tag=故障排查" class="post-tag">#故障排查</a>
   </div>
 </div>
 
 <article class="post-content">
 
   <h2>需求</h2>
-  <p>为某个程序固定设置 CPU、IO、页面优先级，避免每次启动后手动调整。</p>
+  <p>游戏画面左侧出现一个黑色方框，影响观感，需要去掉。</p>
 
-  <h2>方案：注册表 PerfOptions</h2>
-  <p>在注册表的 <code>Image File Execution Options</code> 下为程序添加 <code>PerfOptions</code> 项，设置优先级相关键值。</p>
+  <h2>原因</h2>
+  <p>该黑色方框通常是 NVIDIA Reflex 分析仪的 <strong>LDAT 支持</strong>（部分版本显示为"始终显示 Reflex 闪存指示器"）开启导致的。</p>
 
-  <h3>注册表路径与键值</h3>
-  <pre><code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\程序全名\PerfOptions
-"CpuPriorityClass"=dword:00000003
-"IoPriority"=dword:00000003
-"PagePriority"=dword:00000005</code></pre>
-
-  <h3>操作步骤</h3>
+  <h2>解决步骤</h2>
   <ol>
-    <li>按 <code>Win + R</code> 输入 <code>regedit</code> 打开注册表编辑器</li>
-    <li>导航到 <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options</code></li>
-    <li>新建项，名称为程序全名（如 <code>game.exe</code>）</li>
-    <li>在该项下新建 <code>PerfOptions</code> 子项</li>
-    <li>在 <code>PerfOptions</code> 下新建三个 DWORD 值：<code>CpuPriorityClass</code>、<code>IoPriority</code>、<code>PagePriority</code>，按需填入数值</li>
+    <li>按 <code>Alt + Z</code> 呼出 N 卡菜单（GeForce Experience / NVIDIA App 覆盖层）</li>
+    <li>点下方<strong>统计数据</strong></li>
+    <li>点下方<strong>Reflex 分析仪</strong></li>
+    <li>关闭 <strong>LDAT 支持</strong>（有的版本显示为"始终显示 Reflex 闪存指示器"）</li>
   </ol>
-
-  <h2>说明</h2>
-  <ul>
-    <li><code>CpuPriorityClass</code> 常见值：1=空闲、2=低于正常、3=正常、4=高于正常、5=高、6=实时</li>
-    <li>修改后需重启程序生效</li>
-    <li>该路径为系统级（HKLM），对所有用户生效</li>
-  </ul>
 
   <div class="callout callout--tip">
     <span class="icon">💡</span>
-    <p>修改注册表前建议先备份该项；实时优先级（6）可能导致系统不稳定，谨慎使用。</p>
+    <p>关闭后黑色方框即消失；若需再次使用 Reflex 延迟分析，可重新开启。</p>
   </div>
 
 </article>
@@ -82,7 +68,7 @@
     <div>
       <div class="comments-title">💬 讨论</div>
     </div>
-    <a href="https://github.com/saiyajiang/saiyajiang.github.io/discussions/new?category=General&title=讨论：程序优先级" target="_blank" class="comments-link">
+    <a href="https://github.com/saiyajiang/saiyajiang.github.io/discussions/new?category=General&title=讨论：解决游戏左侧的黑色方框" target="_blank" class="comments-link">
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       去 GitHub 发表讨论
     </a>
@@ -91,8 +77,7 @@
 </div>
 
 <nav class="post-nav">
-  <a href="post-win-1.html" class="post-nav__item"><div class="post-nav-label">← 上一篇</div><div class="post-nav-title">使某个程序打开时不显示用户账户控制</div></a>
-  <a href="post-nvidia-1.html" class="post-nav__item post-nav__item--next" style="text-align:right"><div class="post-nav-label">下一篇 →</div><div class="post-nav-title">解决游戏左侧的黑色方框</div></a>
+  <a href="post-win-2.html" class="post-nav__item"><div class="post-nav-label">← 上一篇</div><div class="post-nav-title">程序优先级</div></a>
 </nav>
 
 </main>

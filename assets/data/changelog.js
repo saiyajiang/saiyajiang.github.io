@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：解决游戏左侧的黑色方框',
+    desc: '发布《解决游戏左侧的黑色方框》故障排查笔记：游戏左侧黑色方框为 NVIDIA Reflex 分析仪的 LDAT 支持（部分版本显示为"始终显示 Reflex 闪存指示器"）开启导致，按 Alt+Z → 统计数据 → Reflex 分析仪 → 关闭 LDAT 支持 即可解决。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：程序优先级',
     desc: '发布《程序优先级》系统技巧笔记：在 HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\程序全名\\PerfOptions 下设置 CpuPriorityClass / IoPriority / PagePriority，为程序固定 CPU、IO、页面优先级；附操作步骤与 CpuPriorityClass 常见值说明。',
     tags: ['New', 'Doc']

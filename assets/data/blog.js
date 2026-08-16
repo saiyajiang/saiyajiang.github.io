@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "解决游戏左侧的黑色方框",
+    date: "2026-08-16",
+    url: "posts/post-nvidia-1.html",
+    tags: ["NVIDIA", "游戏", "显卡", "故障排查"],
+    excerpt: "游戏左侧黑色方框是 NVIDIA Reflex 分析仪的 LDAT 支持（始终显示 Reflex 闪存指示器）开启导致：Alt+Z 呼出 N 卡菜单 → 统计数据 → Reflex 分析仪 → 关闭 LDAT 支持。",
+    readingTime: 1
+  },
+  {
     title: "程序优先级",
     date: "2026-08-16",
     url: "posts/post-win-2.html",
