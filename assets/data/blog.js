@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "Win11记事本不显示下划线",
+    date: "2026-08-16",
+    url: "posts/post-win-4.html",
+    tags: ["Windows", "记事本", "字体", "故障排查"],
+    excerpt: "Win11 记事本中文字符不显示下划线：默认的微软雅黑 11 号配合 4K + 150% 缩放显示会导致，换个字体或字号即可解决。",
+    readingTime: 1
+  },
+  {
     title: "Edge浏览器屏蔽广告hosts",
     date: "2026-08-16",
     url: "posts/post-win-3.html",

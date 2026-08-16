@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：Win11记事本不显示下划线',
+    desc: '发布《Win11记事本不显示下划线》故障排查笔记：默认的微软雅黑 11 号字体配合 4K + 150% 缩放显示会导致中文字符不显示下划线，换个字体或字号即可解决。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：Edge浏览器屏蔽广告hosts',
     desc: '发布《Edge浏览器屏蔽广告hosts》系统技巧笔记：通过修改 hosts 文件屏蔽 Edge 新标签页的 MSN 广告与数据上报域名，将 api.msn.com / pipe.aria.microsoft.com / ntp.msn.com / web.vortex.data.microsoft.com / browser.events.data.msn.com / www.msn.com / assets.msn.com / c.msn.com 及国内 msn.cn 对应域名指向 0.0.0.0；附操作步骤与 DNS 刷新方法。',
     tags: ['New', 'Doc']
