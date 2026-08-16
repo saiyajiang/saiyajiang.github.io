@@ -104,18 +104,40 @@
     html += '      <span class="category-tab" data-cat="literature">./literature/ <span class="count">(' + (catCounts.literature || 0) + ')</span></span>';
     html += '    </div>';
     html += '    <div class="article-list" id="articleList"></div>';
+    html += '    <div class="pager" id="pager"></div>';
     html += '  </div>';
     html += '</section>';
     el.innerHTML = html;
 
-    /* ---- 渲染文章列表 ---- */
+    /* ---- 渲染文章列表（分页） ---- */
+    var PAGE_SIZE = 10;
+    var currentPage = 1;
+
+    function renderPager(total, totalPages) {
+      var pager = document.getElementById("pager");
+      if (!pager) return;
+      if (totalPages <= 1) { pager.innerHTML = ""; return; }
+      var html = '<span class="pager-info">' + total + ' 篇 / 第 ' + currentPage + '/' + totalPages + ' 页</span>';
+      html += '<button class="pager-btn" data-page="' + (currentPage - 1) + '"' + (currentPage <= 1 ? ' disabled' : '') + '>&#9664; 上一页</button>';
+      for (var i = 1; i <= totalPages; i++) {
+        html += '<button class="pager-btn' + (i === currentPage ? ' active' : '') + '" data-page="' + i + '">' + i + '</button>';
+      }
+      html += '<button class="pager-btn" data-page="' + (currentPage + 1) + '"' + (currentPage >= totalPages ? ' disabled' : '') + '>下一页 &#9654;</button>';
+      pager.innerHTML = html;
+    }
+
     function renderFiltered(filtered) {
       var list = document.getElementById("articleList");
       if (filtered.length === 0) {
         list.innerHTML = '<div class="article-empty">$ find . -name "*" => 0 results</div>';
+        renderPager(0, 0);
         return;
       }
-      list.innerHTML = filtered.map(function (a) {
+      var totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+      if (currentPage > totalPages) currentPage = totalPages;
+      var start = (currentPage - 1) * PAGE_SIZE;
+      var pageItems = filtered.slice(start, start + PAGE_SIZE);
+      list.innerHTML = pageItems.map(function (a) {
         return '<div class="article-item">' +
           '  <div class="article-title"><a href="' + esc(a.url) + '">$ cat ' + esc(a.title) + '</a></div>' +
           '  <div class="article-meta">' +
@@ -125,6 +147,7 @@
           '  <div class="article-summary">' + esc(a.excerpt) + '</div>' +
           '</div>';
       }).join("");
+      renderPager(filtered.length, totalPages);
     }
 
     var currentCat = "all";
@@ -137,7 +160,7 @@
       return "literature";
     }
 
-    function doFilter() {
+    function computeFiltered() {
       var filtered = data.slice();
       if (currentCat !== "all") filtered = filtered.filter(function(a){ return getCat(a) === currentCat; });
       if (currentSearch) {
@@ -151,7 +174,12 @@
       if (currentTag) {
         filtered = filtered.filter(function(a){ return a.tags.indexOf(currentTag) !== -1; });
       }
-      renderFiltered(filtered);
+      return filtered;
+    }
+
+    function doFilter() {
+      currentPage = 1;
+      renderFiltered(computeFiltered());
     }
 
     var catTabs = document.getElementById("categoryTabs");
@@ -172,6 +200,16 @@
       searchInput.addEventListener("input", function(){
         currentSearch = searchInput.value.trim();
         doFilter();
+      });
+    }
+
+    var pager = document.getElementById("pager");
+    if (pager) {
+      pager.addEventListener("click", function(e){
+        var btn = e.target.closest(".pager-btn");
+        if (!btn || btn.disabled) return;
+        currentPage = parseInt(btn.getAttribute("data-page"), 10);
+        renderFiltered(computeFiltered());
       });
     }
 

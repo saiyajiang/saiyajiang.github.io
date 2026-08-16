@@ -170,7 +170,8 @@ img { max-width: 100%; display: block; }
 .main-wrapper > .sidebar {
     width: var(--sidebar-width);
     flex-shrink: 0;
-    overflow-y: auto;
+    align-self: flex-start;
+    overflow: visible;
 }
 .content-main {
     width: var(--main-width);
@@ -379,6 +380,38 @@ img { max-width: 100%; display: block; }
 .article-item:first-child { padding-top: 0; }
 .article-item:last-child { border-bottom: none; padding-bottom: 0; }
 .article-item:hover { background: rgba(255,255,255,.01); }
+
+/* 分页控件 */
+.pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-subtle);
+}
+.pager-info {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-right: 8px;
+}
+.pager-btn {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.pager-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.pager-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.pager-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .article-title {
     font-family: var(--font-mono);
@@ -1382,6 +1415,10 @@ h2:hover .heading-anchor { opacity: 1; }
     line-height: 1.5;
     margin-bottom: 10px;
 }
+.profile-links {
+    display: flex;
+    gap: 14px;
+}
 .profile-links a {
     color: var(--accent2);
     text-decoration: none;
@@ -1431,8 +1468,8 @@ h2:hover .heading-anchor { opacity: 1; }
 [data-page="blog"] .sidebar-left {
     position: sticky;
     top: calc(var(--header-height) + 20px);
-    max-height: calc(100vh - var(--header-height) - 40px);
-    overflow-y: auto;
+    max-height: none;
+    overflow: visible;
 }
 [data-page="blog"] .sidebar-right {
     position: sticky;

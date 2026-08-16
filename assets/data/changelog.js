@@ -2,6 +2,13 @@
 window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
+    hash: 'fix',
+    title: '首页改版：分页、侧栏滚动条修复、whoami 换位与 B站链接',
+    desc: '首页优化：文章列表改为每页 10 篇并支持上一页/下一页分页；移除左侧栏内部滚动条（取消 max-height 与 overflow-y:auto 限制）；左侧栏 whoami 卡片移至 tags 上方；whoami 介绍新增 B站个人空间链接（space.bilibili.com/57765）。',
+    tags: ['Fix', 'UI']
+  },
+  {
+    date: '2026-08-16',
     hash: 'feat',
     title: '新增文章：Chrome扩展程序ManifestV2临时方案',
     desc: '发布《Chrome扩展程序ManifestV2临时方案》系统技巧笔记：Chrome 提示「此扩展程序未遵循最佳实践」时，在 HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\ 下新建 \\Google\\Chrome 项，新建 DWORD（32 位）值 ExtensionManifestV2Availability 并修改数据为 2，再到 chrome://policy/ 点击重新加载政策即可临时恢复 ManifestV2 扩展支持。',
