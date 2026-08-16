@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "重复文件名对比工具",
+    date: "2026-08-16",
+    url: "posts/post-tool-2.html",
+    tags: ["tool", "Windows", "效率工具", "重复文件"],
+    excerpt: "查找并清理重复文件：dupeGuru 跨平台开源工具，支持按文件名、内容、图片相似度对比，清理前可预览匹配结果。",
+    readingTime: 1
+  },
+  {
     title: "HTML游戏修改",
     date: "2026-08-16",
     url: "posts/post-htmlgame-1.html",

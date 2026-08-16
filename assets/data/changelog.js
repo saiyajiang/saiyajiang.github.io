@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：重复文件名对比工具',
+    desc: '发布《重复文件名对比工具》效率工具笔记：推荐跨平台开源工具 dupeGuru，支持按文件名、内容、图片相似度对比查找重复文件，清理前可预览匹配结果；附 GitHub 仓库与官网链接。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：HTML游戏修改',
     desc: '发布《HTML游戏修改》技术笔记：Twine + SugarCube 引擎的 HTML 游戏可通过 State.active.variables.变量名 = 值 直接修改变量，$变量名 是其简写，两者等价；覆盖数字/字符串/布尔赋值与浏览器控制台、Story JavaScript 等使用场景。',
     tags: ['New', 'Doc']
