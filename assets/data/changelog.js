@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：Edge浏览器屏蔽广告hosts',
+    desc: '发布《Edge浏览器屏蔽广告hosts》系统技巧笔记：通过修改 hosts 文件屏蔽 Edge 新标签页的 MSN 广告与数据上报域名，将 api.msn.com / pipe.aria.microsoft.com / ntp.msn.com / web.vortex.data.microsoft.com / browser.events.data.msn.com / www.msn.com / assets.msn.com / c.msn.com 及国内 msn.cn 对应域名指向 0.0.0.0；附操作步骤与 DNS 刷新方法。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：雪花引擎相关设置',
     desc: '发布《雪花引擎相关设置》游戏性能优化笔记：graphic settings.cfg 中 streamer dedicated budget 控制游戏从显卡使用的显存、streamer memory fraction 控制自身值之外使用的显存百分比（0.1 表示 10%）、taa 禁用无用的视觉性能消耗；注册表将 EasyAntiCheat 的 ErrorControl 设为 0 防止 EAC 频繁报告导致挂起/卡顿，服务改为手动。',
     tags: ['New', 'Doc']
