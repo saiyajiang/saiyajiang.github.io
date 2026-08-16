@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "程序优先级",
+    date: "2026-08-16",
+    url: "posts/post-win-2.html",
+    tags: ["Windows", "注册表", "系统技巧", "性能"],
+    excerpt: "在 HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\程序全名\\PerfOptions 下设置 CpuPriorityClass / IoPriority / PagePriority，为程序固定 CPU、IO、页面优先级。",
+    readingTime: 1
+  },
+  {
     title: "使某个程序打开时不显示用户账户控制",
     date: "2026-08-16",
     url: "posts/post-win-1.html",

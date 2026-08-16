@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：程序优先级',
+    desc: '发布《程序优先级》系统技巧笔记：在 HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\程序全名\\PerfOptions 下设置 CpuPriorityClass / IoPriority / PagePriority，为程序固定 CPU、IO、页面优先级；附操作步骤与 CpuPriorityClass 常见值说明。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：使某个程序打开时不显示用户账户控制',
     desc: '发布《使某个程序打开时不显示用户账户控制》系统技巧笔记：在 HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers 下添加 软件全路径 = RunAsInvoker，让程序以当前用户权限运行，不再弹出 UAC 确认框；附操作步骤与 RunAsHighest / RunAsAdmin 等其他标志说明。',
     tags: ['New', 'Doc']
