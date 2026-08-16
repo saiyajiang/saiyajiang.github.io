@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：使某个程序打开时不显示用户账户控制',
+    desc: '发布《使某个程序打开时不显示用户账户控制》系统技巧笔记：在 HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers 下添加 软件全路径 = RunAsInvoker，让程序以当前用户权限运行，不再弹出 UAC 确认框；附操作步骤与 RunAsHighest / RunAsAdmin 等其他标志说明。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：重复文件名对比工具',
     desc: '发布《重复文件名对比工具》效率工具笔记：推荐跨平台开源工具 dupeGuru，支持按文件名、内容、图片相似度对比查找重复文件，清理前可预览匹配结果；附 GitHub 仓库与官网链接。',
     tags: ['New', 'Doc']

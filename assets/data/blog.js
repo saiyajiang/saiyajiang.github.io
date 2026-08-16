@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "使某个程序打开时不显示用户账户控制",
+    date: "2026-08-16",
+    url: "posts/post-win-1.html",
+    tags: ["Windows", "注册表", "UAC", "系统技巧"],
+    excerpt: "在 HKEY_CURRENT_USER\\Software\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers 下添加软件全路径 = RunAsInvoker，让程序以当前用户权限运行，不再弹出 UAC 确认框。",
+    readingTime: 1
+  },
+  {
     title: "重复文件名对比工具",
     date: "2026-08-16",
     url: "posts/post-tool-2.html",
