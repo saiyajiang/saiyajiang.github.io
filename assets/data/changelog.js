@@ -1,6 +1,13 @@
 /* 更新日志数据 */
 window.CHANGELOG_DATA = [
   {
+    date: '2026-08-16',
+    hash: 'feat',
+    title: '新增文章：RenPy 标题被修改',
+    desc: '发布《RenPy 标题被修改》技术排查笔记：RenPy 游戏标题被修改却找不到修改位置时，先检查 \\game\\ 下的 options.rpy（config.name / gui.title），若没有则可能在本地化文件夹中被覆盖，一般在 \\game\\tl\\chinese\\ 下的 options.rpy。说明本地化文件会覆盖主脚本标题设置，修改时需两处同步。',
+    tags: ['New', 'Doc']
+  },
+  {
     date: '2026-08-13',
     hash: 'feat',
     title: '数据库迁移至 db/ 子目录并改为多游戏板块架构',

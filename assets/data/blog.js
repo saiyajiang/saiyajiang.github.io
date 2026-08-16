@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "RenPy 标题被修改",
+    date: "2026-08-16",
+    url: "posts/post-renpy-title.html",
+    tags: ["RenPy", "游戏开发", "故障排查"],
+    excerpt: "RenPy 游戏标题被修改却找不到修改位置时，检查 \\game\\ 下的 options.rpy，若没有则可能在本地化文件夹 \\game\\tl\\chinese\\ 下的 options.rpy 中被覆盖。",
+    readingTime: 1
+  },
+  {
     title: "好了歌注",
     date: "2026-08-02",
     url: "posts/post-poem-2.html",

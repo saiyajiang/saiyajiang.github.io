@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏数据库 · 本地管理台</title>
+<style>
+  :root {
+    --bg-0: #0a0e17;
+    --bg-1: #0f1524;
+    --bg-2: #151d31;
+    --line: #1f2a44;
+    --text-0: #e8edf7;
+    --text-1: #aab6cf;
+    --text-2: #6b7894;
+    --cyan: #4fd8e0;
+    --amber: #f2b54c;
+    --red: #f26d6d;
+    --green: #6fe3a5;
+    --purple: #9d8cff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-0);
+    color: var(--text-0);
+    font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    font-size: 14px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  /* ---------- 顶栏 ---------- */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    background: var(--bg-1);
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  header .logo {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--cyan);
+  }
+  header .logo span { color: var(--text-2); font-weight: 400; }
+  header .spacer { flex: 1; }
+  .btn {
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+    color: var(--text-0);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all .15s;
+  }
+  .btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .btn.primary { background: rgba(79,216,224,.12); border-color: rgba(79,216,224,.5); color: var(--cyan); }
+  .btn.primary:hover { background: rgba(79,216,224,.22); }
+  .btn.danger { color: var(--red); }
+  .btn.danger:hover { border-color: var(--red); }
+  .btn.small { padding: 3px 9px; font-size: 12px; }
+  #status {
+    font-size: 12px;
+    color: var(--text-2);
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #status.ok { color: var(--green); }
+  #status.err { color: var(--red); }
+
+  /* ---------- 主区三栏 ---------- */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 240px 260px 1fr;
+    min-height: 0;
+  }
+  .panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-right: 1px solid var(--line);
+    background: var(--bg-0);
+  }
+  .panel:last-child { border-right: none; }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg-1);
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .panel-head h2 { font-size: 13px; font-weight: 600; color: var(--text-1); letter-spacing: 1px; }
+  .panel-head .count { color: var(--text-2); font-size: 12px; }
+  .panel-body { flex: 1; overflow-y: auto; padding: 8px; }
+  .panel-body::-webkit-scrollbar { width: 6px; }
+  .panel-body::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+  .list-item {
+    padding: 9px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    margin-bottom: 4px;
+    transition: all .12s;
+    position: relative;
+  }
+  .list-item:hover { background: var(--bg-2); }
+  .list-item.active { background: rgba(79,216,224,.1); border-color: rgba(79,216,224,.4); }
+  .list-item .li-title { font-size: 13px; color: var(--text-0); display: flex; align-items: center; gap: 8px; }
+  .list-item .li-title .icon { color: var(--amber); font-weight: 700; }
+  .list-item .li-sub { font-size: 11px; color: var(--text-2); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .list-item .li-del {
+    position: absolute; right: 8px; top: 8px;
+    display: none; color: var(--red); font-size: 12px;
+    background: none; border: none; cursor: pointer; padding: 2px 4px;
+  }
+  .list-item:hover .li-del { display: block; }
+  .list-item .li-del:hover { color: #ff9a9a; }
+  .empty-tip { color: var(--text-2); font-size: 12px; text-align: center; padding: 30px 10px; line-height: 1.8; }
+
+  /* ---------- 编辑表单 ---------- */
+  .editor {
+    padding: 14px 16px;
+    overflow-y: auto;
+    min-height: 0;
+  }
+  .editor::-webkit-scrollbar { width: 6px; }
+  .editor::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+  .editor h3 { font-size: 14px; color: var(--cyan); margin-bottom: 14px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; color: var(--text-2); margin-bottom: 5px; }
+  .field input, .field textarea, .field select {
+    width: 100%;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    color: var(--text-0);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--cyan); }
+  .field textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+  .field .hint { font-size: 11px; color: var(--text-2); margin-top: 4px; }
+  .editor-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .editor-actions .btn { flex: 1; }
+  .editor-placeholder { color: var(--text-2); text-align: center; padding: 60px 20px; font-size: 13px; line-height: 2; }
+
+  /* ---------- 底部状态条 ---------- */
+  footer {
+    padding: 6px 18px;
+    background: var(--bg-1);
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--text-2);
+    display: flex;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+  footer b { color: var(--text-1); font-weight: 600; }
+  footer .dot { color: var(--green); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">GAME_DB <span>· 本地管理台</span></div>
+  <div class="spacer"></div>
+  <span id="status">未加载数据</span>
+  <button class="btn" id="btnImport">导入 games.js / JSON</button>
+  <button class="btn" id="btnExportJs">导出 games.js</button>
+  <button class="btn" id="btnExportJson">导出 JSON</button>
+  <button class="btn danger" id="btnClear">清空</button>
+  <input type="file" id="fileInput" accept=".js,.json" hidden>
+</header>
+
+<main>
+  <!-- 板块 -->
+  <section class="panel" id="gamePanel">
+    <div class="panel-head">
+      <h2>游戏板块</h2>
+      <button class="btn small primary" id="btnAddGame">+ 新增</button>
+    </div>
+    <div class="panel-body" id="gameList"></div>
+  </section>
+
+  <!-- 分类 -->
+  <section class="panel" id="catPanel">
+    <div class="panel-head">
+      <h2>分类</h2>
+      <button class="btn small primary" id="btnAddCat">+ 新增</button>
+    </div>
+    <div class="panel-body" id="catList"></div>
+  </section>
+
+  <!-- 条目 -->
+  <section class="panel" id="itemPanel">
+    <div class="panel-head">
+      <h2>条目</h2>
+      <button class="btn small primary" id="btnAddItem">+ 新增</button>
+    </div>
+    <div class="editor" id="editor"></div>
+  </section>
+</main>
+
+<footer>
+  <span><span class="dot">●</span> 本地离线运行，数据仅存于浏览器与导出文件</span>
+  <span>板块 <b id="statGame">0</b> · 分类 <b id="statCat">0</b> · 条目 <b id="statItem">0</b></span>
+  <span>自动保存至 localStorage</span>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var LS_KEY = 'game_db_admin_v1';
+
+  /* ---------- 状态 ---------- */
+  var state = {
+    games: [],
+    selGame: -1,   // 选中板块索引
+    selCat: -1,    // 选中分类索引
+    selItem: -1    // 选中条目索引
+  };
+
+  /* ---------- DOM ---------- */
+  var $ = function (s) { return document.querySelector(s); };
+  var el = {
+    status: $('#status'),
+    gameList: $('#gameList'),
+    catList: $('#catList'),
+    editor: $('#editor'),
+    fileInput: $('#fileInput'),
+    statGame: $('#statGame'),
+    statCat: $('#statCat'),
+    statItem: $('#statItem')
+  };
+
+  /* ---------- 工具 ---------- */
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function today() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function genId(prefix) {
+    return (prefix || 'game') + '_' + Date.now().toString(36);
+  }
+  function setStatus(msg, type) {
+    el.status.textContent = msg;
+    el.status.className = type || '';
+  }
+  function save() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state.games)); } catch (e) {}
+    updateStats();
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (raw) {
+        var arr = JSON.parse(raw);
+        if (Array.isArray(arr)) { state.games = arr; return true; }
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  /* ---------- 统计 ---------- */
+  function updateStats() {
+    var cats = 0, items = 0;
+    state.games.forEach(function (g) {
+      (g.categories || []).forEach(function (c) {
+        cats++;
+        items += (c.items || []).length;
+      });
+    });
+    el.statGame.textContent = state.games.length;
+    el.statCat.textContent = cats;
+    el.statItem.textContent = items;
+  }
+
+  /* ---------- 渲染：板块列表 ---------- */
+  function renderGames() {
+    el.gameList.innerHTML = '';
+    if (!state.games.length) {
+      el.gameList.innerHTML = '<div class="empty-tip">暂无板块<br>点击右上角「+ 新增」<br>或导入 games.js</div>';
+      return;
+    }
+    state.games.forEach(function (g, i) {
+      var total = (g.categories || []).reduce(function (s, c) { return s + (c.items || []).length; }, 0);
+      var div = document.createElement('div');
+      div.className = 'list-item' + (i === state.selGame ? ' active' : '');
+      div.innerHTML =
+        '<div class="li-title"><span class="icon">' + esc(g.icon || '?') + '</span>' + esc(g.name || '未命名') + '</div>' +
+        '<div class="li-sub">' + esc(g.desc || '') + ' · ' + (g.categories || []).length + ' 分类 / ' + total + ' 条</div>' +
+        '<button class="li-del" title="删除板块">✕</button>';
+      div.addEventListener('click', function (e) {
+        if (e.target.classList.contains('li-del')) return;
+        state.selGame = i; state.selCat = -1; state.selItem = -1;
+        renderAll();
+      });
+      div.querySelector('.li-del').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!confirm('删除板块「' + (g.name || '') + '」？该板块下所有分类与条目将一并删除。')) return;
+        state.games.splice(i, 1);
+        if (state.selGame >= state.games.length) state.selGame = state.games.length - 1;
+        if (state.selGame < 0) state.selGame = -1;
+        state.selCat = -1; state.selItem = -1;
+        save(); renderAll();
+        setStatus('已删除板块', 'ok');
+      });
+      el.gameList.appendChild(div);
+    });
+  }
+
+  /* ---------- 渲染：分类列表 ---------- */
+  function renderCats() {
+    el.catList.innerHTML = '';
+    var g = state.games[state.selGame];
+    if (!g) {
+      el.catList.innerHTML = '<div class="empty-tip">先在左侧选择或创建<br>一个游戏板块</div>';
+      return;
+    }
+    var cats = g.categories || [];
+    if (!cats.length) {
+      el.catList.innerHTML = '<div class="empty-tip">暂无分类<br>点击右上角「+ 新增」</div>';
+      return;
+    }
+    cats.forEach(function (c, i) {
+      var div = document.createElement('div');
+      div.className = 'list-item' + (i === state.selCat ? ' active' : '');
+      div.innerHTML =
+        '<div class="li-title">' + esc(c.name || '未命名分类') + '</div>' +
+        '<div class="li-sub">' + (c.items || []).length + ' 条</div>' +
+        '<button class="li-del" title="删除分类">✕</button>';
+      div.addEventListener('click', function (e) {
+        if (e.target.classList.contains('li-del')) return;
+        state.selCat = i; state.selItem = -1;
+        renderAll();
+      });
+      div.querySelector('.li-del').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!confirm('删除分类「' + (c.name || '') + '」？其下所有条目将一并删除。')) return;
+        cats.splice(i, 1);
+        if (state.selCat >= cats.length) state.selCat = cats.length - 1;
+        if (state.selCat < 0) state.selCat = -1;
+        state.selItem = -1;
+        save(); renderAll();
+        setStatus('已删除分类', 'ok');
+      });
+      el.catList.appendChild(div);
+    });
+  }
+
+  /* ---------- 渲染：编辑器 ---------- */
+  function renderEditor() {
+    var g = state.games[state.selGame];
+    if (!g) {
+      el.editor.innerHTML = '<div class="editor-placeholder">选择板块后，在此编辑其信息<br>选择分类后，可管理该分类下的条目</div>';
+      return;
+    }
+    var cats = g.categories || [];
+    var c = cats[state.selCat];
+    if (state.selCat < 0) {
+      renderGameEditor(g);
+      return;
+    }
+    if (!c) { renderGameEditor(g); return; }
+    var items = c.items || [];
+    var it = items[state.selItem];
+
+    if (state.selItem < 0) {
+      // 分类下条目列表
+      var html = '<h3>「' + esc(c.name) + '」条目</h3>';
+      if (!items.length) {
+        html += '<div class="empty-tip">暂无条目，点击右上角「+ 新增」</div>';
+      } else {
+        items.forEach(function (item, i) {
+          html +=
+            '<div class="list-item' + (i === state.selItem ? ' active' : '') + '" data-i="' + i + '">' +
+              '<div class="li-title">' + esc(item.title || '(无标题)') + '</div>' +
+              '<div class="li-sub">' + esc(item.tag || '') + (item.date ? ' · ' + esc(item.date) : '') + '</div>' +
+              '<button class="li-del" data-del="' + i + '" title="删除条目">✕</button>' +
+            '</div>';
+        });
+      }
+      el.editor.innerHTML = html;
+      el.editor.querySelectorAll('.list-item').forEach(function (node) {
+        node.addEventListener('click', function (e) {
+          if (e.target.classList.contains('li-del')) return;
+          state.selItem = parseInt(node.getAttribute('data-i'), 10);
+          renderEditor();
+        });
+        node.querySelector('.li-del').addEventListener('click', function (e) {
+          e.stopPropagation();
+          var idx = parseInt(node.getAttribute('data-del'), 10);
+          if (!confirm('删除条目「' + (items[idx].title || '') + '」？')) return;
+          items.splice(idx, 1);
+          if (state.selItem >= items.length) state.selItem = items.length - 1;
+          save(); renderEditor();
+          setStatus('已删除条目', 'ok');
+        });
+      });
+      return;
+    }
+
+    // 条目编辑表单
+    var f = it || { title: '', text: '', tag: '', date: today() };
+    el.editor.innerHTML =
+      '<h3>编辑条目</h3>' +
+      '<div class="field"><label>标题</label><input id="fTitle" value="' + esc(f.title) + '" placeholder="条目标题"></div>' +
+      '<div class="field"><label>内容</label><textarea id="fText" placeholder="条目正文">' + esc(f.text) + '</textarea></div>' +
+      '<div class="field"><label>标签</label><input id="fTag" value="' + esc(f.tag) + '" placeholder="如：成就 / 剧情 / 技巧"></div>' +
+      '<div class="field"><label>日期</label><input id="fDate" value="' + esc(f.date || today()) + '" placeholder="YYYY-MM-DD"></div>' +
+      '<div class="editor-actions">' +
+        '<button class="btn primary" id="btnSaveItem">保存条目</button>' +
+        '<button class="btn" id="btnCancelItem">返回列表</button>' +
+      '</div>';
+    $('#btnSaveItem').addEventListener('click', function () {
+      var title = $('#fTitle').value.trim();
+      var text = $('#fText').value.trim();
+      if (!title && !text) { setStatus('标题与内容不能同时为空', 'err'); return; }
+      if (state.selItem >= 0) {
+        items[state.selItem] = { title: title, text: text, tag: $('#fTag').value.trim(), date: $('#fDate').value.trim() };
+      } else {
+        items.push({ title: title, text: text, tag: $('#fTag').value.trim(), date: $('#fDate').value.trim() });
+      }
+      save(); renderAll();
+      setStatus('条目已保存', 'ok');
+    });
+    $('#btnCancelItem').addEventListener('click', function () {
+      state.selItem = -1;
+      renderEditor();
+    });
+  }
+
+  function renderGameEditor(g) {
+    el.editor.innerHTML =
+      '<h3>编辑板块</h3>' +
+      '<div class="field"><label>板块名称</label><input id="fName" value="' + esc(g.name || '') + '" placeholder="如：鸣潮"></div>' +
+      '<div class="field"><label>唯一标识 id（英文/拼音，勿重复）</label><input id="fId" value="' + esc(g.id || '') + '" placeholder="如：wuthering-waves"></div>' +
+      '<div class="field"><label>图标（1~2 个字符）</label><input id="fIcon" value="' + esc(g.icon || '') + '" placeholder="如：鸣"></div>' +
+      '<div class="field"><label>一句话简介</label><input id="fDesc" value="' + esc(g.desc || '') + '" placeholder="板块副标题"></div>' +
+      '<div class="editor-actions"><button class="btn primary" id="btnSaveGame">保存板块</button></div>';
+    $('#btnSaveGame').addEventListener('click', function () {
+      var name = $('#fName').value.trim();
+      if (!name) { setStatus('板块名称不能为空', 'err'); return; }
+      g.name = name;
+      g.id = $('#fId').value.trim() || genId();
+      g.icon = $('#fIcon').value.trim() || name.slice(0, 1);
+      g.desc = $('#fDesc').value.trim();
+      save(); renderAll();
+      setStatus('板块已保存', 'ok');
+    });
+  }
+
+  function renderAll() {
+    renderGames();
+    renderCats();
+    renderEditor();
+  }
+
+  /* ---------- 新增 ---------- */
+  function addGame() {
+    state.games.push({ id: genId(), name: '新板块', icon: '新', desc: '', categories: [] });
+    state.selGame = state.games.length - 1;
+    state.selCat = -1; state.selItem = -1;
+    save(); renderAll();
+    setStatus('已新建板块，请在右侧编辑', 'ok');
+  }
+  function addCat() {
+    var g = state.games[state.selGame];
+    if (!g) { setStatus('请先选择或创建板块', 'err'); return; }
+    if (!g.categories) g.categories = [];
+    g.categories.push({ name: '新分类', items: [] });
+    state.selCat = g.categories.length - 1;
+    state.selItem = -1;
+    save(); renderAll();
+    setStatus('已新建分类，请在右侧添加条目', 'ok');
+  }
+  function addItem() {
+    var g = state.games[state.selGame];
+    if (!g) { setStatus('请先选择板块', 'err'); return; }
+    if (!g.categories || !g.categories.length) { setStatus('请先创建分类', 'err'); return; }
+    var c = g.categories[state.selCat >= 0 ? state.selCat : 0];
+    if (state.selCat < 0) state.selCat = 0;
+    if (!c.items) c.items = [];
+    state.selItem = c.items.length;   // 指向"新增"位置
+    renderAll();
+    setStatus('填写条目内容后点击保存', 'ok');
+  }
+
+  /* ---------- 导入 ---------- */
+  function parseGamesJs(text) {
+    // 提取 window.GAME_DB = [...] 部分
+    var m = text.match(/window\.GAME_DB\s*=\s*(\[[\s\S]*\])\s*;?/);
+    if (!m) return null;
+    try {
+      var fn = new Function('return ' + m[1] + ';');
+      var arr = fn();
+      return Array.isArray(arr) ? arr : null;
+    } catch (e) {
+      return null;
+    }
+  }
+  function handleImport(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var text = String(reader.result);
+      var arr = null;
+      if (/\.json$/i.test(file.name)) {
+        try { arr = JSON.parse(text); } catch (e) { arr = null; }
+      } else {
+        arr = parseGamesJs(text);
+      }
+      if (!arr || !Array.isArray(arr)) {
+        setStatus('解析失败：无法识别文件内容（需为 games.js 或 JSON）', 'err');
+        return;
+      }
+      // 归一化
+      state.games = arr.map(function (g) {
+        return {
+          id: g.id || genId(),
+          name: g.name || '未命名',
+          icon: g.icon || (g.name || '?').slice(0, 1),
+          desc: g.desc || '',
+          categories: (g.categories || []).map(function (c) {
+            return { name: c.name || '未分类', items: (c.items || []).map(function (it) {
+              return { title: it.title || '', text: it.text || '', tag: it.tag || '', date: it.date || '' };
+            }) };
+          })
+        };
+      });
+      state.selGame = state.games.length ? 0 : -1;
+      state.selCat = -1; state.selItem = -1;
+      save(); renderAll();
+      setStatus('已导入 ' + state.games.length + ' 个板块', 'ok');
+    };
+    reader.onerror = function () { setStatus('读取文件失败', 'err'); };
+    reader.readAsText(file);
+  }
+
+  /* ---------- 导出 ---------- */
+  function buildGamesJs() {
+    var head =
+'/* ============================================================\n' +
+'   游戏数据库数据 — 每个游戏一个板块\n' +
+'   ============================================================\n' +
+'   本文件由 db/admin.html 本地管理台生成。\n' +
+'   结构：window.GAME_DB = [ { id, name, icon, desc, categories: [ { name, items: [ { title, text, tag, date } ] } ] } ]\n' +
+'   ============================================================ */\n' +
+'window.GAME_DB = ';
+    return head + JSON.stringify(state.games, null, 2) + ';\n';
+  }
+  function download(filename, content, mime) {
+    var blob = new Blob([content], { type: mime || 'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 100);
+  }
+
+  /* ---------- 事件绑定 ---------- */
+  $('#btnAddGame').addEventListener('click', addGame);
+  $('#btnAddCat').addEventListener('click', addCat);
+  $('#btnAddItem').addEventListener('click', addItem);
+  $('#btnImport').addEventListener('click', function () { el.fileInput.click(); });
+  el.fileInput.addEventListener('change', function () {
+    if (el.fileInput.files && el.fileInput.files[0]) handleImport(el.fileInput.files[0]);
+    el.fileInput.value = '';
+  });
+  $('#btnExportJs').addEventListener('click', function () {
+    if (!state.games.length) { setStatus('没有可导出的数据', 'err'); return; }
+    download('games.js', buildGamesJs(), 'application/javascript');
+    setStatus('已导出 games.js，替换 db/data/games.js 即可上线', 'ok');
+  });
+  $('#btnExportJson').addEventListener('click', function () {
+    if (!state.games.length) { setStatus('没有可导出的数据', 'err'); return; }
+    download('games.json', JSON.stringify(state.games, null, 2), 'application/json');
+    setStatus('已导出 games.json（纯数据，可迁移到其他方案）', 'ok');
+  });
+  $('#btnClear').addEventListener('click', function () {
+    if (!confirm('清空当前所有数据？此操作不可撤销（localStorage 与内存均清空）。')) return;
+    state.games = [];
+    state.selGame = -1; state.selCat = -1; state.selItem = -1;
+    save(); renderAll();
+    setStatus('已清空', 'ok');
+  });
+
+  /* ---------- 初始化 ---------- */
+  var hasLocal = load();
+  if (hasLocal && state.games.length) {
+    state.selGame = 0;
+    setStatus('已从本地缓存恢复 ' + state.games.length + ' 个板块', 'ok');
+  } else {
+    setStatus('未加载数据：可导入 games.js 或新建板块', '');
+  }
+  renderAll();
+})();
+</script>
+</body>
+</html>
