@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "HTML游戏修改",
+    date: "2026-08-16",
+    url: "posts/post-htmlgame-1.html",
+    tags: ["HTML游戏", "SugarCube", "Twine", "游戏修改"],
+    excerpt: "HTML 游戏（Twine + SugarCube 引擎）的变量可通过 State.active.variables.变量名 = 值 直接修改，$变量名 是其简写，两者等价。",
+    readingTime: 1
+  },
+  {
     title: "修改文件名工具",
     date: "2026-08-16",
     url: "posts/post-tool-1.html",

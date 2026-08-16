@@ -2,6 +2,13 @@
 window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
+    hash: 'feat',
+    title: '新增文章：HTML游戏修改',
+    desc: '发布《HTML游戏修改》技术笔记：Twine + SugarCube 引擎的 HTML 游戏可通过 State.active.variables.变量名 = 值 直接修改变量，$变量名 是其简写，两者等价；覆盖数字/字符串/布尔赋值与浏览器控制台、Story JavaScript 等使用场景。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
     hash: 'fix',
     title: '修正《修改文件名工具》文章结构与链接命名',
     desc: '修正文章结构：PowerRename 为 PowerToys 内置模块，二者是包含关系而非并列方案，文章改为单一方案结构。文章链接按既有 post-<类别>-<序号> 命名规律重命名为 post-tool-1.html，同步更新 blog.js 与导航链接。',
