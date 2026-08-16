@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "运行JAR文件提示Error: Unable to access jarfile",
+    date: "2026-08-16",
+    url: "posts/post-java-1.html",
+    tags: ["Java", "JAR", "故障排查"],
+    excerpt: "运行 JAR 文件提示 Error: Unable to access jarfile，网上其他方法都不成功时，可检查文件夹名是否为单个特殊字符（中文字符有时也会被判定为特殊字符），可能导致 java 读取失败，重命名文件夹即可解决。",
+    readingTime: 1
+  },
+  {
     title: "暗黑4中文语言+英文语音修改方法",
     date: "2026-08-16",
     url: "posts/post-diablo4-1.html",

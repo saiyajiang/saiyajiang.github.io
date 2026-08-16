@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：运行JAR文件提示Error: Unable to access jarfile',
+    desc: '发布《运行JAR文件提示Error: Unable to access jarfile》故障排查笔记：常见原因为路径错误、Java 未安装、文件名拼写错误；若网上其他方法都不成功，可检查文件夹名是否为单个特殊字符（中文字符有时也会被判定为特殊字符），可能导致 java 读取失败，重命名文件夹即可解决。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：暗黑4中文语言+英文语音修改方法',
     desc: '发布《暗黑4中文语言+英文语音修改方法》游戏设置技巧笔记：在战网启动选项输入 -locale zhCN（简体）/ -locale zhTW（繁体）即可切换中文界面，2025年12月14日更新后可用；附操作步骤。',
     tags: ['New', 'Doc']
