@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>雪花引擎相关设置 · 悲歌的小站</title>
+  <link rel="stylesheet" href="../assets/style.css" />
+</head>
+<body data-page="post">
+<header class="site-header" id="header">
+    <div class="header-inner">
+        <button class="menu-toggle" id="menuToggle" aria-label="菜单">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="nav-menu" id="navMenu">
+            <a href="../index.html">~/blog</a>
+            <a href="../archive.html">~/archive</a>
+            <a href="../wiki/index.html">~/wiki</a>
+            <a href="../about.html">~/about</a>
+            <a href="../changelog.html">~/changelog</a>
+        </nav>
+        <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">☀</button>
+    </div>
+</header>
+
+<main class="page-content">
+
+<div class="post-header">
+  <h1 class="post-title">雪花引擎相关设置</h1>
+  <div class="post-meta">
+    <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2026年8月16日</span>
+    <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 约 2 分钟阅读</span>
+  </div>
+  <div class="post-tags">
+    <a href="../index.html?tag=游戏" class="post-tag">#游戏</a>
+    <a href="../index.html?tag=性能优化" class="post-tag">#性能优化</a>
+    <a href="../index.html?tag=SnowDROP" class="post-tag">#SnowDROP</a>
+    <a href="../index.html?tag=雪花引擎" class="post-tag">#雪花引擎</a>
+    <a href="../index.html?tag=EAC" class="post-tag">#EAC</a>
+  </div>
+</div>
+
+<article class="post-content">
+
+  <h2>说明</h2>
+  <p>雪花引擎（SnowDROP）相关设置。注意：<strong>必须至少运行过游戏一次</strong>才能访问这些设置。</p>
+
+  <h2>图形配置文件</h2>
+  <p>引擎与 SnowDROP 相同，配置文件位于：</p>
+  <pre><code>文档\My Games\游戏名\graphic settings.cfg</code></pre>
+  <p>关键参数：</p>
+  <pre><code>["streamer dedicated budget"] = 512,
+["streamer memory fraction"] = 0.1,
+taa = 1,</code></pre>
+
+  <h3>参数说明</h3>
+  <table>
+    <thead>
+      <tr><th>参数</th><th>含义</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>streamer dedicated budget</code></td><td>游戏从显卡中使用多少显存</td></tr>
+      <tr><td><code>streamer memory fraction</code></td><td>自身值之外使用的显存百分比，<code>0.1</code> 表示游戏使用 10%</td></tr>
+      <tr><td><code>taa</code></td><td><code>1</code> 禁用无用的视觉性能消耗，<code>0</code> 完全禁用</td></tr>
+    </tbody>
+  </table>
+
+  <h2>注册表</h2>
+  <p>路径：</p>
+  <pre><code>HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\EasyAntiCheat</code></pre>
+  <p>将 <code>ErrorControl</code> 设置为 <code>0</code>。</p>
+  <p>有助于防止 EAC 每 2 秒左右不断发出报告，以防止游戏过程中出现挂起/卡顿。</p>
+
+  <h2>服务</h2>
+  <p>将 <code>EasyAntiCheat</code> 服务改为<strong>手动</strong>。</p>
+
+  <div class="callout callout--tip">
+    <span class="icon">💡</span>
+    <p>修改注册表前建议先备份，或导出对应注册表项；服务改为手动后，游戏启动时仍会自动拉起 EAC。</p>
+  </div>
+
+</article>
+
+<!-- 评论区 -->
+<div class="comments">
+  <div class="comments-head">
+    <div>
+      <div class="comments-title">💬 讨论</div>
+    </div>
+    <a href="https://github.com/saiyajiang/saiyajiang.github.io/discussions/new?category=General&title=讨论：雪花引擎相关设置" target="_blank" class="comments-link">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      去 GitHub 发表讨论
+    </a>
+  </div>
+  <div class="no-comments">暂无评论。用 GitHub 账号登录后，点击上方按钮即可留言。</div>
+</div>
+
+<nav class="post-nav">
+  <a href="post-java-1.html" class="post-nav__item"><div class="post-nav-label">← 上一篇</div><div class="post-nav-title">运行JAR文件提示Error: Unable to access jarfile</div></a>
+</nav>
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+        <span>$ echo "&copy; 2026 悲歌的小站 &middot; Powered by GitHub Pages"</span>
+        <div class="footer-links">
+            <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
+        </div>
+    </div>
+</footer>
+
+  <script>
+    (function(){var t;try{t=localStorage.getItem("theme")}catch(e){}
+    document.documentElement.setAttribute("data-theme",t||"dark");})();
+</script>
+  <script src="../assets/site.js"></script>
+</body>
+</html>

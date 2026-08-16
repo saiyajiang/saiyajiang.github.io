@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "雪花引擎相关设置",
+    date: "2026-08-16",
+    url: "posts/post-game-1.html",
+    tags: ["游戏", "性能优化", "SnowDROP", "雪花引擎", "EAC"],
+    excerpt: "雪花引擎（SnowDROP）性能优化：graphic settings.cfg 中 streamer dedicated budget 控制显存占用、streamer memory fraction 控制显存百分比、taa 禁用视觉性能消耗；注册表将 EasyAntiCheat 的 ErrorControl 设为 0 防卡顿，服务改为手动。",
+    readingTime: 2
+  },
+  {
     title: "运行JAR文件提示Error: Unable to access jarfile",
     date: "2026-08-16",
     url: "posts/post-java-1.html",

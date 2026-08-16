@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：雪花引擎相关设置',
+    desc: '发布《雪花引擎相关设置》游戏性能优化笔记：graphic settings.cfg 中 streamer dedicated budget 控制游戏从显卡使用的显存、streamer memory fraction 控制自身值之外使用的显存百分比（0.1 表示 10%）、taa 禁用无用的视觉性能消耗；注册表将 EasyAntiCheat 的 ErrorControl 设为 0 防止 EAC 频繁报告导致挂起/卡顿，服务改为手动。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：运行JAR文件提示Error: Unable to access jarfile',
     desc: '发布《运行JAR文件提示Error: Unable to access jarfile》故障排查笔记：常见原因为路径错误、Java 未安装、文件名拼写错误；若网上其他方法都不成功，可检查文件夹名是否为单个特殊字符（中文字符有时也会被判定为特殊字符），可能导致 java 读取失败，重命名文件夹即可解决。',
     tags: ['New', 'Doc']
