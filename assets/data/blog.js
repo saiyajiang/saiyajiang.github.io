@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "Chrome扩展程序ManifestV2临时方案",
+    date: "2026-08-16",
+    url: "posts/post-win-5.html",
+    tags: ["Chrome", "浏览器", "注册表", "ManifestV2", "扩展程序"],
+    excerpt: "Chrome 提示「此扩展程序未遵循最佳实践」时，可通过注册表策略临时恢复 ManifestV2 支持：在 HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Google\\Chrome 下新建 DWORD ExtensionManifestV2Availability 并设为 2，再到 chrome://policy/ 重新加载政策。",
+    readingTime: 1
+  },
+  {
     title: "Win11记事本不显示下划线",
     date: "2026-08-16",
     url: "posts/post-win-4.html",

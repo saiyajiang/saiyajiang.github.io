@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：Chrome扩展程序ManifestV2临时方案',
+    desc: '发布《Chrome扩展程序ManifestV2临时方案》系统技巧笔记：Chrome 提示「此扩展程序未遵循最佳实践」时，在 HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\ 下新建 \\Google\\Chrome 项，新建 DWORD（32 位）值 ExtensionManifestV2Availability 并修改数据为 2，再到 chrome://policy/ 点击重新加载政策即可临时恢复 ManifestV2 扩展支持。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：Win11记事本不显示下划线',
     desc: '发布《Win11记事本不显示下划线》故障排查笔记：默认的微软雅黑 11 号字体配合 4K + 150% 缩放显示会导致中文字符不显示下划线，换个字体或字号即可解决。',
     tags: ['New', 'Doc']
