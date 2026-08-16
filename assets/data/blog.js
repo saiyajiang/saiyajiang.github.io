@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "暗黑4中文语言+英文语音修改方法",
+    date: "2026-08-16",
+    url: "posts/post-diablo4-1.html",
+    tags: ["暗黑4", "Diablo4", "游戏", "语言设置"],
+    excerpt: "在战网启动选项输入 -locale zhCN（简体）/ -locale zhTW（繁体）即可切换中文界面，2025年12月14日更新后可用。",
+    readingTime: 1
+  },
+  {
     title: "解决游戏左侧的黑色方框",
     date: "2026-08-16",
     url: "posts/post-nvidia-1.html",

@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：暗黑4中文语言+英文语音修改方法',
+    desc: '发布《暗黑4中文语言+英文语音修改方法》游戏设置技巧笔记：在战网启动选项输入 -locale zhCN（简体）/ -locale zhTW（繁体）即可切换中文界面，2025年12月14日更新后可用；附操作步骤。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：解决游戏左侧的黑色方框',
     desc: '发布《解决游戏左侧的黑色方框》故障排查笔记：游戏左侧黑色方框为 NVIDIA Reflex 分析仪的 LDAT 支持（部分版本显示为"始终显示 Reflex 闪存指示器"）开启导致，按 Alt+Z → 统计数据 → Reflex 分析仪 → 关闭 LDAT 支持 即可解决。',
     tags: ['New', 'Doc']
