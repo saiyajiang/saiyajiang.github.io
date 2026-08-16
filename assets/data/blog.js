@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "修改文件名工具",
+    date: "2026-08-16",
+    url: "posts/post-powertoys-rename.html",
+    tags: ["tool", "Windows", "效率工具"],
+    excerpt: "批量修改文件名：微软官方开源工具 PowerToys 内置 PowerRename 模块，支持搜索替换、正则表达式、大小写转换、序号追加等，重命名前实时预览。",
+    readingTime: 1
+  },
+  {
     title: "RenPy 标题被修改",
     date: "2026-08-16",
     url: "posts/post-renpy-title.html",

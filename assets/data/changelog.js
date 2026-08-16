@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-16',
     hash: 'feat',
+    title: '新增文章：修改文件名工具',
+    desc: '发布《修改文件名工具》效率工具笔记：批量修改文件名推荐微软官方开源工具 PowerToys，其内置 PowerRename 模块支持搜索替换、正则表达式、大小写转换、序号追加等，重命名前实时预览；附官方仓库与官方文档链接。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-16',
+    hash: 'feat',
     title: '新增文章：RenPy 标题被修改',
     desc: '发布《RenPy 标题被修改》技术排查笔记：RenPy 游戏标题被修改却找不到修改位置时，先检查 \\game\\ 下的 options.rpy（config.name / gui.title），若没有则可能在本地化文件夹中被覆盖，一般在 \\game\\tl\\chinese\\ 下的 options.rpy。说明本地化文件会覆盖主脚本标题设置，修改时需两处同步。',
     tags: ['New', 'Doc']
