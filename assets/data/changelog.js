@@ -1,6 +1,13 @@
 /* 更新日志数据 */
 window.CHANGELOG_DATA = [
   {
+    date: '2026-08-18',
+    hash: 'fix',
+    title: '播放器修复：safePlay 补回、歌单路径回退、音频链接全量更新',
+    desc: '修复站点播放器无反应问题：site.js 补回丢失的 safePlay 函数（点击播放不再报 ReferenceError）；歌单 fetch 增加三级候选路径回退（assets/ → ../assets/ → /assets/），解决文章页歌单 404；playlist.json 43 首音频链接全量更新为有效的 QQ 音乐播放地址（原链接 vkey 过期返回 403）。',
+    tags: ['Fix', 'UI']
+  },
+  {
     date: '2026-08-17',
     hash: 'feat',
     title: '首页侧栏优化：标签云折叠与排序、whoami 链接加图标',

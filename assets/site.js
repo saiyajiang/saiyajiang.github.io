@@ -467,7 +467,15 @@
     var cfg = window.SITE_MUSIC_CONFIG || {};
     document.body.setAttribute('data-music', cfg.mode || 'local');
 
-    fetch('assets/playlist.json')
+    var playlistCandidates = ['assets/playlist.json', '../assets/playlist.json', '/assets/playlist.json'];
+    function fetchPlaylist(i) {
+      if (i >= playlistCandidates.length) return Promise.reject(new Error('playlist.json not found'));
+      return fetch(playlistCandidates[i]).then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r;
+      }).catch(function(){ return fetchPlaylist(i + 1); });
+    }
+    fetchPlaylist(0)
       .then(function(r){ return r.json(); })
       .then(function(songs){
         if (!songs || !songs.length) { console.warn('[player] 空歌单'); return; }
@@ -502,6 +510,16 @@
           if (isShuffle && playedIdx.indexOf(curIdx) === -1) playedIdx.push(curIdx);
         }
 
+        function safePlay() {
+          var btn = document.getElementById('cp-play');
+          audioEl.play().then(function(){
+            if (btn) btn.textContent = '\u275a\u275a';
+          }).catch(function(err){
+            console.warn('[player] 播放失败:', err && err.message ? err.message : err);
+            if (btn) btn.textContent = '\u25b6';
+          });
+        }
+
         function nextSong() {
           if (isShuffle) {
             if (playedIdx.length >= audio_data.length) playedIdx = [];
@@ -511,15 +529,14 @@
           } else {
             loadSong(curIdx + 1);
           }
-          audioEl.play();
-          document.getElementById('cp-play').textContent = '\u275a\u275a';
+          safePlay();
         }
 
         document.getElementById('cp-play').onclick = function() {
-          if (audioEl.paused) { audioEl.play(); this.textContent = '\u275a\u275a'; }
+          if (audioEl.paused) { safePlay(); }
           else { audioEl.pause(); this.textContent = '\u25b6'; }
         };
-        document.getElementById('cp-prev').onclick = function() { loadSong(curIdx - 1); audioEl.play(); document.getElementById('cp-play').textContent = '\u275a\u275a'; };
+        document.getElementById('cp-prev').onclick = function() { loadSong(curIdx - 1); safePlay(); };
         document.getElementById('cp-next').onclick = nextSong;
         document.getElementById('cp-listbtn').onclick = function() { listEl.classList.toggle('show'); };
 
@@ -558,7 +575,7 @@
           var div = document.createElement('div');
           div.className = 'cp-item';
           div.textContent = s.name;
-          div.onclick = function() { loadSong(i); audioEl.play(); document.getElementById('cp-play').textContent = '\u275a\u275a'; };
+          div.onclick = function() { loadSong(i); safePlay(); };
           listEl.appendChild(div);
         });
 
