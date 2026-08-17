@@ -75,10 +75,12 @@
     if (!el) return;
     var sorted = data.slice().sort(byDateDesc);
 
-    /* ---- 构建标签云 ---- */
-    var tagSet = {};
-    data.forEach(function (p) { p.tags.forEach(function (t) { tagSet[t] = true; }); });
-    var allTags = Object.keys(tagSet).sort();
+    /* ---- 构建标签云（按文章数量降序） ---- */
+    var tagCounts = {};
+    data.forEach(function (p) { p.tags.forEach(function (t) { tagCounts[t] = (tagCounts[t] || 0) + 1; }); });
+    var allTags = Object.keys(tagCounts).sort(function (a, b) {
+      return tagCounts[b] - tagCounts[a] || a.localeCompare(b);
+    });
 
     /* ---- 分类统计 ---- */
     var catCounts = {};
@@ -377,9 +379,27 @@
     var cloud = document.getElementById("tagCloud");
     if (!cloud || !window._blogFilter) return;
     var tags = window._blogFilter.getTags();
-    cloud.innerHTML = tags.map(function(t){
-      return '<a data-tag="' + esc(t) + '">' + esc(t) + '</a>';
-    }).join("");
+    var SHOW = 15;
+    var expanded = false;
+
+    function render() {
+      var visible = expanded ? tags : tags.slice(0, SHOW);
+      var html = visible.map(function(t){
+        return '<a data-tag="' + esc(t) + '">' + esc(t) + '</a>';
+      }).join("");
+      if (tags.length > SHOW) {
+        html += '<button class="tag-more" id="tagMore" type="button">' + (expanded ? '&#9650; 收起' : '&#9660; 显示更多 (' + tags.length + ')') + '</button>';
+      }
+      cloud.innerHTML = html;
+      var moreBtn = document.getElementById("tagMore");
+      if (moreBtn) {
+        moreBtn.addEventListener("click", function(){
+          expanded = !expanded;
+          render();
+        });
+      }
+    }
+    render();
 
     cloud.addEventListener("click", function(e){
       var a = e.target.closest("a");

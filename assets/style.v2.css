@@ -1390,6 +1390,21 @@ h2:hover .heading-anchor { opacity: 1; }
     background: rgba(255,184,108,0.15);
     border: 1px solid var(--accent);
 }
+.tag-more {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    padding: 4px 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: transparent;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: border-color var(--transition), color var(--transition);
+}
+.tag-more:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ========================================
    数据驱动渲染 — 个人卡片 & 随机卡片
@@ -1417,13 +1432,24 @@ h2:hover .heading-anchor { opacity: 1; }
 }
 .profile-links {
     display: flex;
-    gap: 14px;
+    gap: 22px;
 }
 .profile-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     color: var(--accent2);
     text-decoration: none;
     font-family: var(--font-mono);
     font-size: 0.85em;
+    transition: color var(--transition);
+}
+.profile-links a:hover { color: var(--accent); }
+.profile-links a svg {
+    width: 14px;
+    height: 14px;
+    color: var(--text-primary);
+    flex-shrink: 0;
 }
 
 .fortune-card { padding: 8px 0; }

@@ -3,6 +3,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-17',
     hash: 'feat',
+    title: '首页侧栏优化：标签云折叠与排序、whoami 链接加图标',
+    desc: '标签云默认只显示前 15 个标签，超出显示「显示更多」按钮可展开/收起；标签按文章数量降序排列（文章多的在前）；whoami 链接间距拉开至 22px，「B站」改为「Bilibili」，链接文字前新增黑白单色 SVG 图标（GitHub 猫图标、bilibili TV 图标）。',
+    tags: ['Feat', 'UI']
+  },
+  {
+    date: '2026-08-17',
+    hash: 'feat',
     title: '新增文章：NS手柄蓝牙连接后马上断开',
     desc: '发布《NS手柄蓝牙连接后马上断开》游戏故障排查笔记：NS（Switch）手柄在电脑上通过蓝牙连接后马上断开，原因是被已打开的 NS 模拟器（Switch 模拟器）抢占直驱通道；在 设置-控制 中取消勾选「Joycon 直接驱动」和「Pro Controller 直接驱动」两项即可正常使用。',
     tags: ['New', 'Doc']
