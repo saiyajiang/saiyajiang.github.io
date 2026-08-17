@@ -678,7 +678,22 @@ img { max-width: 100%; display: block; }
     gap: 12px;
     margin-bottom: 12px;
 }
-.contact-ids { margin-top: 2px; }
+.contact-ids {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+.contact-ids span {
+    font-family: var(--font-mono);
+    font-size: 0.78em;
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 2px 8px;
+    white-space: nowrap;
+}
 
 /* ========================================
    閸忋劌鐪棅鍏呯閹绢厽鏂侀崳?閳?缂佸牏顏搴㈢壐閸欏厖绗呯憴鎺撳亾濞?   ======================================== */
@@ -1439,7 +1454,9 @@ h2:hover .heading-anchor { opacity: 1; }
 }
 .profile-links {
     display: flex;
-    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 14px;
 }
 .profile-links a {
     display: inline-flex;
@@ -1459,14 +1476,23 @@ h2:hover .heading-anchor { opacity: 1; }
     flex-shrink: 0;
 }
 .profile-ids {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+    max-width: 100%;
+}
+.profile-ids span {
     font-family: var(--font-mono);
-    font-size: 0.75em;
+    font-size: 0.72em;
     color: var(--text-secondary);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 2px 8px;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 .fortune-card { padding: 8px 0; }
