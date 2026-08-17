@@ -1451,6 +1451,16 @@ h2:hover .heading-anchor { opacity: 1; }
     color: var(--text-primary);
     flex-shrink: 0;
 }
+.profile-ids {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.75em;
+    color: var(--text-secondary);
+}
 
 .fortune-card { padding: 8px 0; }
 .fortune-cat {

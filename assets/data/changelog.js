@@ -8,6 +8,13 @@ window.CHANGELOG_DATA = [
     tags: ['Fix', 'UI']
   },
   {
+    date: '2026-08-18',
+    hash: 'feat',
+    title: '首页 profile 区新增 Steam 链接与游戏 ID',
+    desc: 'profile 区新增 Steam 链接（steamcommunity.com/id/saiyajiang/，带 SVG 图标），下方新增 Steam 好友 ID 141256050 与鸣潮 ID 107070647 展示行。',
+    tags: ['Feat', 'UI']
+  },
+  {
     date: '2026-08-17',
     hash: 'feat',
     title: '首页侧栏优化：标签云折叠与排序、whoami 链接加图标',
