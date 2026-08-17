@@ -9,6 +9,13 @@ window.CHANGELOG_DATA = [
   },
   {
     date: '2026-08-18',
+    hash: 'fix',
+    title: 'profile 区与 about 联系区排版修复、颜色统一',
+    desc: '首页 profile-ids 改为纵向左对齐，修复 Steam ID 与鸣潮 ID 两行错位；about 联系区新增 contact-links 容器拉开链接间距、ID 行与链接垂直间距；about 联系链接颜色同步为 accent2 蓝色系，与首页 profile 链接一致。',
+    tags: ['Fix', 'UI']
+  },
+  {
+    date: '2026-08-18',
     hash: 'feat',
     title: 'about 页更新：联系信息、内容方向、评论方式',
     desc: '联系区新增 Steam 个人空间链接与 Steam 好友 ID、鸣潮 ID；内容方向改为游戏技巧/工具/Windows/编程/诗词摘抄；评论方式更新为 GitHub Discussions 讨论区。',
