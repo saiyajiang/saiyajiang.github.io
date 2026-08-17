@@ -10,6 +10,13 @@ window.CHANGELOG_DATA = [
   {
     date: '2026-08-18',
     hash: 'feat',
+    title: 'about 页更新：联系信息、内容方向、评论方式',
+    desc: '联系区新增 Steam 个人空间链接与 Steam 好友 ID、鸣潮 ID；内容方向改为游戏技巧/工具/Windows/编程/诗词摘抄；评论方式更新为 GitHub Discussions 讨论区。',
+    tags: ['Feat', 'UI']
+  },
+  {
+    date: '2026-08-18',
+    hash: 'feat',
     title: '首页 profile 区新增 Steam 链接与游戏 ID',
     desc: 'profile 区新增 Steam 链接（steamcommunity.com/id/saiyajiang/，带 SVG 图标），下方新增 Steam 好友 ID 141256050 与鸣潮 ID 107070647 展示行。',
     tags: ['Feat', 'UI']
