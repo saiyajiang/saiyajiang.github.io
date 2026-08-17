@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chrome扩展程序ManifestV2临时方案 · 悲歌的小站</title>
+  <title>NS手柄蓝牙连接后马上断开 · 悲歌的小站</title>
   <link rel="stylesheet" href="../assets/style.css" />
 </head>
 <body data-page="post">
@@ -26,40 +26,41 @@
 <main class="page-content">
 
 <div class="post-header">
-  <h1 class="post-title">Chrome扩展程序ManifestV2临时方案</h1>
+  <h1 class="post-title">NS手柄蓝牙连接后马上断开</h1>
   <div class="post-meta">
-    <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2026年8月16日</span>
+    <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 2026年8月17日</span>
     <span><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 约 1 分钟阅读</span>
   </div>
   <div class="post-tags">
-    <a href="../index.html?tag=Chrome" class="post-tag">#Chrome</a>
-    <a href="../index.html?tag=浏览器" class="post-tag">#浏览器</a>
-    <a href="../index.html?tag=注册表" class="post-tag">#注册表</a>
-    <a href="../index.html?tag=ManifestV2" class="post-tag">#ManifestV2</a>
-    <a href="../index.html?tag=扩展程序" class="post-tag">#扩展程序</a>
+    <a href="../index.html?tag=游戏" class="post-tag">#游戏</a>
+    <a href="../index.html?tag=故障排查" class="post-tag">#故障排查</a>
+    <a href="../index.html?tag=NS" class="post-tag">#NS</a>
+    <a href="../index.html?tag=Switch" class="post-tag">#Switch</a>
+    <a href="../index.html?tag=手柄" class="post-tag">#手柄</a>
+    <a href="../index.html?tag=蓝牙" class="post-tag">#蓝牙</a>
   </div>
 </div>
 
 <article class="post-content">
 
-  <h2>问题</h2>
-  <p>Chrome 提示「此扩展程序未遵循最佳实践」，ManifestV2 扩展不再被支持。</p>
+  <h2>现象</h2>
+  <p>NS（Switch）手柄在电脑上通过蓝牙连接后，<strong>连接上马上断开</strong>，无法正常使用。</p>
 
-  <h2>临时方案</h2>
-  <p>通过注册表策略重新启用 ManifestV2 扩展支持。</p>
+  <h2>原因</h2>
+  <p>已打开的 NS 模拟器（Switch 模拟器）会抢占手柄的直驱通道，导致系统蓝牙连接被模拟器截获后立即断开。</p>
 
-  <h3>操作步骤</h3>
+  <h2>解决</h2>
+  <p>在 NS 模拟器（Switch 模拟器）中关闭手柄直接驱动选项：</p>
   <ol>
-    <li>打开注册表编辑器（<code>regedit</code>）</li>
-    <li>定位到 <code>HKEY_LOCAL_MACHINE\SOFTWARE\Policies\</code>，右键新建项，添加 <code>\Google\Chrome</code></li>
-    <li>右键 <code>Chrome</code>，新建 DWORD（32 位）值，命名为 <code>ExtensionManifestV2Availability</code></li>
-    <li>右键 <code>ExtensionManifestV2Availability</code>，修改数据为 <code>2</code></li>
-    <li>Chrome 打开 <code>chrome://policy/</code>，点击「重新加载政策」</li>
+    <li>打开 NS 模拟器（Switch 模拟器）</li>
+    <li>进入 <strong>设置</strong> → <strong>控制</strong></li>
+    <li>取消勾选「Joycon 直接驱动」和「Pro Controller 直接驱动」两项</li>
   </ol>
+  <p>取消勾选后，手柄不再被模拟器抢占，即可正常通过蓝牙连接使用。</p>
 
   <div class="callout callout--tip">
     <span class="icon">💡</span>
-    <p>数据值 2 表示允许 ManifestV2 扩展继续运行；此为临时方案，建议尽快迁移到 ManifestV3。</p>
+    <p>如果关闭后仍连不上，可先断开蓝牙设备再重新配对，或重启电脑后重试。</p>
   </div>
 
 </article>
@@ -70,7 +71,7 @@
     <div>
       <div class="comments-title">💬 讨论</div>
     </div>
-    <a href="https://github.com/saiyajiang/saiyajiang.github.io/discussions/new?category=General&title=讨论：Chrome扩展程序ManifestV2临时方案" target="_blank" class="comments-link">
+    <a href="https://github.com/saiyajiang/saiyajiang.github.io/discussions/new?category=General&title=讨论：NS手柄蓝牙连接后马上断开" target="_blank" class="comments-link">
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       去 GitHub 发表讨论
     </a>
@@ -79,8 +80,7 @@
 </div>
 
 <nav class="post-nav">
-  <a href="post-win-4.html" class="post-nav__item"><div class="post-nav-label">← 上一篇</div><div class="post-nav-title">Win11记事本不显示下划线</div></a>
-  <a href="post-game-2.html" class="post-nav__item"><div class="post-nav-label">下一篇 →</div><div class="post-nav-title">NS手柄蓝牙连接后马上断开</div></a>
+  <a href="post-win-5.html" class="post-nav__item"><div class="post-nav-label">← 上一篇</div><div class="post-nav-title">Chrome扩展程序ManifestV2临时方案</div></a>
 </nav>
 
 </main>

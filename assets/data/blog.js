@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "NS手柄蓝牙连接后马上断开",
+    date: "2026-08-17",
+    url: "posts/post-game-2.html",
+    tags: ["游戏", "故障排查", "NS", "Switch", "手柄", "蓝牙"],
+    excerpt: "NS（Switch）手柄在电脑上蓝牙连接后马上断开：已打开的 NS 模拟器（Switch 模拟器）会抢占手柄直驱通道，在 设置-控制 中取消勾选「Joycon 直接驱动」和「Pro Controller 直接驱动」两项即可正常使用。",
+    readingTime: 1
+  },
+  {
     title: "Chrome扩展程序ManifestV2临时方案",
     date: "2026-08-16",
     url: "posts/post-win-5.html",

@@ -1,6 +1,13 @@
 /* 更新日志数据 */
 window.CHANGELOG_DATA = [
   {
+    date: '2026-08-17',
+    hash: 'feat',
+    title: '新增文章：NS手柄蓝牙连接后马上断开',
+    desc: '发布《NS手柄蓝牙连接后马上断开》游戏故障排查笔记：NS（Switch）手柄在电脑上通过蓝牙连接后马上断开，原因是被已打开的 NS 模拟器（Switch 模拟器）抢占直驱通道；在 设置-控制 中取消勾选「Joycon 直接驱动」和「Pro Controller 直接驱动」两项即可正常使用。',
+    tags: ['New', 'Doc']
+  },
+  {
     date: '2026-08-16',
     hash: 'fix',
     title: '首页改版：分页、侧栏滚动条修复、whoami 换位与 B站链接',
