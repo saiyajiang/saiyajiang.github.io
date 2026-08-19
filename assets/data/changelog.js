@@ -1,6 +1,27 @@
 /* 更新日志数据 */
 window.CHANGELOG_DATA = [
   {
+    date: '2026-08-19',
+    hash: 'feat',
+    title: '新增文章：提问的智慧（How To Ask Questions The Smart Way）',
+    desc: '发布《提问的智慧》中文版文章（Eric S. Raymond / Rick Moen 原著，基于原文 3.10 版翻译）：完整收录提问前的准备、慎选提问的论坛、使用有意义且描述明确的标题、精确描述问题症状、询问代码问题的方式、如何解读答案（RTFM/STFW）、如何避免扮演失败者、不该问的问题、好问题与蠢问题、如果得不到回答、如何更好地回答问题等全部章节；正文由仓库 README 转换为 HTML，保留原文链接与引用。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-19',
+    hash: 'feat',
+    title: '新增文章：别像弱智一样提问',
+    desc: '发布《别像弱智一样提问》文章（Stop-Ask-Questions-The-Stupid-Ways 仓库 README）：以辛辣幽默的方式列出提问前须知——Free 的正确翻译是「自由」而非「免费」、愿意回答问题的人都是可爱的人、向帮助你的人付费是高尚行为、学会搜索与英文、礼貌、准确描述问题、画关键字、贴图与圈重点，附「萌新滚粗」对比表；文中 8 张图片改用仓库 raw URL 外链。',
+    tags: ['New', 'Doc']
+  },
+  {
+    date: '2026-08-19',
+    hash: 'feat',
+    title: '新增文章：Wallpaper Engine部分壁纸黑屏的解决方法',
+    desc: '发布《Wallpaper Engine部分壁纸黑屏的解决方法》工具技巧笔记：部分视频壁纸黑屏多为视频解码器缺失，安装 LAV Filters（x86 与 x64 两个版本，GitHub / Fosshub 镜像）并以管理员权限安装，重启 Wallpaper Engine 即可解决；附官方帮助链接与 FAQ（仍黑屏可尝试重启电脑）。',
+    tags: ['New', 'Doc']
+  },
+  {
     date: '2026-08-18',
     hash: 'fix',
     title: '修复首页 profile 区链接溢出，ID 统一为标签样式',

@@ -1,6 +1,30 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "提问的智慧（How To Ask Questions The Smart Way）",
+    date: "2026-08-19",
+    url: "posts/post-article-1.html",
+    tags: ["文章", "提问", "黑客文化", "开源社区", "沟通技巧"],
+    excerpt: "Eric S. Raymond 与 Rick Moen 的经典提问指南（中文版，基于原文 3.10 版翻译）：涵盖提问前的准备、慎选提问论坛、使用有意义且描述明确的标题、精确描述问题、如何解读答案、避免扮演失败者、不该问的问题、好问题与蠢问题、如何更好地回答问题等完整章节。",
+    readingTime: 12
+  },
+  {
+    title: "别像弱智一样提问",
+    date: "2026-08-19",
+    url: "posts/post-article-2.html",
+    tags: ["文章", "提问", "社区礼仪", "沟通"],
+    excerpt: "以辛辣幽默的方式列出提问前须知：Free 的正确翻译是「自由」而非「免费」，愿意回答问题的人都是可爱的人，向帮助你的人付费是高尚行为；学会搜索与英文、礼貌、准确描述问题、画关键字、贴图与圈重点，附「萌新滚粗」对比表。",
+    readingTime: 2
+  },
+  {
+    title: "Wallpaper Engine部分壁纸黑屏的解决方法",
+    date: "2026-08-19",
+    url: "posts/post-tool-3.html",
+    tags: ["tool", "WallpaperEngine", "壁纸", "LAV", "故障排查"],
+    excerpt: "Wallpaper Engine 部分壁纸（尤其是视频壁纸）黑屏，多为视频解码器缺失所致：下载并安装 LAV Filters 的 x86 与 x64 版本（GitHub / Fosshub 镜像），安装时以管理员权限运行，完成后重启 Wallpaper Engine 即可；安装后仍黑屏可尝试重启电脑。",
+    readingTime: 2
+  },
+  {
     title: "NS手柄蓝牙连接后马上断开",
     date: "2026-08-17",
     url: "posts/post-game-2.html",
