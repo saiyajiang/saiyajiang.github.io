@@ -3,51 +3,75 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>笔记 · 悲歌的小站</title>
-  <link rel="stylesheet" href="../assets/style.v2.css" />
+  <title>知识数据库 · 悲歌</title>
+  <link rel="stylesheet" href="../db/db.css" />
 </head>
-<body data-page="wiki">
+<body>
 
-<header class="site-header" id="header">
-  <div class="header-inner">
-    <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
-    <nav class="nav-menu" id="navMenu">
-      <a href="../index.html">~/blog</a>
-      <a href="../archive.html">~/archive</a>
-      <a href="index.html">~/wiki</a>
-      <a href="../about.html">~/about</a>
-      <a href="../quotes.html">~/quotes</a>
-      <a href="../changelog.html">~/changelog</a>
-    </nav>
-    <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">&#9788;</button>
+<!-- ==================== 顶部状态区 ==================== -->
+<header class="db-header">
+  <div class="db-brand">
+    <div class="db-logo">✦</div>
+    <div class="db-brand-text">
+      <h1>知识数据库</h1>
+      <p>GAME · WIKI · DATABASE</p>
+    </div>
+  </div>
+
+  <div class="db-search">
+    <span class="db-search-icon">⌕</span>
+    <input id="searchInput" type="text" placeholder="搜索条目、出处、关键词…" autocomplete="off" />
+    <kbd id="searchHint">/</kbd>
+  </div>
+
+  <div class="db-stats">
+    <div class="stat-card"><span>板块</span><b id="statGame">0</b></div>
+    <div class="stat-card"><span>分类</span><b id="statCat">0</b></div>
+    <div class="stat-card"><span>条目</span><b id="statItem">0</b></div>
   </div>
 </header>
 
-<div class="main-wrapper">
-  <aside class="sidebar">
-    <div class="card">
-      <div class="card-header">$ ls sections/</div>
-      <div class="card-body-sm">
-        <nav class="wiki-toc" id="wikiToc"></nav>
-      </div>
-    </div>
-  </aside>
-  <main id="app" class="content-main"></main>
-</div>
+<!-- ==================== 游戏板块切换 ==================== -->
+<nav class="db-games" id="gameTabs" aria-label="游戏板块切换"></nav>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <span>$ echo "&copy; 2026 悲歌的小站 &middot; Powered by GitHub Pages"</span>
-    <div class="footer-links">
-      <a href="https://github.com/saiyajiang/saiyajiang.github.io" target="_blank">Source</a>
+<!-- ==================== 图表区 ==================== -->
+<section class="db-charts">
+  <div class="chart-panel">
+    <div class="chart-head"><span class="dot dot-a"></span>分类占比 <em>CATEGORY RATIO</em></div>
+    <div class="chart-body donut-wrap">
+      <svg id="donutChart" viewBox="0 0 42 42" role="img" aria-label="分类占比环形图"></svg>
+      <div class="donut-center"><b id="donutTotal">0</b><span>条目</span></div>
+      <div class="donut-legend" id="donutLegend"></div>
     </div>
   </div>
-</footer>
+  <div class="chart-panel">
+    <div class="chart-head"><span class="dot dot-b"></span>条目分布 <em>ITEM DISTRIBUTION</em></div>
+    <div class="chart-body bar-wrap" id="barChart"></div>
+  </div>
+</section>
 
-<button class="back-to-top" id="backToTop" aria-label="返回顶部" title="返回顶部">cd /</button>
+<!-- ==================== 筛选 + 视图切换 ==================== -->
+<div class="db-toolbar">
+  <div class="db-chips" id="categoryChips"></div>
+  <div class="db-viewswitch" role="tablist" aria-label="视图切换">
+    <button class="active" data-view="card" role="tab" aria-selected="true">▦ 卡片</button>
+    <button data-view="table" role="tab" aria-selected="false">☰ 表格</button>
+  </div>
+</div>
 
-<script src="../assets/data/site-config.js"></script>
+<!-- ==================== 主体 ==================== -->
+<main id="dbGrid" class="db-grid" aria-live="polite"></main>
+<div id="emptyState" class="db-empty" hidden>
+  <div class="db-empty-icon">∅</div>
+  <p id="emptyTitle">暂无数据</p>
+  <span id="emptyDesc">等待提交游戏整理内容</span>
+</div>
+
+<!-- ==================== 底部 Dock ==================== -->
+<nav class="db-dock" id="dbDock" aria-label="分类快捷导航"></nav>
+
+<script src="../db/data/games.js"></script>
 <script src="../db/data/knowledge.js"></script>
-<script src="../assets/site.js"></script>
+<script src="../db/db.js"></script>
 </body>
 </html>
