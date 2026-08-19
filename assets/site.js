@@ -492,12 +492,12 @@
 
         var wrap = document.createElement('div');
         wrap.id = 'custom-player';
-        wrap.innerHTML = '<div class="cp-main"><button id="cp-prev">\u23ee</button><button id="cp-play">\u25b6</button><button id="cp-next">\u23ed</button><span id="cp-title">点击播放</span><input type="range" id="cp-vol" min="0" max="100" value="50" title="音量"><button id="cp-mode" title="顺序播放">\u27a1\ufe0f</button><button id="cp-listbtn">\u2630</button></div><div class="cp-list"></div>';
+        wrap.innerHTML = '<div class="cp-main"><button id="cp-prev">\u23ee</button><button id="cp-play">\u25b6</button><button id="cp-next">\u23ed</button><span id="cp-title">点击播放</span><input type="range" id="cp-vol" min="0" max="100" value="30" title="音量"><button id="cp-mode" title="顺序播放">\u27a1\ufe0f</button><button id="cp-listbtn">\u2630</button></div><div class="cp-list"></div>';
         document.body.appendChild(wrap);
 
         var curIdx = 0;
         var audioEl = new Audio();
-        audioEl.volume = 0.5;
+        audioEl.volume = 0.3;
         var loopMode = 0;
         var isShuffle = false;
         var playedIdx = [];
@@ -581,7 +581,7 @@
 
         var dragging = false, startX, startY, startR, startB;
         wrap.querySelector('.cp-main').addEventListener('mousedown', function(e) {
-          if (e.target.tagName === 'BUTTON') return;
+          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
           dragging = true;
           startX = e.clientX; startY = e.clientY;
           var s = getComputedStyle(wrap);
