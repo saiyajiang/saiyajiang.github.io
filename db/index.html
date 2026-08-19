@@ -8,6 +8,22 @@
 </head>
 <body>
 
+<!-- ==================== 站点统一导航 ==================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    <nav class="nav-menu" id="navMenu">
+      <a href="../index.html">~/blog</a>
+      <a href="../archive.html">~/archive</a>
+      <a href="../wiki/index.html">~/wiki</a>
+      <a href="../about.html">~/about</a>
+      <a href="../quotes.html">~/quotes</a>
+      <a href="../changelog.html">~/changelog</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">&#9788;</button>
+  </div>
+</header>
+
 <!-- ==================== 顶部状态区 ==================== -->
 <header class="db-header">
   <div class="db-brand">
@@ -73,5 +89,24 @@
 <script src="data/games.js"></script>
 <script src="data/knowledge.js"></script>
 <script src="db.js"></script>
+<script>
+  // 站点统一 Header 交互：移动端菜单 + 主题切换（不引入 site.js，避免播放器）
+  (function () {
+    var menuBtn = document.getElementById('menuToggle');
+    var navMenu = document.getElementById('navMenu');
+    if (menuBtn && navMenu) {
+      menuBtn.addEventListener('click', function () {
+        navMenu.classList.toggle('open');
+      });
+    }
+    var themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function () {
+        var root = document.documentElement;
+        root.setAttribute('data-theme', root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+      });
+    }
+  })();
+</script>
 </body>
 </html>
