@@ -393,6 +393,9 @@ window.WIKI_DATA = [
       },
       {
         "text": "salary — 来自拉丁语 salarium，原意为「买盐的钱」。古罗马士兵以盐为部分薪饷。"
+      },
+      {
+        "text": "alibi（不在场证明）アリバイ（aribai） — 来自拉丁语 alibi（在别处），法律术语指犯罪时身在别处的证明。日语借词写作「アリバイ」（aribai）。"
       }
     ]
   }
