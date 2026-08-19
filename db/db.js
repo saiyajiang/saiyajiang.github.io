@@ -1,6 +1,7 @@
 /* ============================================================
    知识数据库 db.js — 多游戏板块交互逻辑（搜索/筛选/视图/图表）
    数据结构：window.GAME_DB = [ { id, name, icon, desc, categories: [ { name, items: [...] } ] } ]
+   知识库：window.WIKI_DATA = [ { id, title, items: [ { text, subCategory? } ] } ]，合并为独立板块
    ============================================================ */
 (function () {
   'use strict';
@@ -15,8 +16,7 @@
   var entries = [];      // 当前板块扁平化条目
 
   function loadGames() {
-    if (!window.GAME_DB || !window.GAME_DB.length) return;
-    games = window.GAME_DB.map(function (g) {
+    games = (window.GAME_DB || []).map(function (g) {
       return {
         id: g.id || '',
         name: g.name || '未命名',
@@ -27,6 +27,27 @@
         })
       };
     });
+
+    // 合并知识库（原 wiki 细分板块，单一数据源 db/data/knowledge.js）
+    if (window.WIKI_DATA && window.WIKI_DATA.length) {
+      window.WIKI_DATA.forEach(function (sec) {
+        var catMap = {};
+        (sec.items || []).forEach(function (it) {
+          var catName = it.subCategory || '条目';
+          if (!catMap[catName]) catMap[catName] = [];
+          catMap[catName].push({ text: it.text || '' });
+        });
+        games.push({
+          id: 'wiki-' + sec.id,
+          name: sec.title || '知识库',
+          icon: (sec.title || '知').slice(0, 1),
+          desc: '知识库 · 原Wiki细分',
+          categories: Object.keys(catMap).map(function (k) {
+            return { name: k, items: catMap[k] };
+          })
+        });
+      });
+    }
   }
 
   function flattenGame(game) {
