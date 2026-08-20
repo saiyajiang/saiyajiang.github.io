@@ -396,6 +396,18 @@ window.WIKI_DATA = [
       },
       {
         "text": "alibi（不在场证明）アリバイ（aribai） — 来自拉丁语 alibi（在别处），法律术语指犯罪时身在别处的证明。日语借词写作「アリバイ」（aribai）。"
+      },
+      {
+        "text": "yer — 英语里的儿化音（rhotic / r-dropping 的反向现象），常见于英格兰西南部的一种乡村口音，把词尾或元音后的 r 明显卷舌发出，如把「here」读作「here-r」。"
+      },
+      {
+        "text": "choo — what are you 的口语简化，属于 cockney accent（伦敦音，过去伦敦东部工人的口音）。同类缩略还有「wotcha」（what cheer）等。"
+      },
+      {
+        "text": "you have forgotten the magic word — 直译是「你忘记说咒语」，但 magic word 在此代指 please 等礼貌用词，所以这句话实际意思是「你忘记说『请』」。"
+      },
+      {
+        "text": "Uranus（天王星）与 your anus（你的肛门）读音相同，有时被用来做双关语/谐音梗。"
       }
     ]
   }
