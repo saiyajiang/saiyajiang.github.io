@@ -129,7 +129,7 @@
   function categoryStats() {
     var map = {};
     entries.forEach(function (e) {
-      if (!map[e.category]) map[e.category] = { name: e.category, count: 0 };
+      if (!map[e.category]) map[e.category] = { name: e.category, id: e.category, count: 0 };
       map[e.category].count++;
     });
     var list = Object.keys(map).map(function (k) { return map[k]; });
@@ -356,26 +356,56 @@
     var head = document.createElement('thead');
     var body = document.createElement('tbody');
 
-    // 表格化条目（columns/row）vs 传统条目
+    // 表格化条目（columns）vs 传统条目：按分类分组，每组用自身 columns 建表
     var tableish = list[0] && list[0].columns && list[0].row;
     if (tableish) {
-      table.className = 'db-table table-raw';
-      var cols = list[0].columns;
-      head.innerHTML = '<tr>' + cols.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr>';
+      var groups = [], order = [];
       list.forEach(function (e) {
-        var tr = document.createElement('tr');
-        tr.innerHTML = cols.map(function (c) {
-          var v = e.row[c];
-          return '<td>' + esc(v == null || v === '' ? '—' : v) + '</td>';
-        }).join('');
-        tr.addEventListener('click', function () {
-          Array.prototype.forEach.call(tr.children, function (td) {
-            td.classList.toggle('exp');
-            td.style.whiteSpace = td.classList.contains('exp') ? 'normal' : 'nowrap';
-          });
-        });
-        body.appendChild(tr);
+        var idx = order.indexOf(e.category);
+        if (idx === -1) {
+          order.push(e.category);
+          groups.push({ name: e.category, columns: e.columns, items: [] });
+          idx = groups.length - 1;
+        }
+        groups[idx].items.push(e);
       });
+
+      groups.forEach(function (g) {
+        if (groups.length > 1) {
+          var heading = document.createElement('div');
+          heading.className = 'db-table-cat';
+          heading.innerHTML =
+            '<span class="badge" style="background:rgba(79,216,224,0.12);color:var(--cyan);border:1px solid rgba(79,216,224,0.35)">' +
+            esc(g.name) + '</span>' +
+            '<span class="db-table-count">' + g.items.length + ' 条</span>';
+          el.grid.appendChild(heading);
+        }
+
+        var t = document.createElement('table');
+        var th = document.createElement('thead');
+        var tb = document.createElement('tbody');
+        t.className = 'db-table table-raw';
+        var cols = g.columns;
+        th.innerHTML = '<tr>' + cols.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr>';
+        g.items.forEach(function (e) {
+          var tr = document.createElement('tr');
+          tr.innerHTML = cols.map(function (c) {
+            var v = e.row[c];
+            return '<td>' + esc(v == null || v === '' ? '—' : v) + '</td>';
+          }).join('');
+          tr.addEventListener('click', function () {
+            Array.prototype.forEach.call(tr.children, function (td) {
+              td.classList.toggle('exp');
+              td.style.whiteSpace = td.classList.contains('exp') ? 'normal' : 'nowrap';
+            });
+          });
+          tb.appendChild(tr);
+        });
+        t.appendChild(th);
+        t.appendChild(tb);
+        el.grid.appendChild(t);
+      });
+      return;
     } else {
       table.className = 'db-table';
       head.innerHTML = '<tr><th>分类</th><th>标题</th><th>内容</th><th>标签</th><th>日期</th></tr>';
