@@ -338,7 +338,7 @@
         '<div class="db-card-top">' + badge +
         '<span class="db-title" title="' + esc(e.title) + '">' + esc(e.title) + '</span>' +
         '<span class="expand-icon">▾</span></div>' +
-        '<div class="db-excerpt">' + esc(e.text) + '</div>' +
+        '<div class="db-excerpt">' + censorText(esc(e.text)) + '</div>' +
         '<div class="db-meta">' +
           '<span>' + (e.tag ? esc(e.tag) : '条目') + '</span>' +
           '<span>' + (e.date || '#' + e.hash) + '</span>' +
@@ -415,7 +415,7 @@
           '<td><span class="badge" style="background:rgba(79,216,224,0.10);color:var(--cyan);border:1px solid rgba(148,174,210,0.25);padding:2px 8px;border-radius:999px;font-size:11px">' +
           esc(e.category) + '</span></td>' +
           '<td><strong style="color:var(--text-0)">' + esc(e.title) + '</strong></td>' +
-          '<td>' + esc(e.text) + '</td>' +
+          '<td>' + censorText(esc(e.text)) + '</td>' +
           '<td style="color:var(--text-2);white-space:nowrap">' + esc(e.tag || '—') + '</td>' +
           '<td style="color:var(--text-2);white-space:nowrap">' + esc(e.date || '—') + '</td>';
         tr.addEventListener('click', function () {
@@ -552,6 +552,11 @@
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  /* 敏感词黑框遮挡：将指定文本替换为 censor span，悬停后显示原文 */
+  function censorText(s) {
+    return String(s).replace('your anus（你的肛门）', '<span class="censor">your anus（你的肛门）</span>');
   }
 
   /* ---------- 初始化 ---------- */

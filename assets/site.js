@@ -294,6 +294,11 @@
   }
 
   /* ==================== 渲染：Wiki 页 ==================== */
+  /* 敏感词黑框遮挡：将指定文本替换为 censor span，悬停后显示原文 */
+  function censorWiki(s) {
+    return String(s).replace('your anus（你的肛门）', '<span class="censor">your anus（你的肛门）</span>');
+  }
+
   function renderWikiPage(data) {
     var el = document.getElementById("app");
     if (!el) return;
@@ -332,14 +337,14 @@
           html += '<div class="card-header">' + esc(cat) + '</div>';
           html += '<div class="card-body-sm" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;">';
           groups[cat].forEach(function(t){
-            html += '<div>' + t + '</div>';
+            html += '<div>' + censorWiki(t) + '</div>';
           });
           html += '</div></div>';
         });
       } else {
         html += '<ul class="wiki-list">';
         section.items.forEach(function(it){
-          html += '<li>' + it.text + '</li>';
+          html += '<li>' + censorWiki(it.text) + '</li>';
         });
         html += '</ul>';
       }

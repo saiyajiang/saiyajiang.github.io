@@ -1671,3 +1671,19 @@ h2:hover .heading-anchor { opacity: 1; }
 [data-theme="light"] .quote-item { background: var(--bg-deep); }
 [data-theme="light"] .category-tab.active { background: rgba(217,119,6,0.08); }
 [data-theme="light"] .tag-cloud a.active-tag { background: rgba(217,119,6,0.1); }
+
+/* 黑框遮挡（敏感内容悬停显示） */
+.censor {
+  background: #000;
+  color: transparent;
+  border-radius: 3px;
+  padding: 0 4px;
+  cursor: help;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.censor:hover {
+  background: transparent;
+  color: inherit;
+}
+.censor::selection { background: transparent; }
