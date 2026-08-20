@@ -55,19 +55,20 @@
     entries = [];
     game.categories.forEach(function (cat) {
       cat.items.forEach(function (it) {
-        if (it.row && cat.columns) {
-          // 表格化条目（多 Sheet 原始列还原）
+        // 表格化条目：显式 {row} 或扁平行对象（如 {序号:'1',版本:'v2.4',...}）均兼容
+        if (cat.columns) {
+          var row = it.row || it;
           entries.push({
             kind: 'game',
             gameId: game.id,
             category: cat.name,
             columns: cat.columns,
-            row: it.row,
+            row: row,
             title: '',
             text: '',
             tag: '',
             date: '',
-            hash: hashStr(game.id + '|' + cat.name + '|' + JSON.stringify(it.row).slice(0, 80))
+            hash: hashStr(game.id + '|' + cat.name + '|' + JSON.stringify(row).slice(0, 80))
           });
           return;
         }
@@ -77,7 +78,7 @@
           category: cat.name,
           columns: null,
           row: null,
-          title: it.title || it.text.slice(0, 24),
+          title: it.title || (it.text ? it.text.slice(0, 24) : ''),
           text: it.text || '',
           tag: it.tag || '',
           date: it.date || '',
