@@ -22,8 +22,9 @@
         name: g.name || '未命名',
         icon: g.icon || (g.name || '?').slice(0, 1),
         desc: g.desc || '',
+        tableOnly: !!g.tableOnly,
         categories: (g.categories || []).map(function (c) {
-          return { name: c.name || '未分类', items: c.items || [] };
+          return { name: c.name || '未分类', columns: c.columns || null, items: c.items || [] };
         })
       };
     });
@@ -54,10 +55,28 @@
     entries = [];
     game.categories.forEach(function (cat) {
       cat.items.forEach(function (it) {
+        if (it.row && cat.columns) {
+          // 表格化条目（多 Sheet 原始列还原）
+          entries.push({
+            kind: 'game',
+            gameId: game.id,
+            category: cat.name,
+            columns: cat.columns,
+            row: it.row,
+            title: '',
+            text: '',
+            tag: '',
+            date: '',
+            hash: hashStr(game.id + '|' + cat.name + '|' + JSON.stringify(it.row).slice(0, 80))
+          });
+          return;
+        }
         entries.push({
           kind: 'game',
           gameId: game.id,
           category: cat.name,
+          columns: null,
+          row: null,
           title: it.title || it.text.slice(0, 24),
           text: it.text || '',
           tag: it.tag || '',
@@ -79,7 +98,8 @@
     gameIdx: 0,      // 当前板块索引
     query: '',
     category: 'all',
-    view: 'card'
+    view: 'card',
+    version: 'all'
   };
 
   /* ---------- DOM ---------- */
@@ -100,7 +120,8 @@
     statGame: $('#statGame'),
     statCat: $('#statCat'),
     statItem: $('#statItem'),
-    viewBtns: document.querySelectorAll('.db-viewswitch button')
+    viewBtns: document.querySelectorAll('.db-viewswitch button'),
+    version: $('#versionFilter')
   };
 
   /* ---------- 分类统计（当前板块） ---------- */
@@ -132,7 +153,7 @@
       var tab = document.createElement('button');
       tab.className = 'game-tab' + (i === state.gameIdx ? ' active' : '');
       tab.innerHTML =
-        '<span class="game-icon">' + esc(g.icon) + '</span>' +
+        '<span class="game-icon' + (g.icon.length > 1 ? ' wide' : '') + '">' + esc(g.icon) + '</span>' +
         '<span class="game-name">' + esc(g.name) + '</span>' +
         '<span class="game-count">' + totalOf(g) + ' 条</span>';
       tab.addEventListener('click', function () {
@@ -259,14 +280,31 @@
     });
   }
 
+  function versionValue(e) {
+    if (!e.columns || !e.row) return '';
+    var vi = e.columns.indexOf('版本号');
+    if (vi === -1) vi = e.columns.indexOf('版本');
+    if (vi === -1) return '';
+    return String(e.row[e.columns[vi]] || '').trim();
+  }
+
   /* ---------- 筛选逻辑 ---------- */
   function filtered() {
     var q = state.query.trim().toLowerCase();
     return entries.filter(function (e) {
       if (state.category !== 'all' && e.category !== state.category) return false;
+      if (state.version !== 'all') {
+        var v = versionValue(e);
+        if (v && v.indexOf(state.version) !== 0) return false;
+      }
       if (!q) return true;
-      var hay = (e.title + ' ' + e.text + ' ' + e.category + ' ' + e.tag + ' ' + e.date).toLowerCase();
-      return hay.indexOf(q) !== -1;
+      var hay;
+      if (e.columns && e.row) {
+        hay = e.columns.map(function (c) { return e.row[c]; }).join(' ');
+      } else {
+        hay = e.title + ' ' + e.text + ' ' + e.category + ' ' + e.tag + ' ' + e.date;
+      }
+      return hay.toLowerCase().indexOf(q) !== -1;
     });
   }
 
@@ -314,30 +352,49 @@
   function renderTable(list) {
     el.grid.innerHTML = '';
     var table = document.createElement('table');
-    table.className = 'db-table';
     var head = document.createElement('thead');
-    head.innerHTML = '<tr><th>分类</th><th>标题</th><th>内容</th><th>标签</th><th>日期</th></tr>';
     var body = document.createElement('tbody');
-    list.forEach(function (e) {
-      var tr = document.createElement('tr');
-      tr.innerHTML =
-        '<td><span class="badge" style="background:rgba(79,216,224,0.10);color:var(--cyan);border:1px solid rgba(148,174,210,0.25);padding:2px 8px;border-radius:999px;font-size:11px">' +
-        esc(e.category) + '</span></td>' +
-        '<td><strong style="color:var(--text-0)">' + esc(e.title) + '</strong></td>' +
-        '<td>' + esc(e.text) + '</td>' +
-        '<td style="color:var(--text-2);white-space:nowrap">' + esc(e.tag || '—') + '</td>' +
-        '<td style="color:var(--text-2);white-space:nowrap">' + esc(e.date || '—') + '</td>';
-      tr.addEventListener('click', function () {
-        var td = tr.children[2];
-        td.classList.toggle('exp');
-        if (td.classList.contains('exp')) {
-          td.style.whiteSpace = 'normal';
-        } else {
-          td.style.whiteSpace = '';
-        }
+
+    // 表格化条目（columns/row）vs 传统条目
+    var tableish = list[0] && list[0].columns && list[0].row;
+    if (tableish) {
+      table.className = 'db-table table-raw';
+      var cols = list[0].columns;
+      head.innerHTML = '<tr>' + cols.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr>';
+      list.forEach(function (e) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = cols.map(function (c) {
+          var v = e.row[c];
+          return '<td>' + esc(v == null || v === '' ? '—' : v) + '</td>';
+        }).join('');
+        tr.addEventListener('click', function () {
+          Array.prototype.forEach.call(tr.children, function (td) {
+            td.classList.toggle('exp');
+            td.style.whiteSpace = td.classList.contains('exp') ? 'normal' : 'nowrap';
+          });
+        });
+        body.appendChild(tr);
       });
-      body.appendChild(tr);
-    });
+    } else {
+      table.className = 'db-table';
+      head.innerHTML = '<tr><th>分类</th><th>标题</th><th>内容</th><th>标签</th><th>日期</th></tr>';
+      list.forEach(function (e) {
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td><span class="badge" style="background:rgba(79,216,224,0.10);color:var(--cyan);border:1px solid rgba(148,174,210,0.25);padding:2px 8px;border-radius:999px;font-size:11px">' +
+          esc(e.category) + '</span></td>' +
+          '<td><strong style="color:var(--text-0)">' + esc(e.title) + '</strong></td>' +
+          '<td>' + esc(e.text) + '</td>' +
+          '<td style="color:var(--text-2);white-space:nowrap">' + esc(e.tag || '—') + '</td>' +
+          '<td style="color:var(--text-2);white-space:nowrap">' + esc(e.date || '—') + '</td>';
+        tr.addEventListener('click', function () {
+          var td = tr.children[2];
+          td.classList.toggle('exp');
+          td.style.whiteSpace = td.classList.contains('exp') ? 'normal' : '';
+        });
+        body.appendChild(tr);
+      });
+    }
     table.appendChild(head);
     table.appendChild(body);
     el.grid.appendChild(table);
@@ -364,6 +421,8 @@
   function bindView() {
     el.viewBtns.forEach(function (btn) {
       btn.addEventListener('click', function () {
+        var game = games[state.gameIdx];
+        if (game && game.tableOnly && btn.getAttribute('data-view') === 'card') return;
         state.view = btn.getAttribute('data-view');
         el.viewBtns.forEach(function (b) {
           var on = b === btn;
@@ -372,6 +431,48 @@
         });
         renderList();
       });
+    });
+  }
+
+  /* ---------- 版本筛选 ---------- */
+  function versionOptions() {
+    var map = {};
+    entries.forEach(function (e) {
+      var v = versionValue(e);
+      if (!v) return;
+      var k = v.split('.')[0] + (v.match(/^\d+\.\d+$/) ? '.x' : '');
+      map[k] = true;
+    });
+    return Object.keys(map).sort(function (a, b) {
+      var na = parseFloat(a), nb = parseFloat(b);
+      return (isNaN(na) ? 0 : na) - (isNaN(nb) ? 0 : nb);
+    });
+  }
+
+  function renderVersionOptions() {
+    if (!el.version) return;
+    el.version.innerHTML = '';
+    var opts = versionOptions();
+    if (!opts.length) { el.version.style.display = 'none'; return; }
+    el.version.style.display = '';
+    var all = document.createElement('option');
+    all.value = 'all';
+    all.textContent = '全部版本';
+    el.version.appendChild(all);
+    opts.forEach(function (v) {
+      var o = document.createElement('option');
+      o.value = v;
+      o.textContent = v;
+      el.version.appendChild(o);
+    });
+    el.version.value = state.version;
+  }
+
+  function bindVersion() {
+    if (!el.version) return;
+    el.version.addEventListener('change', function () {
+      state.version = el.version.value;
+      renderList();
     });
   }
 
@@ -396,11 +497,22 @@
     renderGameTabs();
     var game = games[state.gameIdx];
     flattenGame(game);
+    // 表格化板块强制表格视图
+    if (game && game.tableOnly) {
+      state.view = 'table';
+      el.viewBtns.forEach(function (b) {
+        var on = b.getAttribute('data-view') === 'table';
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+    state.version = 'all';
     var cats = categoryStats();
     renderStats();
     renderDonut(cats);
     renderBars(cats);
     renderChips(cats);
+    renderVersionOptions();
     renderList();
   }
 
@@ -416,6 +528,7 @@
     loadGames();
     bindSearch();
     bindView();
+    bindVersion();
     switchGame();
   }
 

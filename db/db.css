@@ -544,6 +544,99 @@ body {
 .table-view .db-table tr:hover { background: rgba(22, 35, 58, 0.5); }
 .table-view .db-table tr:last-child td { border-bottom: none; }
 
+/* ---------- 鸣潮等多字 icon：横排、渐变、高对比 ---------- */
+.game-tab .game-icon.wide {
+  width: auto;
+  min-width: 44px;
+  height: 26px;
+  padding: 0 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-direction: row;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  background: linear-gradient(160deg, rgba(79, 216, 224, 0.30), rgba(242, 181, 76, 0.22));
+  border-color: rgba(79, 216, 224, 0.50);
+  color: var(--text-0);
+  box-shadow: 0 0 14px rgba(79, 216, 224, 0.22);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+.game-tab.active .game-icon.wide {
+  background: linear-gradient(160deg, rgba(79, 216, 224, 0.42), rgba(242, 181, 76, 0.30));
+  border-color: rgba(79, 216, 224, 0.75);
+  box-shadow: 0 0 20px rgba(79, 216, 224, 0.35);
+}
+
+/* ---------- 版本筛选下拉 ---------- */
+.db-version-filter {
+  margin-left: 12px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--text-0);
+  background: var(--bg-3);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.db-version-filter:hover,
+.db-version-filter:focus {
+  border-color: rgba(79, 216, 224, 0.55);
+  box-shadow: 0 0 12px rgba(79, 216, 224, 0.15);
+}
+
+.db-version-filter option {
+  background: var(--bg-2);
+  color: var(--text-0);
+}
+
+/* ---------- 完整表格还原（table-raw） ---------- */
+.db-grid.table-view { overflow-x: auto; }
+
+.table-view .db-table.table-raw {
+  width: max-content;
+  min-width: 100%;
+  font-size: 12.5px;
+}
+
+.table-view .db-table.table-raw th {
+  white-space: nowrap;
+  padding: 12px 18px;
+  background: var(--bg-2);
+  color: var(--text-0);
+  font-weight: 600;
+}
+
+.table-view .db-table.table-raw td {
+  white-space: nowrap;
+  max-width: 460px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 10px 18px;
+}
+
+.table-view .db-table.table-raw td:first-child,
+.table-view .db-table.table-raw td:nth-child(2),
+.table-view .db-table.table-raw td:nth-child(3) {
+  max-width: 180px;
+}
+
+.table-view .db-table.table-raw td.exp {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  max-width: 560px;
+  background: rgba(79, 216, 224, 0.05);
+}
+
+.table-view .db-table.table-raw tr:hover td.exp { background: rgba(79, 216, 224, 0.08); }
+
 /* 空状态 */
 .db-empty {
   text-align: center;
