@@ -1432,5 +1432,25 @@ window.GAME_DB = [
           ]
         }
     ]
+
+  },
+  {
+    id: 'recommend',
+    name: '推荐与避雷',
+    icon: '荐',
+    desc: '视频 / 电影 / 电视剧 / 文章 / 书籍 / 游戏 推荐与避雷清单',
+    tableOnly: true,
+    categories: [
+      {
+        name: '推荐',
+        columns: ['类型', '名称', '推荐理由', '评分', '日期'],
+        items: []
+      },
+      {
+        name: '不推荐',
+        columns: ['类型', '名称', '避雷原因', '日期'],
+        items: []
+      }
+    ]
   }
 ];
