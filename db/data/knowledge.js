@@ -408,6 +408,9 @@ window.WIKI_DATA = [
       },
       {
         "text": "Uranus（天王星）与 your anus（你的肛门）读音相同，有时被用来做双关语/谐音梗。"
+      },
+      {
+        "text": "迟到的正义非正义（Justice delayed is justice denied）— 意指如果针对受害一方的法律救济存在但不能及时到来，那与没有补救措施是一样的效果。"
       }
     ]
   }
