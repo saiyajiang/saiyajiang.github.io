@@ -1,6 +1,13 @@
 /* 更新日志数据 */
 window.CHANGELOG_DATA = [
   {
+    date: '2026-09-12',
+    hash: 'feat',
+    title: '新增文章：地名',
+    desc: '发布《地名》文章，整理一批地名：合肥、枣庄、石家庄、包头、周口、双鸭山、娄底、蚌埠、驻马店、芜湖、宝鸡、葫芦岛。',
+    tags: ['New', 'Doc']
+  },
+  {
     date: '2026-08-19',
     hash: 'feat',
     title: '新增文章：提问的智慧（How To Ask Questions The Smart Way）',

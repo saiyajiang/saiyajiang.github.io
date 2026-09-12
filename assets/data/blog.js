@@ -1,6 +1,14 @@
 /* 博客文章数据 —— 所有博客页面共用 */
 window.BLOG_POSTS = [
   {
+    title: "地名",
+    date: "2026-09-12",
+    url: "posts/post-article-3.html",
+    tags: ["文章", "地名"],
+    excerpt: "整理一批地名：合肥、枣庄、石家庄、包头、周口、双鸭山、娄底、蚌埠、驻马店、芜湖、宝鸡、葫芦岛。",
+    readingTime: 1
+  },
+  {
     title: "提问的智慧（How To Ask Questions The Smart Way）",
     date: "2026-08-19",
     url: "posts/post-article-1.html",
