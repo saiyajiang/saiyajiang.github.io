@@ -413,23 +413,5 @@ window.WIKI_DATA = [
         "text": "迟到的正义非正义（Justice delayed is justice denied）— 意指如果针对受害一方的法律救济存在但不能及时到来，那与没有补救措施是一样的效果。"
       }
     ]
-  },
-  {
-    "id": "place",
-    "title": "地名",
-    "items": [
-      { "text": "合肥" },
-      { "text": "枣庄" },
-      { "text": "石家庄" },
-      { "text": "包头" },
-      { "text": "周口" },
-      { "text": "双鸭山" },
-      { "text": "娄底" },
-      { "text": "蚌埠" },
-      { "text": "驻马店" },
-      { "text": "芜湖" },
-      { "text": "宝鸡" },
-      { "text": "葫芦岛" },
-    ]
   }
 ];
