@@ -411,6 +411,9 @@ window.WIKI_DATA = [
       },
       {
         "text": "迟到的正义非正义（Justice delayed is justice denied）— 意指如果针对受害一方的法律救济存在但不能及时到来，那与没有补救措施是一样的效果。"
+      },
+      {
+        "text": "韩语中「李子」写作 자두（jadu），反过来 두자（duja）是「两个、两者」的意思。"
       }
     ]
   }
