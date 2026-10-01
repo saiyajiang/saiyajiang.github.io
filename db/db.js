@@ -16,7 +16,7 @@
   var entries = [];      // 当前板块扁平化条目
 
   function loadGames() {
-    games = (window.GAME_DB || []).map(function (g) {
+    games = (window.GAME_DB || []).concat(window.RECOMMEND_DB || []).map(function (g) {
       return {
         id: g.id || '',
         name: g.name || '未命名',
