@@ -1,0 +1,66 @@
+/* ============================================================
+   Taiwu 大板块补充样式 — 基础复用 ../db/db.css
+   ============================================================ */
+
+/* 板块描述栏 */
+.db-desc {
+  max-width: 1080px;
+  margin: 0 auto 10px;
+  padding: 10px 18px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-2);
+  background: var(--bg-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+}
+.db-desc b { color: var(--text-0); }
+
+/* 卡片副标题（前传名） */
+.tf-sub {
+  margin: 8px 2px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold, #f2b54c);
+  letter-spacing: 0.5px;
+}
+
+/* 结构化字段：默认折叠，卡片展开后显示 */
+.tf-sections {
+  display: none;
+  margin-top: 12px;
+  border-top: 1px dashed var(--line-soft);
+  padding-top: 10px;
+}
+.db-card.expanded .tf-sections { display: block; }
+
+.tf-field {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: var(--bg-2);
+  border-left: 2px solid var(--cyan, #4fd8e0);
+  border-radius: 0 8px 8px 0;
+}
+.tf-field .tf-key {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cyan, #4fd8e0);
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+.tf-field .tf-val {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text-1);
+  white-space: normal;
+}
+.tf-field .tf-val b { color: var(--gold, #f2b54c); font-weight: 700; }
+
+/* 表格视图：概述列点击展开 */
+.db-table td.exp { white-space: normal !important; }
+
+/* 统计卡内描述（小屏隐藏） */
+.db-desc { display: block; }
+@media (max-width: 768px) {
+  .db-desc { font-size: 12px; }
+}

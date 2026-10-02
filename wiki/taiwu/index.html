@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>知识数据库 · 悲歌</title>
-  <link rel="stylesheet" href="db.css" />
+  <title>Taiwu · 太吾绘卷 · 悲歌</title>
+  <link rel="stylesheet" href="../db/db.css" />
+  <link rel="stylesheet" href="taiwu.css" />
 </head>
 <body>
 
@@ -13,13 +14,13 @@
   <div class="header-inner">
     <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
     <nav class="nav-menu" id="navMenu">
-      <a href="../index.html">~/blog</a>
-      <a href="../archive.html">~/archive</a>
-      <a href="../wiki/index.html">~/wiki</a>
-      <a href="../wiki/taiwu/index.html">~/taiwu</a>
-      <a href="../about.html">~/about</a>
-      <a href="../quotes.html">~/quotes</a>
-      <a href="../changelog.html">~/changelog</a>
+      <a href="../../index.html">~/blog</a>
+      <a href="../../archive.html">~/archive</a>
+      <a href="../index.html">~/wiki</a>
+      <a href="index.html" class="active">~/taiwu</a>
+      <a href="../../about.html">~/about</a>
+      <a href="../../quotes.html">~/quotes</a>
+      <a href="../../changelog.html">~/changelog</a>
     </nav>
     <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">&#9788;</button>
   </div>
@@ -30,47 +31,32 @@
   <div class="db-brand">
     <div class="db-logo">✦</div>
     <div class="db-brand-text">
-      <h1>知识数据库</h1>
-      <p>GAME · WIKI · DATABASE</p>
+      <h1>太吾绘卷 · Taiwu</h1>
+      <p>WIKI · SECTS · LORE</p>
     </div>
   </div>
 
   <div class="db-search">
     <span class="db-search-icon">⌕</span>
-    <input id="searchInput" type="text" placeholder="搜索条目、出处、关键词…" autocomplete="off" />
+    <input id="searchInput" type="text" placeholder="搜索门派、事件、对话、关键词…" autocomplete="off" />
     <kbd id="searchHint">/</kbd>
   </div>
 
   <div class="db-stats">
-    <div class="stat-card"><span>板块</span><b id="statGame">0</b></div>
+    <div class="stat-card"><span>板块</span><b id="statBoard">0</b></div>
     <div class="stat-card"><span>分类</span><b id="statCat">0</b></div>
     <div class="stat-card"><span>条目</span><b id="statItem">0</b></div>
   </div>
 </header>
 
-<!-- ==================== 游戏板块切换 ==================== -->
-<nav class="db-games" id="gameTabs" aria-label="游戏板块切换"></nav>
+<div class="db-desc" id="statDesc"></div>
 
-<!-- ==================== 图表区 ==================== -->
-<section class="db-charts">
-  <div class="chart-panel">
-    <div class="chart-head"><span class="dot dot-a"></span>分类占比 <em>CATEGORY RATIO</em></div>
-    <div class="chart-body donut-wrap">
-      <svg id="donutChart" viewBox="0 0 42 42" role="img" aria-label="分类占比环形图"></svg>
-      <div class="donut-center"><b id="donutTotal">0</b><span>条目</span></div>
-      <div class="donut-legend" id="donutLegend"></div>
-    </div>
-  </div>
-  <div class="chart-panel">
-    <div class="chart-head"><span class="dot dot-b"></span>条目分布 <em>ITEM DISTRIBUTION</em></div>
-    <div class="chart-body bar-wrap" id="barChart"></div>
-  </div>
-</section>
+<!-- ==================== 板块切换 ==================== -->
+<nav class="db-games" id="boardTabs" aria-label="Taiwu 板块切换"></nav>
 
 <!-- ==================== 筛选 + 视图切换 ==================== -->
 <div class="db-toolbar">
   <div class="db-chips" id="categoryChips"></div>
-  <select id="versionFilter" class="db-version-filter" title="按版本筛选" style="display:none" aria-label="按版本筛选"></select>
   <div class="db-viewswitch" role="tablist" aria-label="视图切换">
     <button class="active" data-view="card" role="tab" aria-selected="true">▦ 卡片</button>
     <button data-view="table" role="tab" aria-selected="false">☰ 表格</button>
@@ -82,16 +68,15 @@
 <div id="emptyState" class="db-empty" hidden>
   <div class="db-empty-icon">∅</div>
   <p id="emptyTitle">暂无数据</p>
-  <span id="emptyDesc">等待提交游戏整理内容</span>
+  <span id="emptyDesc">在 wiki/taiwu/data/ 中添加板块数据</span>
 </div>
 
 <!-- ==================== 底部 Dock ==================== -->
 <nav class="db-dock" id="dbDock" aria-label="分类快捷导航"></nav>
 
-<script src="data/games.js"></script>
-<script src="data/recommend.js"></script>
-<script src="data/knowledge.js"></script>
-<script src="db.js"></script>
+<script src="data/taiwu-core.js"></script>
+<script src="data/sects.js"></script>
+<script src="taiwu.js"></script>
 <script>
   // 站点统一 Header 交互：移动端菜单 + 主题切换（不引入 site.js，避免播放器）
   (function () {
