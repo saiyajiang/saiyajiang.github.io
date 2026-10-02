@@ -867,3 +867,18 @@ body {
 .db-breadcrumb a:hover { color: var(--amber); }
 .db-breadcrumb .crumb-sep { opacity: 0.5; }
 .db-breadcrumb span:last-child { color: var(--amber); }
+
+
+/* ============ 缺失样式补全 ============ */
+.db-table-cat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 4px;
+  padding: 4px 2px;
+}
+.db-table-count {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-2);
+}

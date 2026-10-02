@@ -198,3 +198,31 @@ body {
   white-space: pre-wrap;
 }
 .tf-chapter-body b { color: var(--text-0); }
+
+
+/* ============ 缺失样式补全 ============ */
+.db-desc {
+  padding: 6px 4px 12px;
+  font-size: 12.5px;
+  letter-spacing: 0.05em;
+  color: var(--text-2);
+  line-height: 1.8;
+}
+.db-desc::before {
+  content: '◈ ';
+  color: var(--amber);
+}
+.tf-sub {
+  margin: 8px 0 2px;
+  padding-left: 9px;
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--amber);
+  letter-spacing: 0.04em;
+  border-left: 2px solid rgba(240, 166, 60, 0.35);
+}
+.tf-chapters {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
