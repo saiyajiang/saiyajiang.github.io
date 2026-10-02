@@ -513,7 +513,7 @@
       el.gameTabs.innerHTML = '';
       el.empty.hidden = false;
       el.emptyTitle.textContent = '暂无板块';
-      el.emptyDesc.textContent = '在 db/data/games.js 中添加游戏板块数据';
+      el.emptyDesc.textContent = '在 wiki/db/data/games.js 中添加游戏板块数据';
       el.grid.innerHTML = '';
       el.chips.innerHTML = '';
       el.dock.innerHTML = '';

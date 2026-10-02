@@ -228,7 +228,7 @@
 }
 
 /* 门户卡片强调色：知识库=青 / 太吾=金 / 鸣潮=绿 */
-.wiki-card[href="../db/index.html"] { --card-accent: #4fd8e0; }
+.wiki-card[href="db/index.html"] { --card-accent: #4fd8e0; }
 .wiki-card[href="taiwu/index.html"] { --card-accent: #f0a63c; }
 .wiki-card[href="mingchao/index.html"] { --card-accent: #35d6c4; }
 

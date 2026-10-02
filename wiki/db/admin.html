@@ -172,7 +172,7 @@
   footer b { color: var(--text-1); font-weight: 600; }
   footer .dot { color: var(--green); }
 </style>
-<link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
 </head>
 <body>
 
@@ -590,7 +590,7 @@
   $('#btnExportJs').addEventListener('click', function () {
     if (!state.games.length) { setStatus('没有可导出的数据', 'err'); return; }
     download('games.js', buildGamesJs(), 'application/javascript');
-    setStatus('已导出 games.js，替换 db/data/games.js 即可上线', 'ok');
+    setStatus('已导出 games.js，替换 wiki/db/data/games.js 即可上线', 'ok');
   });
   $('#btnExportJson').addEventListener('click', function () {
     if (!state.games.length) { setStatus('没有可导出的数据', 'err'); return; }

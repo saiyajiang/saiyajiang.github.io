@@ -850,3 +850,20 @@ body {
   .theme-toggle { right: 14px; }
   .db-header { top: 56px; }
 }
+
+/* ---------- 面包屑（Wiki 框架统一） ---------- */
+.db-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 1080px;
+  margin: 16px auto 6px;
+  padding: 0 clamp(16px, 4vw, 48px);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-2);
+}
+.db-breadcrumb a { color: var(--text-2); text-decoration: none; transition: color 0.18s; }
+.db-breadcrumb a:hover { color: var(--amber); }
+.db-breadcrumb .crumb-sep { opacity: 0.5; }
+.db-breadcrumb span:last-child { color: var(--amber); }

@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>太吾绘卷 · Taiwu Wiki · 悲歌</title>
-  <link rel="stylesheet" href="../../db/db.css" />
+  <title>数据库 · 知识库 · Wiki · 悲歌</title>
+  <link rel="stylesheet" href="db.css" />
   <link rel="stylesheet" href="../wiki-portal.css" />
-  <link rel="stylesheet" href="taiwu.css" />
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
 </head>
 <body>
@@ -18,7 +17,7 @@
     <nav class="nav-menu" id="navMenu">
       <a href="../../index.html">~/blog</a>
       <a href="../../archive.html">~/archive</a>
-      <a href="../index.html">~/wiki</a>
+      <a href="../index.html" class="active">~/wiki</a>
       <a href="../../about.html">~/about</a>
       <a href="../../quotes.html">~/quotes</a>
       <a href="../../changelog.html">~/changelog</a>
@@ -30,14 +29,14 @@
 <!-- ==================== Wiki 子板块导航 ==================== -->
 <nav class="wiki-subnav" aria-label="Wiki 子板块导航">
   <a href="../index.html">门户</a>
-  <a href="index.html" class="active">太吾绘卷</a>
+  <a href="../taiwu/index.html">太吾绘卷</a>
   <a href="../mingchao/index.html">鸣潮 <span class="subnav-count">框架</span></a>
-  <a href="../db/index.html">数据库 · 知识库</a>
+  <a href="index.html" class="active">数据库 · 知识库</a>
 </nav>
 
 <!-- ==================== 面包屑 ==================== -->
-<nav class="taiwu-breadcrumb" aria-label="面包屑">
-  <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><a href="index.html">太吾绘卷</a><span class="crumb-sep">/</span><span id="crumbBoard">门派剧情</span>
+<nav class="db-breadcrumb" aria-label="面包屑">
+  <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><span>数据库 · 知识库</span>
 </nav>
 
 <!-- ==================== 顶部状态区 ==================== -->
@@ -45,32 +44,47 @@
   <div class="db-brand">
     <div class="db-logo">✦</div>
     <div class="db-brand-text">
-      <h1>太吾绘卷 · Taiwu</h1>
-      <p>WIKI · SECTS · LORE</p>
+      <h1>数据库 · 知识库</h1>
+      <p>WIKI · DATABASE · KNOWLEDGE</p>
     </div>
   </div>
 
   <div class="db-search">
     <span class="db-search-icon">⌕</span>
-    <input id="searchInput" type="text" placeholder="搜索门派、事件、对话、关键词…" autocomplete="off" />
+    <input id="searchInput" type="text" placeholder="搜索条目、出处、关键词…" autocomplete="off" />
     <kbd id="searchHint">/</kbd>
   </div>
 
   <div class="db-stats">
-    <div class="stat-card"><span>板块</span><b id="statBoard">0</b></div>
+    <div class="stat-card"><span>板块</span><b id="statGame">0</b></div>
     <div class="stat-card"><span>分类</span><b id="statCat">0</b></div>
     <div class="stat-card"><span>条目</span><b id="statItem">0</b></div>
   </div>
 </header>
 
-<div class="db-desc" id="statDesc"></div>
+<!-- ==================== 游戏板块切换 ==================== -->
+<nav class="db-games" id="gameTabs" aria-label="游戏板块切换"></nav>
 
-<!-- ==================== 板块切换 ==================== -->
-<nav class="db-games" id="boardTabs" aria-label="Taiwu 板块切换"></nav>
+<!-- ==================== 图表区 ==================== -->
+<section class="db-charts">
+  <div class="chart-panel">
+    <div class="chart-head"><span class="dot dot-a"></span>分类占比 <em>CATEGORY RATIO</em></div>
+    <div class="chart-body donut-wrap">
+      <svg id="donutChart" viewBox="0 0 42 42" role="img" aria-label="分类占比环形图"></svg>
+      <div class="donut-center"><b id="donutTotal">0</b><span>条目</span></div>
+      <div class="donut-legend" id="donutLegend"></div>
+    </div>
+  </div>
+  <div class="chart-panel">
+    <div class="chart-head"><span class="dot dot-b"></span>条目分布 <em>ITEM DISTRIBUTION</em></div>
+    <div class="chart-body bar-wrap" id="barChart"></div>
+  </div>
+</section>
 
 <!-- ==================== 筛选 + 视图切换 ==================== -->
 <div class="db-toolbar">
   <div class="db-chips" id="categoryChips"></div>
+  <select id="versionFilter" class="db-version-filter" title="按版本筛选" style="display:none" aria-label="按版本筛选"></select>
   <div class="db-viewswitch" role="tablist" aria-label="视图切换">
     <button class="active" data-view="card" role="tab" aria-selected="true">▦ 卡片</button>
     <button data-view="table" role="tab" aria-selected="false">☰ 表格</button>
@@ -82,15 +96,16 @@
 <div id="emptyState" class="db-empty" hidden>
   <div class="db-empty-icon">∅</div>
   <p id="emptyTitle">暂无数据</p>
-  <span id="emptyDesc">在 wiki/taiwu/data/ 中添加板块数据</span>
+  <span id="emptyDesc">等待提交游戏整理内容</span>
 </div>
 
 <!-- ==================== 底部 Dock ==================== -->
 <nav class="db-dock" id="dbDock" aria-label="分类快捷导航"></nav>
 
-<script src="data/taiwu-core.js"></script>
-<script src="data/sects.js"></script>
-<script src="taiwu.js"></script>
+<script src="data/games.js"></script>
+<script src="data/recommend.js"></script>
+<script src="data/knowledge.js"></script>
+<script src="db.js"></script>
 <script>
   // 站点统一 Header 交互：移动端菜单 + 主题切换（不引入 site.js，避免播放器）
   (function () {
