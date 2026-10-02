@@ -562,6 +562,10 @@
   /* ---------- 初始化 ---------- */
   function init() {
     loadGames();
+    // 默认选中首个非空板块，避免默认落入空壳板块（如鸣潮待填充）导致初始空白
+    for (var i = 0; i < games.length; i++) {
+      if (totalOf(games[i]) > 0) { state.gameIdx = i; break; }
+    }
     bindSearch();
     bindView();
     bindVersion();
