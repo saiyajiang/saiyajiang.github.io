@@ -1,13 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>鸣潮 · Wuthering Waves Wiki · 悲歌</title>
-  <link rel="stylesheet" href="../db/db.css" />
-  <link rel="stylesheet" href="../wiki-portal.css" />
+  <link rel="stylesheet" href="../wiki-base.css" />
   <link rel="stylesheet" href="mingchao.css" />
-<link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
 </head>
 <body>
 
@@ -35,56 +34,61 @@
   <a href="../db/index.html">数据库 · 知识库</a>
 </nav>
 
-<!-- ==================== 面包屑 ==================== -->
-<nav class="mc-breadcrumb" aria-label="面包屑">
-  <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><span>鸣潮</span>
-</nav>
+<main class="wiki-main">
 
-<!-- ==================== 顶部状态区 ==================== -->
-<header class="db-header mc-header">
-  <div class="db-brand">
-    <div class="db-logo">◈</div>
-    <div class="db-brand-text">
-      <h1>鸣潮 · Wuthering Waves</h1>
-      <p>WIKI · TIDES · ECHOES</p>
+  <!-- ==================== 面包屑 ==================== -->
+  <nav class="wiki-breadcrumb" aria-label="面包屑">
+    <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><span>鸣潮</span>
+  </nav>
+
+  <!-- ==================== Hero 标题区 + 统计条 ==================== -->
+  <header class="wiki-hero">
+    <div class="wiki-hero-badge">WUTHERING WAVES</div>
+    <h1 class="wiki-hero-title">鸣潮 <em>图鉴 · 百科</em></h1>
+    <p class="wiki-hero-sub">共鸣者 · 武器 · 声骸 · 探索地图 —— 仿 BWIKI 深蓝科幻风格，数据待后续接入。</p>
+    <div class="wiki-stats">
+      <div class="wiki-stat"><span>板块</span><b>0</b></div>
+      <div class="wiki-stat"><span>分类</span><b id="mcCatCount">0</b></div>
+      <div class="wiki-stat"><span>条目</span><b>0</b></div>
+    </div>
+  </header>
+
+  <div class="wiki-desc">板块框架已搭建 · 数据待后续补充</div>
+
+  <!-- ==================== 分类 Tab ==================== -->
+  <nav class="wiki-tabs" id="mcTabs" aria-label="鸣潮板块分类">
+    <button class="chip active" data-cat="共鸣者">共鸣者</button>
+    <button class="chip" data-cat="武器">武器</button>
+    <button class="chip" data-cat="声骸">声骸</button>
+    <button class="chip" data-cat="探索">探索 · 地图</button>
+    <button class="chip" data-cat="攻略">攻略 · 百科</button>
+  </nav>
+
+  <!-- ==================== 筛选 + 视图切换 ==================== -->
+  <div class="wiki-toolbar">
+    <div class="wiki-search">
+      <span class="wiki-search-icon">⌕</span>
+      <input id="searchInput" type="text" placeholder="搜索共鸣者、武器、声骸…（待数据接入）" autocomplete="off" disabled />
+      <kbd>/</kbd>
+    </div>
+    <div class="wiki-viewswitch" role="tablist" aria-label="视图切换">
+      <button class="active" data-view="card" role="tab" aria-selected="true">▦ 卡片</button>
+      <button data-view="table" role="tab" aria-selected="false" disabled>☰ 表格</button>
     </div>
   </div>
 
-  <div class="db-search">
-    <span class="db-search-icon">⌕</span>
-    <input id="searchInput" type="text" placeholder="搜索共鸣者、武器、声骸…（待数据接入）" autocomplete="off" disabled />
-    <kbd id="searchHint">/</kbd>
-  </div>
-
-  <div class="db-stats">
-    <div class="stat-card"><span>板块</span><b>0</b></div>
-    <div class="stat-card"><span>分类</span><b id="mcCatCount">0</b></div>
-    <div class="stat-card"><span>条目</span><b>0</b></div>
-  </div>
-</header>
-
-<div class="db-desc mc-desc">板块框架已搭建 · 数据待后续补充</div>
-
-<!-- ==================== 分类占位 Tab ==================== -->
-<nav class="db-toolbar mc-tabs" id="mcTabs" aria-label="鸣潮板块分类">
-  <button class="chip active" data-cat="共鸣者">共鸣者</button>
-  <button class="chip" data-cat="武器">武器</button>
-  <button class="chip" data-cat="声骸">声骸</button>
-  <button class="chip" data-cat="探索">探索 · 地图</button>
-  <button class="chip" data-cat="攻略">攻略 · 百科</button>
-</nav>
-
-<!-- ==================== 主体：占位宫格 ==================== -->
-<main id="mcGrid" class="mc-grid" aria-live="polite">
-  <div class="mc-placeholder">
-    <div class="mc-placeholder-icon">◈</div>
-    <p class="mc-placeholder-title">鸣潮 Wiki 板块框架</p>
-    <p class="mc-placeholder-desc">仿 BWIKI 深蓝科幻 + 个人站风格搭建。<br/>当前为占位空壳，后续将在此呈现共鸣者图鉴 / 武器图鉴 / 声骸图鉴等数据。</p>
-  </div>
+  <!-- ==================== 主体：占位宫格 ==================== -->
+  <main id="mcGrid" class="wiki-grid" aria-live="polite">
+    <div class="mc-placeholder">
+      <div class="mc-placeholder-icon">◈</div>
+      <p class="mc-placeholder-title">鸣潮 Wiki 板块框架</p>
+      <p class="mc-placeholder-desc">仿 BWIKI 深蓝科幻 + 个人站风格搭建。<br/>当前为占位空壳，后续将在此呈现共鸣者图鉴 / 武器图鉴 / 声骸图鉴等数据。</p>
+    </div>
+  </main>
 </main>
 
 <!-- ==================== 底部 Dock ==================== -->
-<nav class="db-dock" id="mcDock" aria-label="分类快捷导航">
+<nav class="wiki-dock" id="mcDock" aria-label="分类快捷导航">
   <button class="active">共鸣者</button>
   <button>武器</button>
   <button>声骸</button>

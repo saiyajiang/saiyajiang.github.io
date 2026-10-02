@@ -8,8 +8,8 @@
   'use strict';
 
   var PALETTE = [
-    '#f2b54c', '#4fd8e0', '#9d8cff', '#6fe3a5',
-    '#f27fa0', '#f26d6d', '#7dd3fc', '#fbd38d'
+    '#f0a63c', '#d8a04a', '#c98a3e', '#b57a34',
+    '#a06c2e', '#8a5c28', '#e8b96f', '#f2c98a'
   ];
 
   var boards = [];
@@ -29,7 +29,7 @@
     statItem: $('#statItem'),
     statDesc: $('#statDesc'),
     crumbBoard: $('#crumbBoard'),
-    viewBtns: document.querySelectorAll('.db-viewswitch button')
+    viewBtns: document.querySelectorAll('.wiki-viewswitch button')
   };
 
   function hashStr(s) {
@@ -187,7 +187,7 @@
       var card = document.createElement('div');
       card.className = 'db-card taiwu-card';
       card.style.animationDelay = Math.min(i * 0.03, 0.4) + 's';
-      var badge = '<span class="badge" style="background:rgba(216,160,74,0.14);color:var(--cyan);border:1px solid rgba(216,160,74,0.40)">' + esc(e.category) + '</span>';
+      var badge = '<span class="badge" style="background:rgba(var(--wiki-accent-rgb),0.14);color:var(--wiki-accent);border:1px solid rgba(var(--wiki-accent-rgb),0.40)">' + esc(e.category) + '</span>';
       var sub = e.sub ? '<div class="tf-sub">' + esc(e.sub) + '</div>' : '';
 
       // infobox 信息盒：立场 / 前传 / 概述
@@ -246,7 +246,7 @@
     list.forEach(function (e) {
       var tr = document.createElement('tr');
       tr.innerHTML =
-        '<td><span class="badge" style="background:rgba(79,216,224,0.10);color:var(--cyan);border:1px solid rgba(148,174,210,0.25);padding:2px 8px;border-radius:999px;font-size:11px">' +
+        '<td><span class="badge" style="background:rgba(var(--wiki-accent-rgb),0.10);color:var(--wiki-accent);border:1px solid rgba(148,174,210,0.25);padding:2px 8px;border-radius:999px;font-size:11px">' +
         esc(e.category) + '</span></td>' +
         '<td><strong style="color:var(--text-0)">' + esc(e.title) + '</strong></td>' +
         '<td style="color:var(--text-2)">' + esc(e.tag) + (e.sub ? ' · ' + esc(e.sub) : '') + '</td>' +

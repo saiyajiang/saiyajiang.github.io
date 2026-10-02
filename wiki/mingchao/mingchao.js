@@ -14,8 +14,8 @@
   };
 
   var grid = document.getElementById('mcGrid');
-  var chips = document.querySelectorAll('.mc-tabs .chip');
-  var dockBtns = document.querySelectorAll('.mc-dock button');
+  var chips = document.querySelectorAll('.wiki-tabs .chip');
+  var dockBtns = document.querySelectorAll('.wiki-dock button');
   var catCount = document.getElementById('mcCatCount');
 
   function render(cat) {

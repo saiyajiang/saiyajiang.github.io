@@ -1,13 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>太吾绘卷 · Taiwu Wiki · 悲歌</title>
-  <link rel="stylesheet" href="../../db/db.css" />
-  <link rel="stylesheet" href="../wiki-portal.css" />
+  <link rel="stylesheet" href="../wiki-base.css" />
   <link rel="stylesheet" href="taiwu.css" />
-<link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
 </head>
 <body>
 
@@ -35,58 +34,55 @@
   <a href="../db/index.html">数据库 · 知识库</a>
 </nav>
 
-<!-- ==================== 面包屑 ==================== -->
-<nav class="taiwu-breadcrumb" aria-label="面包屑">
-  <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><a href="index.html">太吾绘卷</a><span class="crumb-sep">/</span><span id="crumbBoard">门派剧情</span>
-</nav>
+<main class="wiki-main">
 
-<!-- ==================== 顶部状态区 ==================== -->
-<header class="db-header">
-  <div class="db-brand">
-    <div class="db-logo">✦</div>
-    <div class="db-brand-text">
-      <h1>太吾绘卷 · Taiwu</h1>
-      <p>WIKI · SECTS · LORE</p>
+  <!-- ==================== 面包屑 ==================== -->
+  <nav class="wiki-breadcrumb" aria-label="面包屑">
+    <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><a href="index.html">太吾绘卷</a><span class="crumb-sep">/</span><span id="crumbBoard">门派剧情</span>
+  </nav>
+
+  <!-- ==================== Hero 标题区 + 统计条 ==================== -->
+  <header class="wiki-hero">
+    <div class="wiki-hero-badge">TAIWU WIKI</div>
+    <h1 class="wiki-hero-title">太吾绘卷 <em>门派剧情</em></h1>
+    <p class="wiki-hero-sub">门派 · 立场 · 传承 —— 21 条门派剧情考据，infobox 信息盒 + 章节化正文。</p>
+    <div class="wiki-stats">
+      <div class="wiki-stat"><span>板块</span><b id="statBoard">0</b></div>
+      <div class="wiki-stat"><span>分类</span><b id="statCat">0</b></div>
+      <div class="wiki-stat"><span>条目</span><b id="statItem">0</b></div>
+    </div>
+  </header>
+
+  <div class="wiki-desc" id="statDesc"></div>
+
+  <!-- ==================== 板块切换 ==================== -->
+  <nav class="wiki-tabs" id="boardTabs" aria-label="Taiwu 板块切换"></nav>
+
+  <!-- ==================== 筛选 + 视图切换 ==================== -->
+  <div class="wiki-toolbar">
+    <div class="wiki-search">
+      <span class="wiki-search-icon">⌕</span>
+      <input id="searchInput" type="text" placeholder="搜索门派、事件、对话、关键词…" autocomplete="off" />
+      <kbd>/</kbd>
+    </div>
+    <div class="wiki-chips" id="categoryChips"></div>
+    <div class="wiki-viewswitch" role="tablist" aria-label="视图切换">
+      <button class="active" data-view="card" role="tab" aria-selected="true">▦ 卡片</button>
+      <button data-view="table" role="tab" aria-selected="false">☰ 表格</button>
     </div>
   </div>
 
-  <div class="db-search">
-    <span class="db-search-icon">⌕</span>
-    <input id="searchInput" type="text" placeholder="搜索门派、事件、对话、关键词…" autocomplete="off" />
-    <kbd id="searchHint">/</kbd>
+  <!-- ==================== 主体 ==================== -->
+  <main id="dbGrid" class="wiki-grid" aria-live="polite"></main>
+  <div id="emptyState" class="wiki-empty" hidden>
+    <div class="wiki-empty-icon">∅</div>
+    <p id="emptyTitle">暂无数据</p>
+    <span id="emptyDesc">在 wiki/taiwu/data/ 中添加板块数据</span>
   </div>
-
-  <div class="db-stats">
-    <div class="stat-card"><span>板块</span><b id="statBoard">0</b></div>
-    <div class="stat-card"><span>分类</span><b id="statCat">0</b></div>
-    <div class="stat-card"><span>条目</span><b id="statItem">0</b></div>
-  </div>
-</header>
-
-<div class="db-desc" id="statDesc"></div>
-
-<!-- ==================== 板块切换 ==================== -->
-<nav class="db-games" id="boardTabs" aria-label="Taiwu 板块切换"></nav>
-
-<!-- ==================== 筛选 + 视图切换 ==================== -->
-<div class="db-toolbar">
-  <div class="db-chips" id="categoryChips"></div>
-  <div class="db-viewswitch" role="tablist" aria-label="视图切换">
-    <button class="active" data-view="card" role="tab" aria-selected="true">▦ 卡片</button>
-    <button data-view="table" role="tab" aria-selected="false">☰ 表格</button>
-  </div>
-</div>
-
-<!-- ==================== 主体 ==================== -->
-<main id="dbGrid" class="db-grid" aria-live="polite"></main>
-<div id="emptyState" class="db-empty" hidden>
-  <div class="db-empty-icon">∅</div>
-  <p id="emptyTitle">暂无数据</p>
-  <span id="emptyDesc">在 wiki/taiwu/data/ 中添加板块数据</span>
-</div>
+</main>
 
 <!-- ==================== 底部 Dock ==================== -->
-<nav class="db-dock" id="dbDock" aria-label="分类快捷导航"></nav>
+<nav class="wiki-dock" id="dbDock" aria-label="分类快捷导航"></nav>
 
 <script src="data/taiwu-core.js"></script>
 <script src="data/sects.js"></script>

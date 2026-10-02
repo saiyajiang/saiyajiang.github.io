@@ -1,12 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wiki 门户 · 悲歌</title>
-  <link rel="stylesheet" href="../db/db.css" />
-  <link rel="stylesheet" href="wiki-portal.css" />
-<link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="stylesheet" href="wiki-base.css" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
 </head>
 <body>
 
@@ -34,15 +33,27 @@
   <a href="db/index.html">数据库 · 知识库</a>
 </nav>
 
-<!-- ==================== 门户 Hero ==================== -->
-<header class="wiki-hero">
-  <div class="wiki-hero-badge">WIKI HUB</div>
-  <h1 class="wiki-hero-title">Wiki <em>门户</em></h1>
-  <p class="wiki-hero-sub">游戏攻略、设定资料与知识数据库的集中入口 —— 各子板块独立维护，风格衔接个人站主题。</p>
-</header>
+<main class="wiki-main">
 
-<!-- ==================== 板块卡片 ==================== -->
-<main class="wiki-portal" aria-live="polite">
+  <!-- ==================== 面包屑 ==================== -->
+  <nav class="wiki-breadcrumb" aria-label="面包屑">
+    <a href="index.html">Wiki</a><span class="crumb-sep">/</span><span>门户</span>
+  </nav>
+
+  <!-- ==================== Hero 标题区 ==================== -->
+  <header class="wiki-hero">
+    <div class="wiki-hero-badge">WIKI HUB</div>
+    <h1 class="wiki-hero-title">Wiki <em>门户</em></h1>
+    <p class="wiki-hero-sub">游戏攻略、设定资料与知识数据库的集中入口 —— 全分区共享统一 Wiki 框架，各子板块仅以强调色区分。</p>
+    <div class="wiki-stats">
+      <div class="wiki-stat"><span>板块</span><b>4</b></div>
+      <div class="wiki-stat"><span>太吾条目</span><b>21</b></div>
+      <div class="wiki-stat"><span>鸣潮分类</span><b>5</b></div>
+      <div class="wiki-stat"><span>知识库</span><b>1</b></div>
+    </div>
+  </header>
+
+  <!-- ==================== 板块卡片 ==================== -->
   <section class="wiki-cards">
 
     <a class="wiki-card" href="db/index.html">
@@ -58,7 +69,7 @@
       <div class="wiki-card-icon">墨</div>
       <div class="wiki-card-body">
         <h3>太吾绘卷</h3>
-        <p>门派剧情 Wiki（21 条数据 · 正 / 中 / 邪 / 附）。深棕水墨武侠风，infobox + 章节化正文。</p>
+        <p>门派剧情 Wiki（21 条数据 · 正 / 中 / 邪 / 附）。暖金水墨风格，infobox + 章节化正文。</p>
         <span class="wiki-card-meta">wiki/taiwu/ · 21 条门派剧情</span>
       </div>
     </a>
@@ -67,7 +78,7 @@
       <div class="wiki-card-icon">◈</div>
       <div class="wiki-card-body">
         <h3>鸣潮</h3>
-        <p>Wuthering Waves Wiki 板块框架（建设中）。仿 BWIKI 深蓝科幻，共鸣者 / 武器 / 声骸图鉴占位。</p>
+        <p>Wuthering Waves Wiki 板块框架（建设中）。冷蓝青绿风格，共鸣者 / 武器 / 声骸图鉴占位。</p>
         <span class="wiki-card-meta">wiki/mingchao/ · 框架空壳</span>
       </div>
     </a>
@@ -77,12 +88,20 @@
   <section class="wiki-note">
     <h3>说明</h3>
     <ul>
-      <li>各子板块页共享统一站点导航与主题切换，可通过顶部「Wiki 子板块导航」快速跳转。</li>
-      <li>太吾绘卷板块保留原有 21 条门派剧情数据，展示框架已按灰机 wiki 风格重构。</li>
-      <li>鸣潮板块当前为框架空壳，数据待后续补充；数据库页保持既有知识库能力。</li>
+      <li>各子板块页共享统一站点导航、子板块导航、面包屑、Hero、统计条与底部 Dock，仅通过强调色区分板块。</li>
+      <li>太吾绘卷板块保留原有 21 条门派剧情数据，暖金水墨强调色；鸣潮板块为框架占位，数据待补充。</li>
+      <li>数据库页保持既有知识库与图表能力，青色强调色；全分区样式由 wiki-base.css 统一承载。</li>
     </ul>
   </section>
 </main>
+
+<!-- ==================== 底部 Dock ==================== -->
+<nav class="wiki-dock" aria-label="板块快捷导航">
+  <a href="index.html" class="active">门户</a>
+  <a href="taiwu/index.html">太吾绘卷</a>
+  <a href="mingchao/index.html">鸣潮</a>
+  <a href="db/index.html">数据库 · 知识库</a>
+</nav>
 
 <script>
   // 站点统一 Header 交互：移动端菜单 + 主题切换（不引入 site.js，避免播放器）

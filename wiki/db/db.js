@@ -8,8 +8,8 @@
 
   /* ---------- 数据归一化 ---------- */
   var PALETTE = [
-    '#f2b54c', '#4fd8e0', '#9d8cff', '#6fe3a5',
-    '#f27fa0', '#f26d6d', '#7dd3fc', '#fbd38d'
+    '#4fd8e0', '#35b6c8', '#2b9db0', '#5fd0da',
+    '#7dd3fc', '#a5e8ee', '#3bc4d2', '#228497'
   ];
 
   var games = [];        // 游戏板块
@@ -121,7 +121,7 @@
     statGame: $('#statGame'),
     statCat: $('#statCat'),
     statItem: $('#statItem'),
-    viewBtns: document.querySelectorAll('.db-viewswitch button'),
+    viewBtns: document.querySelectorAll('.wiki-viewswitch button'),
     version: $('#versionFilter')
   };
 
@@ -144,7 +144,7 @@
     el.statGame.textContent = games.length;
     el.statCat.textContent = cats.length;
     el.statItem.textContent = entries.length;
-    el.statCat.closest('.stat-card').querySelector('span').textContent = game ? game.name + '·分类' : '分类';
+    el.statCat.closest('.wiki-stat').querySelector('span').textContent = game ? game.name + '·分类' : '分类';
   }
 
   /* ---------- 渲染：游戏板块切换 ---------- */
@@ -333,7 +333,7 @@
       var card = document.createElement('div');
       card.className = 'db-card';
       card.style.animationDelay = Math.min(i * 0.03, 0.4) + 's';
-      var badge = '<span class="badge" style="background:rgba(79,216,224,0.12);color:var(--cyan);border:1px solid rgba(79,216,224,0.35)">' + esc(e.category) + '</span>';
+      var badge = '<span class="badge" style="background:rgba(var(--wiki-accent-rgb),0.12);color:var(--wiki-accent);border:1px solid rgba(var(--wiki-accent-rgb),0.35)">' + esc(e.category) + '</span>';
       card.innerHTML =
         '<div class="db-card-top">' + badge +
         '<span class="db-title" title="' + esc(e.title) + '">' + esc(e.title) + '</span>' +
@@ -375,7 +375,7 @@
           var heading = document.createElement('div');
           heading.className = 'db-table-cat';
           heading.innerHTML =
-            '<span class="badge" style="background:rgba(79,216,224,0.12);color:var(--cyan);border:1px solid rgba(79,216,224,0.35)">' +
+            '<span class="badge" style="background:rgba(var(--wiki-accent-rgb),0.12);color:var(--wiki-accent);border:1px solid rgba(var(--wiki-accent-rgb),0.35)">' +
             esc(g.name) + '</span>' +
             '<span class="db-table-count">' + g.items.length + ' 条</span>';
           el.grid.appendChild(heading);
@@ -412,7 +412,7 @@
       list.forEach(function (e) {
         var tr = document.createElement('tr');
         tr.innerHTML =
-          '<td><span class="badge" style="background:rgba(79,216,224,0.10);color:var(--cyan);border:1px solid rgba(148,174,210,0.25);padding:2px 8px;border-radius:999px;font-size:11px">' +
+          '<td><span class="badge" style="background:rgba(var(--wiki-accent-rgb),0.10);color:var(--wiki-accent);border:1px solid rgba(148,174,210,0.25);padding:2px 8px;border-radius:999px;font-size:11px">' +
           esc(e.category) + '</span></td>' +
           '<td><strong style="color:var(--text-0)">' + esc(e.title) + '</strong></td>' +
           '<td>' + censorText(esc(e.text)) + '</td>' +
