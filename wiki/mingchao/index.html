@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>太吾绘卷 · Taiwu Wiki · 悲歌</title>
+  <title>鸣潮 · Wuthering Waves Wiki · 悲歌</title>
   <link rel="stylesheet" href="../../db/db.css" />
   <link rel="stylesheet" href="../wiki-portal.css" />
-  <link rel="stylesheet" href="taiwu.css" />
+  <link rel="stylesheet" href="mingchao.css" />
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
 </head>
 <body>
@@ -31,69 +31,71 @@
 <!-- ==================== Wiki 子板块导航 ==================== -->
 <nav class="wiki-subnav" aria-label="Wiki 子板块导航">
   <a href="../index.html">门户</a>
-  <a href="index.html" class="active">太吾绘卷</a>
-  <a href="../mingchao/index.html">鸣潮 <span class="subnav-count">框架</span></a>
+  <a href="../taiwu/index.html">太吾绘卷</a>
+  <a href="index.html" class="active">鸣潮</a>
   <a href="../../db/index.html">数据库</a>
 </nav>
 
 <!-- ==================== 面包屑 ==================== -->
-<nav class="taiwu-breadcrumb" aria-label="面包屑">
-  <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><a href="index.html">太吾绘卷</a><span class="crumb-sep">/</span><span id="crumbBoard">门派剧情</span>
+<nav class="mc-breadcrumb" aria-label="面包屑">
+  <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><span>鸣潮</span>
 </nav>
 
 <!-- ==================== 顶部状态区 ==================== -->
-<header class="db-header">
+<header class="db-header mc-header">
   <div class="db-brand">
-    <div class="db-logo">✦</div>
+    <div class="db-logo">◈</div>
     <div class="db-brand-text">
-      <h1>太吾绘卷 · Taiwu</h1>
-      <p>WIKI · SECTS · LORE</p>
+      <h1>鸣潮 · Wuthering Waves</h1>
+      <p>WIKI · TIDES · ECHOES</p>
     </div>
   </div>
 
   <div class="db-search">
     <span class="db-search-icon">⌕</span>
-    <input id="searchInput" type="text" placeholder="搜索门派、事件、对话、关键词…" autocomplete="off" />
+    <input id="searchInput" type="text" placeholder="搜索共鸣者、武器、声骸…（待数据接入）" autocomplete="off" disabled />
     <kbd id="searchHint">/</kbd>
   </div>
 
   <div class="db-stats">
-    <div class="stat-card"><span>板块</span><b id="statBoard">0</b></div>
-    <div class="stat-card"><span>分类</span><b id="statCat">0</b></div>
-    <div class="stat-card"><span>条目</span><b id="statItem">0</b></div>
+    <div class="stat-card"><span>板块</span><b>0</b></div>
+    <div class="stat-card"><span>分类</span><b id="mcCatCount">0</b></div>
+    <div class="stat-card"><span>条目</span><b>0</b></div>
   </div>
 </header>
 
-<div class="db-desc" id="statDesc"></div>
+<div class="db-desc mc-desc">板块框架已搭建 · 数据待后续补充</div>
 
-<!-- ==================== 板块切换 ==================== -->
-<nav class="db-games" id="boardTabs" aria-label="Taiwu 板块切换"></nav>
+<!-- ==================== 分类占位 Tab ==================== -->
+<nav class="db-toolbar mc-tabs" id="mcTabs" aria-label="鸣潮板块分类">
+  <button class="chip active" data-cat="共鸣者">共鸣者</button>
+  <button class="chip" data-cat="武器">武器</button>
+  <button class="chip" data-cat="声骸">声骸</button>
+  <button class="chip" data-cat="探索">探索 · 地图</button>
+  <button class="chip" data-cat="攻略">攻略 · 百科</button>
+</nav>
 
-<!-- ==================== 筛选 + 视图切换 ==================== -->
-<div class="db-toolbar">
-  <div class="db-chips" id="categoryChips"></div>
-  <div class="db-viewswitch" role="tablist" aria-label="视图切换">
-    <button class="active" data-view="card" role="tab" aria-selected="true">▦ 卡片</button>
-    <button data-view="table" role="tab" aria-selected="false">☰ 表格</button>
+<!-- ==================== 主体：占位宫格 ==================== -->
+<main id="mcGrid" class="mc-grid" aria-live="polite">
+  <div class="mc-placeholder">
+    <div class="mc-placeholder-icon">◈</div>
+    <p class="mc-placeholder-title">鸣潮 Wiki 板块框架</p>
+    <p class="mc-placeholder-desc">仿 BWIKI 深蓝科幻 + 个人站风格搭建。<br/>当前为占位空壳，后续将在此呈现共鸣者图鉴 / 武器图鉴 / 声骸图鉴等数据。</p>
   </div>
-</div>
-
-<!-- ==================== 主体 ==================== -->
-<main id="dbGrid" class="db-grid" aria-live="polite"></main>
-<div id="emptyState" class="db-empty" hidden>
-  <div class="db-empty-icon">∅</div>
-  <p id="emptyTitle">暂无数据</p>
-  <span id="emptyDesc">在 wiki/taiwu/data/ 中添加板块数据</span>
-</div>
+</main>
 
 <!-- ==================== 底部 Dock ==================== -->
-<nav class="db-dock" id="dbDock" aria-label="分类快捷导航"></nav>
+<nav class="db-dock" id="mcDock" aria-label="分类快捷导航">
+  <button class="active">共鸣者</button>
+  <button>武器</button>
+  <button>声骸</button>
+  <button>探索 · 地图</button>
+  <button>攻略 · 百科</button>
+</nav>
 
-<script src="data/taiwu-core.js"></script>
-<script src="data/sects.js"></script>
-<script src="taiwu.js"></script>
+<script src="mingchao.js"></script>
 <script>
-  // 站点统一 Header 交互：移动端菜单 + 主题切换（不引入 site.js，避免播放器）
+  // 站点统一 Header 交互：移动端菜单 + 主题切换
   (function () {
     var menuBtn = document.getElementById('menuToggle');
     var navMenu = document.getElementById('navMenu');

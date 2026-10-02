@@ -469,6 +469,8 @@
 
   /* ==================== 全局音乐播放器 ==================== */
   function initPlayer() {
+    // 幂等保护：防止 site.js 被重复加载时初始化多次播放器 / 重复输出 [player] loaded
+    if (document.getElementById('custom-player')) return;
     var cfg = window.SITE_MUSIC_CONFIG || {};
     document.body.setAttribute('data-music', cfg.mode || 'local');
 

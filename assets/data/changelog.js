@@ -1,6 +1,13 @@
 /* 更新日志数据 */
 window.CHANGELOG_DATA = [
   {
+    date: '2026-10-02',
+    hash: 'feat',
+    title: 'Wiki 重构：门户 + 子板块体系（太吾绘卷 / 鸣潮）',
+    desc: 'Wiki 模块重构为「Wiki 门户 + 子板块」体系：wiki/index.html 升级为门户页（导航知识库·数据库 / 太吾绘卷 / 鸣潮，共享 wiki-portal.css 子板块导航与主题切换）；太吾绘卷独立板块降级为 Wiki 子板块，保留 21 条门派剧情数据，按太吾灰机 wiki 深棕水墨武侠风重构展示（infobox 信息盒 + 章节化正文 + 筛选 Tab + 面包屑/锚点目录）；新建鸣潮子板块框架空壳（仿 BWIKI 深蓝科幻风，共鸣者/武器/声骸分类占位，不导入数据）；全站导航补 ~/db 入口；清理无引用废弃文件 assets/wiki-data.js、assets/posts.js；播放器 initPlayer 增加幂等保护，避免重复输出 [player] loaded。',
+    tags: ['Feat', 'Wiki', 'UI']
+  },
+  {
     date: '2026-09-12',
     hash: 'feat',
     title: '新增文章：地名',

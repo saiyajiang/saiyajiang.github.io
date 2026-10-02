@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>知识数据库 · 悲歌</title>
+  <title>Wiki 门户 · 悲歌</title>
   <link rel="stylesheet" href="../db/db.css" />
+  <link rel="stylesheet" href="wiki-portal.css" />
 <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
 </head>
 <body>
@@ -16,8 +17,8 @@
     <nav class="nav-menu" id="navMenu">
       <a href="../index.html">~/blog</a>
       <a href="../archive.html">~/archive</a>
-      <a href="index.html">~/wiki</a>
-      <a href="taiwu/index.html">~/taiwu</a>
+      <a href="index.html" class="active">~/wiki</a>
+      <a href="../db/index.html">~/db</a>
       <a href="../about.html">~/about</a>
       <a href="../quotes.html">~/quotes</a>
       <a href="../changelog.html">~/changelog</a>
@@ -26,72 +27,64 @@
   </div>
 </header>
 
-<!-- ==================== 顶部状态区 ==================== -->
-<header class="db-header">
-  <div class="db-brand">
-    <div class="db-logo">✦</div>
-    <div class="db-brand-text">
-      <h1>知识数据库</h1>
-      <p>GAME · WIKI · DATABASE</p>
-    </div>
-  </div>
+<!-- ==================== Wiki 子板块导航 ==================== -->
+<nav class="wiki-subnav" aria-label="Wiki 子板块导航">
+  <a href="index.html" class="active">门户</a>
+  <a href="taiwu/index.html">太吾绘卷</a>
+  <a href="mingchao/index.html">鸣潮</a>
+  <a href="../db/index.html">数据库</a>
+</nav>
 
-  <div class="db-search">
-    <span class="db-search-icon">⌕</span>
-    <input id="searchInput" type="text" placeholder="搜索条目、出处、关键词…" autocomplete="off" />
-    <kbd id="searchHint">/</kbd>
-  </div>
-
-  <div class="db-stats">
-    <div class="stat-card"><span>板块</span><b id="statGame">0</b></div>
-    <div class="stat-card"><span>分类</span><b id="statCat">0</b></div>
-    <div class="stat-card"><span>条目</span><b id="statItem">0</b></div>
-  </div>
+<!-- ==================== 门户 Hero ==================== -->
+<header class="wiki-hero">
+  <div class="wiki-hero-badge">WIKI HUB</div>
+  <h1 class="wiki-hero-title">Wiki <em>门户</em></h1>
+  <p class="wiki-hero-sub">游戏攻略、设定资料与知识数据库的集中入口 —— 各子板块独立维护，风格衔接个人站主题。</p>
 </header>
 
-<!-- ==================== 游戏板块切换 ==================== -->
-<nav class="db-games" id="gameTabs" aria-label="游戏板块切换"></nav>
+<!-- ==================== 板块卡片 ==================== -->
+<main class="wiki-portal" aria-live="polite">
+  <section class="wiki-cards">
 
-<!-- ==================== 图表区 ==================== -->
-<section class="db-charts">
-  <div class="chart-panel">
-    <div class="chart-head"><span class="dot dot-a"></span>分类占比 <em>CATEGORY RATIO</em></div>
-    <div class="chart-body donut-wrap">
-      <svg id="donutChart" viewBox="0 0 42 42" role="img" aria-label="分类占比环形图"></svg>
-      <div class="donut-center"><b id="donutTotal">0</b><span>条目</span></div>
-      <div class="donut-legend" id="donutLegend"></div>
-    </div>
-  </div>
-  <div class="chart-panel">
-    <div class="chart-head"><span class="dot dot-b"></span>条目分布 <em>ITEM DISTRIBUTION</em></div>
-    <div class="chart-body bar-wrap" id="barChart"></div>
-  </div>
-</section>
+    <a class="wiki-card" href="../db/index.html">
+      <div class="wiki-card-icon">✦</div>
+      <div class="wiki-card-body">
+        <h3>知识库 · 数据库</h3>
+        <p>游戏知识条目、推荐与综合数据库，板块 + 分类 + 图表联动展示。</p>
+        <span class="wiki-card-meta">db/index.html · 数据驱动</span>
+      </div>
+    </a>
 
-<!-- ==================== 筛选 + 视图切换 ==================== -->
-<div class="db-toolbar">
-  <div class="db-chips" id="categoryChips"></div>
-  <div class="db-viewswitch" role="tablist" aria-label="视图切换">
-    <button class="active" data-view="card" role="tab" aria-selected="true">▦ 卡片</button>
-    <button data-view="table" role="tab" aria-selected="false">☰ 表格</button>
-  </div>
-</div>
+    <a class="wiki-card" href="taiwu/index.html">
+      <div class="wiki-card-icon">墨</div>
+      <div class="wiki-card-body">
+        <h3>太吾绘卷</h3>
+        <p>门派剧情 Wiki（21 条数据 · 正 / 中 / 邪 / 附）。深棕水墨武侠风，infobox + 章节化正文。</p>
+        <span class="wiki-card-meta">wiki/taiwu/ · 21 条门派剧情</span>
+      </div>
+    </a>
 
-<!-- ==================== 主体 ==================== -->
-<main id="dbGrid" class="db-grid" aria-live="polite"></main>
-<div id="emptyState" class="db-empty" hidden>
-  <div class="db-empty-icon">∅</div>
-  <p id="emptyTitle">暂无数据</p>
-  <span id="emptyDesc">等待提交游戏整理内容</span>
-</div>
+    <a class="wiki-card" href="mingchao/index.html">
+      <div class="wiki-card-icon">◈</div>
+      <div class="wiki-card-body">
+        <h3>鸣潮</h3>
+        <p>Wuthering Waves Wiki 板块框架（建设中）。仿 BWIKI 深蓝科幻，共鸣者 / 武器 / 声骸图鉴占位。</p>
+        <span class="wiki-card-meta">wiki/mingchao/ · 框架空壳</span>
+      </div>
+    </a>
 
-<!-- ==================== 底部 Dock ==================== -->
-<nav class="db-dock" id="dbDock" aria-label="分类快捷导航"></nav>
+  </section>
 
-<script src="../db/data/games.js"></script>
-<script src="../db/data/recommend.js"></script>
-<script src="../db/data/knowledge.js"></script>
-<script src="../db/db.js"></script>
+  <section class="wiki-note">
+    <h3>说明</h3>
+    <ul>
+      <li>各子板块页共享统一站点导航与主题切换，可通过顶部「Wiki 子板块导航」快速跳转。</li>
+      <li>太吾绘卷板块保留原有 21 条门派剧情数据，展示框架已按灰机 wiki 风格重构。</li>
+      <li>鸣潮板块当前为框架空壳，数据待后续补充；数据库页保持既有知识库能力。</li>
+    </ul>
+  </section>
+</main>
+
 <script>
   // 站点统一 Header 交互：移动端菜单 + 主题切换（不引入 site.js，避免播放器）
   (function () {

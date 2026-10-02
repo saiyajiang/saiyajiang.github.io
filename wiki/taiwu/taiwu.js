@@ -28,6 +28,7 @@
     statCat: $('#statCat'),
     statItem: $('#statItem'),
     statDesc: $('#statDesc'),
+    crumbBoard: $('#crumbBoard'),
     viewBtns: document.querySelectorAll('.db-viewswitch button')
   };
 
@@ -90,6 +91,7 @@
     el.statCat.textContent = cats.length;
     el.statItem.textContent = entries.length;
     el.statDesc.textContent = board ? board.name + ' · ' + board.desc : '';
+    if (el.crumbBoard) el.crumbBoard.textContent = board ? board.name : '门派剧情';
   }
 
   /* ---------- 板块切换 ---------- */
@@ -185,20 +187,44 @@
       var card = document.createElement('div');
       card.className = 'db-card taiwu-card';
       card.style.animationDelay = Math.min(i * 0.03, 0.4) + 's';
-      var badge = '<span class="badge" style="background:rgba(79,216,224,0.12);color:var(--cyan);border:1px solid rgba(79,216,224,0.35)">' + esc(e.category) + '</span>';
+      var badge = '<span class="badge" style="background:rgba(216,160,74,0.14);color:var(--cyan);border:1px solid rgba(216,160,74,0.40)">' + esc(e.category) + '</span>';
       var sub = e.sub ? '<div class="tf-sub">' + esc(e.sub) + '</div>' : '';
-      var sections = e.sections.length
-        ? '<div class="tf-sections">' + e.sections.map(function (s) {
-            return '<div class="tf-field"><div class="tf-key">' + esc(s.k) + '</div><div class="tf-val">' + s.v + '</div></div>';
+
+      // infobox 信息盒：立场 / 前传 / 概述
+      var infoRows = [
+        { k: '立场', v: e.tag },
+        { k: '前传', v: e.sub }
+      ].filter(function (r) { return r.v; }).map(function (r) {
+        return '<div class="infobox-row"><div class="infobox-key">' + esc(r.k) + '</div>' +
+          '<div class="infobox-val">' + esc(r.v) + '</div></div>';
+      }).join('');
+      if (e.text) {
+        infoRows += '<div class="infobox-row"><div class="infobox-key">概述</div>' +
+          '<div class="infobox-val">' + e.text + '</div></div>';
+      }
+      var infobox = infoRows ? '<div class="tf-infobox">' + infoRows + '</div>' : '';
+
+      // 章节化正文：sections 每项 = 深色小标题条 + 正文
+      var chapters = e.sections.length
+        ? '<div class="tf-chapters">' + e.sections.map(function (s) {
+            return '<section class="tf-chapter">' +
+              '<h4 class="tf-chapter-title">' + esc(s.k) + '</h4>' +
+              '<div class="tf-chapter-body">' + s.v + '</div>' +
+            '</section>';
           }).join('') + '</div>'
         : '';
+
+      var detail = (infobox || chapters)
+        ? '<div class="tf-detail">' + infobox + chapters + '</div>'
+        : '';
+
       card.innerHTML =
         '<div class="db-card-top">' + badge +
         '<span class="db-title" title="' + esc(e.title) + '">' + esc(e.title) + '</span>' +
         '<span class="expand-icon">▾</span></div>' +
         sub +
         '<div class="db-excerpt">' + e.text + '</div>' +
-        sections +
+        detail +
         '<div class="db-meta">' +
           '<span>' + esc(e.tag) + '</span>' +
           '<span>#' + e.hash + '</span>' +

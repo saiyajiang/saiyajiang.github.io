@@ -535,6 +535,21 @@
         var on = b.getAttribute('data-view') === 'table';
         b.classList.toggle('active', on);
         b.setAttribute('aria-selected', on ? 'true' : 'false');
+        if (b.getAttribute('data-view') === 'card') {
+          b.disabled = true;
+          b.title = '该板块仅支持表格视图';
+        } else {
+          b.disabled = false;
+          b.removeAttribute('title');
+        }
+      });
+    } else {
+      // 非表格化板块：恢复卡片按钮可用
+      el.viewBtns.forEach(function (b) {
+        if (b.getAttribute('data-view') === 'card') {
+          b.disabled = false;
+          b.removeAttribute('title');
+        }
       });
     }
     state.version = 'all';
