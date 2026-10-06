@@ -50,3 +50,114 @@ body {
   --text-1: #6b5735;
   --text-2: #8a7654;
 }
+
+/* ============================================================
+   词条详情页（sect.html）— 两级结构之详情层
+   ============================================================ */
+.sect-wrap { max-width: 1080px; margin: 0 auto; }
+.sect-head {
+  text-align: center;
+  margin: 10px 0 22px;
+}
+.sect-badge {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 3px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--wiki-accent);
+  background: rgba(var(--wiki-accent-rgb), 0.12);
+  border: 1px solid rgba(var(--wiki-accent-rgb), 0.40);
+}
+.sect-title {
+  font-size: clamp(26px, 4vw, 38px);
+  color: var(--text-0);
+  margin: 0 0 6px;
+}
+.sect-sub { color: var(--text-2); font-size: 14px; margin: 0; }
+
+.sect-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 26px;
+  align-items: start;
+}
+.sect-main { min-width: 0; }
+.sect-aside {
+  position: sticky;
+  top: 120px;
+}
+
+/* 页内目录 */
+.sect-toc {
+  border: 1px solid var(--line-strong);
+  border-left: 3px solid var(--wiki-accent);
+  background: var(--bg-1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+}
+.sect-toc-title {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--text-2);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+.sect-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.sect-toc-list li { margin: 0; }
+.sect-toc-list a {
+  color: var(--text-1);
+  text-decoration: none;
+  font-size: 13px;
+  border-bottom: 1px dashed transparent;
+}
+.sect-toc-list a:hover { color: var(--wiki-accent); }
+.sect-toc-list a.active { color: var(--wiki-accent); border-bottom-color: var(--wiki-accent); }
+
+/* 正文章节：锚点定位留出吸顶导航高度 */
+.sect-body .tf-chapter-title { scroll-margin-top: 100px; }
+
+/* 上一条 / 下一条导航 */
+.sect-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 28px;
+}
+.sect-pager-btn {
+  display: block;
+  padding: 12px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--bg-1);
+  color: var(--text-1);
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.sect-pager-btn:hover {
+  border-color: var(--wiki-accent);
+  transform: translateY(-2px);
+}
+.sect-pager-btn span { font-size: 12px; color: var(--text-2); }
+.sect-pager-btn b {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+  color: var(--text-0);
+}
+.sect-pager-btn.next { text-align: right; }
+
+/* 响应式：词条页窄屏堆叠，infobox 置于正文后 */
+@media (max-width: 860px) {
+  .sect-layout { grid-template-columns: 1fr; }
+  .sect-aside { position: static; }
+}

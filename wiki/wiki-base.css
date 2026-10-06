@@ -1039,3 +1039,102 @@ body {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   html { scroll-behavior: auto; }
 }
+
+/* ============================================================
+   门户首页：大搜索框 + 板块徽标（wiki/index.html）
+   ============================================================ */
+.wiki-home .wiki-hero-sub { margin-bottom: 22px; }
+.wiki-home-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 680px;
+  margin: 8px auto 22px;
+  padding: 8px 10px 8px 18px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.wiki-home-search:focus-within {
+  border-color: var(--wiki-accent);
+  box-shadow: 0 0 0 3px rgba(var(--wiki-accent-rgb), 0.18);
+}
+.wiki-search-icon { color: var(--wiki-accent); font-size: 20px; line-height: 1; }
+.wiki-home-search input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-0);
+  font-size: 16px;
+  padding: 8px 0;
+}
+.wiki-home-search input::placeholder { color: var(--text-2); }
+.wiki-home-search button {
+  flex-shrink: 0;
+  padding: 8px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--wiki-accent);
+  background: var(--wiki-accent);
+  color: #1c1307;
+  font-weight: 700;
+  cursor: pointer;
+}
+.wiki-home-search button:hover { filter: brightness(1.08); }
+.wiki-search-suggest {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 60;
+  background: var(--bg-1);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+  text-align: left;
+}
+.wiki-search-suggest a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 16px;
+  color: var(--text-1);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+.wiki-search-suggest a:last-child { border-bottom: none; }
+.wiki-search-suggest a:hover, .wiki-search-suggest a.hover {
+  background: rgba(var(--wiki-accent-rgb), 0.10);
+  color: var(--text-0);
+}
+.wiki-search-suggest .suggest-type {
+  flex-shrink: 0;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  color: var(--text-2);
+}
+.wiki-search-suggest .suggest-more {
+  justify-content: center;
+  color: var(--wiki-accent);
+  font-weight: 700;
+}
+
+/* 板块卡片徽标 */
+.wiki-card-badge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--wiki-accent);
+  background: rgba(var(--wiki-accent-rgb), 0.12);
+  border: 1px solid rgba(var(--wiki-accent-rgb), 0.35);
+}

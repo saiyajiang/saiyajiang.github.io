@@ -252,9 +252,7 @@
         '<td style="color:var(--text-2)">' + esc(e.tag) + (e.sub ? ' · ' + esc(e.sub) : '') + '</td>' +
         '<td>' + e.text + '</td>';
       tr.addEventListener('click', function () {
-        var td = tr.children[3];
-        td.classList.toggle('exp');
-        td.style.whiteSpace = td.classList.contains('exp') ? 'normal' : '';
+        window.location.href = 'sect.html?id=' + e.hash;
       });
       body.appendChild(tr);
     });
@@ -328,6 +326,13 @@
     loadBoards();
     bindSearch();
     bindView();
+    // 支持 URL 参数 ?q= 从门户搜索/分享链接直达筛选
+    var params = new URLSearchParams(window.location.search);
+    var q = params.get('q');
+    if (q) {
+      state.query = q;
+      if (el.search) el.search.value = q;
+    }
     switchBoard();
   }
 

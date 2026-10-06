@@ -40,37 +40,37 @@
     <a href="index.html">Wiki</a><span class="crumb-sep">/</span><span>门户</span>
   </nav>
 
-  <!-- ==================== Hero 标题区 ==================== -->
-  <header class="wiki-hero">
+  <!-- ==================== Hero：大搜索 + 统计 ==================== -->
+  <header class="wiki-hero wiki-home">
     <div class="wiki-hero-badge">WIKI HUB</div>
-    <h1 class="wiki-hero-title">Wiki <em>门户</em></h1>
-    <p class="wiki-hero-sub">游戏攻略、设定资料与知识数据库的集中入口 —— 全分区共享统一 Wiki 框架，各子板块仅以强调色区分。</p>
+    <h1 class="wiki-hero-title">Wiki <em>知识库</em></h1>
+    <p class="wiki-hero-sub">游戏攻略、设定资料与知识数据库的集中入口 —— 搜索词条直达详情页，或从下方板块进入。</p>
+
+    <div class="wiki-home-search">
+      <span class="wiki-search-icon">⌕</span>
+      <input id="homeSearch" type="text" placeholder="搜索：门派名 / 词条 / UP主 / 数据库记录…" autocomplete="off" />
+      <button id="homeSearchBtn" type="button">搜索</button>
+      <div class="wiki-search-suggest" id="searchSuggest" hidden></div>
+    </div>
+
     <div class="wiki-stats">
-      <div class="wiki-stat"><span>板块</span><b>4</b></div>
-      <div class="wiki-stat"><span>太吾条目</span><b>21</b></div>
-      <div class="wiki-stat"><span>鸣潮分类</span><b>5</b></div>
-      <div class="wiki-stat"><span>知识库</span><b>1</b></div>
+      <div class="wiki-stat"><span>板块</span><b>3</b></div>
+      <div class="wiki-stat"><span>太吾条目</span><b id="portalStatTaiwu">0</b></div>
+      <div class="wiki-stat"><span>数据库记录</span><b id="portalStatDb">0</b></div>
+      <div class="wiki-stat"><span>鸣潮</span><b>建设中</b></div>
     </div>
   </header>
 
-  <!-- ==================== 板块卡片 ==================== -->
-  <section class="wiki-cards">
-
-    <a class="wiki-card" href="db/index.html">
-      <div class="wiki-card-icon">✦</div>
-      <div class="wiki-card-body">
-        <h3>数据库 · 知识库</h3>
-        <p>游戏知识条目、推荐与综合数据库，板块 + 分类 + 图表联动展示（原独立 db 分区已并入 Wiki）。</p>
-        <span class="wiki-card-meta">wiki/db/ · 数据驱动</span>
-      </div>
-    </a>
+  <!-- ==================== 板块入口宫格 ==================== -->
+  <section class="wiki-cards" aria-label="板块入口">
 
     <a class="wiki-card" href="taiwu/index.html">
       <div class="wiki-card-icon">墨</div>
       <div class="wiki-card-body">
         <h3>太吾绘卷</h3>
-        <p>门派剧情 Wiki（21 条数据 · 正 / 中 / 邪 / 附）。暖金水墨风格，infobox + 章节化正文。</p>
-        <span class="wiki-card-meta">wiki/taiwu/ · 21 条门派剧情</span>
+        <p>门派剧情 Wiki：正派 / 中立 / 邪派 / 附录，infobox + 章节正文 + 页内目录，暖金水墨风格。</p>
+        <span class="wiki-card-meta">wiki/taiwu/</span>
+        <span class="wiki-card-badge" data-count="taiwu">0 条</span>
       </div>
     </a>
 
@@ -78,8 +78,19 @@
       <div class="wiki-card-icon">◈</div>
       <div class="wiki-card-body">
         <h3>鸣潮</h3>
-        <p>Wuthering Waves Wiki 板块框架（建设中）。冷蓝青绿风格，共鸣者 / 武器 / 声骸图鉴占位。</p>
-        <span class="wiki-card-meta">wiki/mingchao/ · 框架空壳</span>
+        <p>Wuthering Waves Wiki 板块框架。冷蓝青绿风格，共鸣者 / 武器 / 声骸图鉴占位，数据待接入。</p>
+        <span class="wiki-card-meta">wiki/mingchao/</span>
+        <span class="wiki-card-badge">建设中</span>
+      </div>
+    </a>
+
+    <a class="wiki-card" href="db/index.html">
+      <div class="wiki-card-icon">✦</div>
+      <div class="wiki-card-body">
+        <h3>数据库 · 知识库</h3>
+        <p>游戏知识条目、推荐与综合数据库，板块 + 分类 + 图表联动展示（原独立 db 分区已并入 Wiki）。</p>
+        <span class="wiki-card-meta">wiki/db/</span>
+        <span class="wiki-card-badge" data-count="db">0 条</span>
       </div>
     </a>
 
@@ -88,9 +99,9 @@
   <section class="wiki-note">
     <h3>说明</h3>
     <ul>
+      <li>站内搜索支持太吾门派词条直达（如“少林派”“铸剑山庄”），回车可跳转太吾列表页继续筛选。</li>
       <li>各子板块页共享统一站点导航、子板块导航、面包屑、Hero、统计条与底部 Dock，仅通过强调色区分板块。</li>
-      <li>太吾绘卷板块保留原有 21 条门派剧情数据，暖金水墨强调色；鸣潮板块为框架占位，数据待补充。</li>
-      <li>数据库页保持既有知识库与图表能力，青色强调色；全分区样式由 wiki-base.css 统一承载。</li>
+      <li>太吾绘卷板块沿用 21 条门派剧情数据与暖金强调色；鸣潮板块为框架占位，数据待补充；数据库页保持既有能力。</li>
     </ul>
   </section>
 </main>
@@ -103,6 +114,12 @@
   <a href="db/index.html">数据库 · 知识库</a>
 </nav>
 
+<!-- 数据：太吾门派剧情（只读，用于门户搜索与徽标统计） -->
+<script src="taiwu/data/taiwu-core.js"></script>
+<script src="taiwu/data/sects.js"></script>
+<script src="db/data/recommend.js"></script>
+<!-- 门户逻辑 -->
+<script src="wiki-portal.js"></script>
 <script>
   // 站点统一 Header 交互：移动端菜单 + 主题切换（不引入 site.js，避免播放器）
   (function () {
