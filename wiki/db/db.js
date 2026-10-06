@@ -36,7 +36,12 @@
         (sec.items || []).forEach(function (it) {
           var catName = it.subCategory || '条目';
           if (!catMap[catName]) catMap[catName] = [];
-          catMap[catName].push({ text: it.text || '' });
+          var _t = it.text || '';
+          catMap[catName].push({
+            text: _t,
+            name: extractName(_t) || _t.slice(0, 24),
+            links: it.links || []
+          });
         });
         games.push({
           id: 'wiki-' + sec.id,
@@ -48,6 +53,7 @@
           })
         });
       });
+      buildWikiIndex();
     }
   }
 
@@ -72,6 +78,24 @@
           });
           return;
         }
+        // 知识库条目：词条名作标题，预解析相关条目（links 优先 + 文本自动匹配）
+        if (game.id.indexOf('wiki-') === 0) {
+          var wh = hashStr(game.id + '|' + cat.name + '|' + (it.text || it.title || '').slice(0, 60));
+          entries.push({
+            kind: 'wiki',
+            gameId: game.id,
+            category: cat.name,
+            columns: null,
+            row: null,
+            title: it.name || it.title || (it.text ? it.text.slice(0, 24) : ''),
+            text: it.text || '',
+            tag: it.tag || '',
+            date: it.date || '',
+            hash: wh,
+            related: resolveRelated({ hash: wh, text: it.text || '', links: it.links || [] })
+          });
+          return;
+        }
         entries.push({
           kind: 'game',
           gameId: game.id,
@@ -92,6 +116,318 @@
     var h = 0;
     for (var i = 0; i < s.length; i++) { h = ((h << 5) - h + s.charCodeAt(i)) | 0; }
     return (h >>> 0).toString(36);
+  }
+
+  /* ---------- 知识库关联：links 显式指定 + 文本包含自动匹配 ---------- */
+  var wikiAll = [];      // 全部知识条目：{gameId, category, name, core, title, text, links, hash}
+  var wikiGameIdx = {};  // gameId -> games 索引
+
+  // 词条名 = text 中「 — 」前的片段
+  function extractName(text) {
+    var i = String(text).indexOf(' — ');
+    return i > 0 ? String(text).slice(0, i).trim() : '';
+  }
+
+  // 核心汉字名（去掉拼音/外来字母），如「琴 qín」→「琴」
+  function coreNameOf(name) {
+    return String(name).replace(/[a-zA-Z\u00C0-\u024F\u2019']/g, '').trim();
+  }
+
+  function isHan(ch) { return ch && /[\u4E00-\u9FFF]/.test(ch); }
+
+  // 关键词 kw 是否指向条目 name（全名/核心名/互相包含）
+  function nameMatches(name, kw) {
+    if (!kw) return false;
+    var core = coreNameOf(name);
+    if (name === kw || core === kw) return true;
+    if (kw.length >= 2 && (name.indexOf(kw) !== -1 || core.indexOf(kw) !== -1)) return true;
+    // 纯英文/拼音词条（如 QT、rat）core 为空串，须跳过包含判断，避免 '' 恒命中污染
+    if (core && name.length >= 2 && (kw.indexOf(name) !== -1 || kw.indexOf(core) !== -1)) return true;
+    return false;
+  }
+
+  // 文本是否出现目标词条名（单字要求前后非汉字，避免误连）
+  function textHits(text, target) {
+    var kw = coreNameOf(target.name) || target.name;
+    if (!kw) return false;
+    var idx = text.indexOf(kw);
+    if (idx === -1) return false;
+    if (kw.length >= 2) return true;
+    var before = idx > 0 ? text.charAt(idx - 1) : '';
+    var after = idx + kw.length < text.length ? text.charAt(idx + kw.length) : '';
+    return !isHan(before) && !isHan(after);
+  }
+
+  // 构建全局知识条目索引（须在 loadGames 推入全部 wiki 板块后调用）
+  function buildWikiIndex() {
+    wikiAll = [];
+    window.WIKI_DATA.forEach(function (sec) {
+      (sec.items || []).forEach(function (it) {
+        var text = it.text || '';
+        var name = extractName(text) || text.slice(0, 12);
+        wikiAll.push({
+          gameId: 'wiki-' + sec.id,
+          category: it.subCategory || '条目',
+          name: name,
+          core: coreNameOf(name),
+          title: name,
+          text: text,
+          links: it.links || [],
+          hash: hashStr('wiki-' + sec.id + '|' + (it.subCategory || '条目') + '|' + text.slice(0, 60))
+        });
+      });
+    });
+    for (var i = 0; i < games.length; i++) {
+      if (games[i].id.indexOf('wiki-') === 0) wikiGameIdx[games[i].id] = i;
+    }
+  }
+
+  // 计算条目 e 的相关条目：links 指定优先，未指定则文本包含词条名自动关联
+  function resolveRelated(e) {
+    var seen = {};
+    var list = [];
+    function add(t) {
+      if (!t || t.hash === e.hash || seen[t.hash]) return;
+      seen[t.hash] = true;
+      list.push({ name: t.name, hash: t.hash, gameId: t.gameId, category: t.category });
+    }
+    (e.links || []).forEach(function (kw) {
+      wikiAll.forEach(function (t) { if (nameMatches(t.name, kw)) add(t); });
+    });
+    wikiAll.forEach(function (t) {
+      if (t.hash === e.hash) return;
+      if (textHits(e.text, t)) add(t);
+    });
+    return list;
+  }
+
+  function currentIsWiki() {
+    var g = games[state.gameIdx];
+    return !!(g && g.id.indexOf('wiki-') === 0);
+  }
+
+  /* ---------- 相关条目跳转：切换板块 + 卡片视图 + 滚动高亮 ---------- */
+  function jumpTo(hash, gameId) {
+    if (gameId && wikiGameIdx[gameId] != null && wikiGameIdx[gameId] !== state.gameIdx) {
+      state.gameIdx = wikiGameIdx[gameId];
+    }
+    state.category = 'all';
+    state.query = '';
+    el.search.value = '';
+    if (state.view !== 'card') {
+      state.view = 'card';
+      el.viewBtns.forEach(function (b) {
+        var on = b.getAttribute('data-view') === 'card';
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+    switchGame();
+    var target = el.grid.querySelector('.db-card[data-hash="' + hash + '"]');
+    if (target) {
+      target.classList.add('expanded', 'jump-target');
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(function () { target.classList.remove('jump-target'); }, 1800);
+    }
+  }
+
+  /* ---------- 图谱视图：纯 SVG 力导向（自实现，无外部 CDN） ---------- */
+  function renderGraph(list) {
+    el.grid.className = 'db-grid graph-view';
+    el.grid.innerHTML = '';
+    el.empty.hidden = list.length > 0;
+    if (!list.length) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'db-graph-wrap';
+    el.grid.appendChild(wrap);
+
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'db-graph-svg');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', '知识关联图谱');
+    wrap.appendChild(svg);
+
+    var W = wrap.clientWidth || 900;
+    var H = wrap.clientHeight || 560;
+    var gMain = document.createElementNS(NS, 'g');
+    svg.appendChild(gMain);
+
+    var entryByHash = {};
+    list.forEach(function (e) { entryByHash[e.hash] = e; });
+
+    var nodes = list.map(function (e) {
+      return {
+        hash: e.hash,
+        gameId: e.gameId,
+        label: e.title || e.text.slice(0, 12),
+        x: W / 2 + (Math.random() - 0.5) * W * 0.6,
+        y: H / 2 + (Math.random() - 0.5) * H * 0.6,
+        vx: 0, vy: 0, fx: null, fy: null,
+        rect: null, g: null
+      };
+    });
+    var byHash = {};
+    nodes.forEach(function (n) { byHash[n.hash] = n; });
+
+    var edges = [];
+    var seenEdge = {};
+    nodes.forEach(function (n) {
+      var ent = entryByHash[n.hash];
+      (ent.related || []).forEach(function (r) {
+        var t = byHash[r.hash];
+        if (!t) return; // 仅绘制本板块内的关联边
+        var key = n.hash < r.hash ? n.hash + '|' + r.hash : r.hash + '|' + n.hash;
+        if (seenEdge[key]) return;
+        seenEdge[key] = true;
+        edges.push({ a: n, b: t });
+      });
+    });
+
+    // 力导向物理参数
+    var REP = 3200, K = 0.055, REST = 132, DAMP = 0.82;
+    function step() {
+      var i, j, a, b, dx, dy, d, f, fx, fy;
+      for (i = 0; i < nodes.length; i++) {
+        for (j = i + 1; j < nodes.length; j++) {
+          a = nodes[i]; b = nodes[j];
+          dx = a.x - b.x; dy = a.y - b.y;
+          d = Math.sqrt(dx * dx + dy * dy) || 1;
+          f = REP / (d * d);
+          fx = (dx / d) * f; fy = (dy / d) * f;
+          if (a.fx === null) { a.vx += fx; a.vy += fy; }
+          if (b.fx === null) { b.vx -= fx; b.vy -= fy; }
+        }
+      }
+      edges.forEach(function (ed) {
+        a = ed.a; b = ed.b;
+        dx = b.x - a.x; dy = b.y - a.y;
+        d = Math.sqrt(dx * dx + dy * dy) || 1;
+        f = K * (d - REST);
+        fx = (dx / d) * f; fy = (dy / d) * f;
+        if (a.fx === null) { a.vx += fx; a.vy += fy; }
+        if (b.fx === null) { b.vx -= fx; b.vy -= fy; }
+      });
+      nodes.forEach(function (n) {
+        if (n.fx !== null) return;
+        n.vx += (W / 2 - n.x) * 0.012;
+        n.vy += (H / 2 - n.y) * 0.012;
+        n.vx *= DAMP; n.vy *= DAMP;
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < 24) n.x = 24;
+        if (n.x > W - 24) n.x = W - 24;
+        if (n.y < 24) n.y = 24;
+        if (n.y > H - 24) n.y = H - 24;
+      });
+    }
+
+    var panX = 0, panY = 0, scale = 1;
+    function paint() {
+      gMain.setAttribute('transform', 'translate(' + panX + ',' + panY + ') scale(' + scale + ')');
+      edges.forEach(function (ed) {
+        if (!ed.line) {
+          ed.line = document.createElementNS(NS, 'line');
+          ed.line.setAttribute('class', 'db-graph-edge');
+          gMain.appendChild(ed.line);
+        }
+        ed.line.setAttribute('x1', ed.a.x); ed.line.setAttribute('y1', ed.a.y);
+        ed.line.setAttribute('x2', ed.b.x); ed.line.setAttribute('y2', ed.b.y);
+      });
+      nodes.forEach(function (n) {
+        if (!n.g) {
+          n.g = document.createElementNS(NS, 'g');
+          n.g.setAttribute('class', 'db-graph-node');
+          n.g.setAttribute('data-hash', n.hash);
+          n.rect = document.createElementNS(NS, 'rect');
+          n.rect.setAttribute('rx', 8); n.rect.setAttribute('ry', 8);
+          n.g.appendChild(n.rect);
+          var t = document.createElementNS(NS, 'text');
+          t.textContent = n.label;
+          n.g.appendChild(t);
+          gMain.appendChild(n.g);
+        }
+        var w = Math.max(64, n.label.length * 13 + 26);
+        n.rect.setAttribute('x', -w / 2); n.rect.setAttribute('y', -15);
+        n.rect.setAttribute('width', w); n.rect.setAttribute('height', 30);
+        n.g.setAttribute('transform', 'translate(' + n.x + ',' + n.y + ')');
+        var t = n.g.querySelector('text');
+        t.setAttribute('x', 0); t.setAttribute('y', 4);
+        t.setAttribute('text-anchor', 'middle');
+      });
+    }
+
+    var iter = 0, MAX = 380, dragging = false;
+    function tick() {
+      if (iter < MAX) { step(); iter++; }
+      paint();
+      if (iter < MAX && !dragging) requestAnimationFrame(tick);
+    }
+
+    // 交互：拖拽节点 / 平移画布 / 滚轮缩放 / 点击节点跳转
+    var draggingNode = null, panning = false, moved = 0, downX = 0, downY = 0;
+    function svgPos(ev) {
+      var r = svg.getBoundingClientRect();
+      return { x: (ev.clientX - r.left - panX) / scale, y: (ev.clientY - r.top - panY) / scale };
+    }
+    svg.addEventListener('pointerdown', function (ev) {
+      var nEl = ev.target.closest ? ev.target.closest('.db-graph-node') : null;
+      downX = ev.clientX; downY = ev.clientY; moved = 0;
+      if (nEl) {
+        draggingNode = byHash[nEl.getAttribute('data-hash')];
+        if (draggingNode) { dragging = true; draggingNode.fx = draggingNode.x; draggingNode.fy = draggingNode.y; }
+        svg.setPointerCapture(ev.pointerId);
+      } else {
+        panning = true;
+        svg.setPointerCapture(ev.pointerId);
+      }
+    });
+    svg.addEventListener('pointermove', function (ev) {
+      moved = Math.max(moved, Math.abs(ev.clientX - downX) + Math.abs(ev.clientY - downY));
+      if (draggingNode) {
+        var p = svgPos(ev);
+        draggingNode.fx = p.x; draggingNode.fy = p.y;
+        draggingNode.x = p.x; draggingNode.y = p.y;
+        paint();
+      } else if (panning) {
+        panX += ev.clientX - downX; panY += ev.clientY - downY;
+        downX = ev.clientX; downY = ev.clientY;
+        paint();
+      }
+    });
+    function endDrag(ev) {
+      if (draggingNode) { draggingNode.fx = null; draggingNode.fy = null; draggingNode = null; }
+      panning = false;
+      if (dragging && ev && moved < 5) {
+        var nEl = ev.target.closest ? ev.target.closest('.db-graph-node') : null;
+        if (nEl) {
+          var n = byHash[nEl.getAttribute('data-hash')];
+          if (n) { dragging = false; jumpTo(n.hash, n.gameId); return; }
+        }
+      }
+      dragging = false;
+      if (iter < MAX) requestAnimationFrame(tick);
+    }
+    svg.addEventListener('pointerup', endDrag);
+    svg.addEventListener('pointercancel', endDrag);
+    svg.addEventListener('wheel', function (ev) {
+      ev.preventDefault();
+      var r = svg.getBoundingClientRect();
+      var mx = ev.clientX - r.left, my = ev.clientY - r.top;
+      var ns = scale * (ev.deltaY < 0 ? 1.12 : 0.9);
+      ns = Math.max(0.35, Math.min(3.2, ns));
+      // 以指针为锚点缩放
+      panX = mx - ((mx - panX) / scale) * ns;
+      panY = my - ((my - panY) / scale) * ns;
+      scale = ns;
+      paint();
+    }, { passive: false });
+
+    tick();
+    var hint = document.createElement('div');
+    hint.className = 'db-graph-hint';
+    hint.textContent = '拖拽节点调整布局 · 滚轮缩放 · 拖动空白平移 · 点击节点跳转条目';
+    wrap.appendChild(hint);
   }
 
   /* ---------- 状态 ---------- */
@@ -311,6 +647,11 @@
 
   /* ---------- 渲染：主列表 ---------- */
   function renderList() {
+    // 图谱视图：仅知识库板块，呈现当前板块全部条目的关联网
+    if (state.view === 'graph' && currentIsWiki()) {
+      renderGraph(entries);
+      return;
+    }
     var list = filtered();
     el.grid.className = 'db-grid' + (state.view === 'table' ? ' table-view' : '');
     el.empty.hidden = list.length > 0;
@@ -333,17 +674,33 @@
       var card = document.createElement('div');
       card.className = 'db-card';
       card.style.animationDelay = Math.min(i * 0.03, 0.4) + 's';
+      card.setAttribute('data-hash', e.hash);
       var badge = '<span class="badge" style="background:rgba(var(--wiki-accent-rgb),0.12);color:var(--wiki-accent);border:1px solid rgba(var(--wiki-accent-rgb),0.35)">' + esc(e.category) + '</span>';
+      var relatedHtml = '';
+      if (e.kind === 'wiki' && e.related && e.related.length) {
+        relatedHtml =
+          '<div class="db-related"><div class="db-related-head">相关条目 <em>RELATED</em></div><div class="db-related-list">' +
+          e.related.map(function (r) {
+            return '<a class="db-related-item" data-hash="' + r.hash + '" data-game="' + esc(r.gameId) + '" data-cat="' + esc(r.category) + '" href="#">' +
+              '<span class="db-related-name">' + esc(r.name) + '</span>' +
+              (r.category && r.category !== '条目' ? '<span class="db-related-cat">' + esc(r.category) + '</span>' : '') +
+              (r.gameId !== e.gameId ? '<span class="db-related-cross" title="跨板块">↗</span>' : '') +
+              '</a>';
+          }).join('') +
+          '</div></div>';
+      }
       card.innerHTML =
         '<div class="db-card-top">' + badge +
         '<span class="db-title" title="' + esc(e.title) + '">' + esc(e.title) + '</span>' +
         '<span class="expand-icon">▾</span></div>' +
         '<div class="db-excerpt">' + censorText(esc(e.text)) + '</div>' +
+        relatedHtml +
         '<div class="db-meta">' +
           '<span>' + (e.tag ? esc(e.tag) : '条目') + '</span>' +
           '<span>' + (e.date || '#' + e.hash) + '</span>' +
         '</div>';
-      card.addEventListener('click', function () {
+      card.addEventListener('click', function (ev) {
+        if (ev.target.closest && ev.target.closest('.db-related-item')) return;
         card.classList.toggle('expanded');
       });
       el.grid.appendChild(card);
@@ -454,6 +811,7 @@
       btn.addEventListener('click', function () {
         var game = games[state.gameIdx];
         if (game && game.tableOnly && btn.getAttribute('data-view') === 'card') return;
+        if (btn.getAttribute('data-view') === 'graph' && !(game && game.id.indexOf('wiki-') === 0)) return;
         state.view = btn.getAttribute('data-view');
         el.viewBtns.forEach(function (b) {
           var on = b === btn;
@@ -528,6 +886,16 @@
     renderGameTabs();
     var game = games[state.gameIdx];
     flattenGame(game);
+    // 非知识库板块：图谱视图不可用，回退卡片视图
+    if (!(game && game.id.indexOf('wiki-') === 0) && state.view === 'graph') {
+      state.view = 'card';
+      el.viewBtns.forEach(function (b) {
+        if (b.getAttribute('data-view') === 'graph') {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        }
+      });
+    }
     // 表格化板块强制表格视图
     if (game && game.tableOnly) {
       state.view = 'table';
@@ -552,6 +920,15 @@
         }
       });
     }
+    // 图谱按钮仅知识库板块可用
+    el.viewBtns.forEach(function (b) {
+      if (b.getAttribute('data-view') === 'graph') {
+        var ok = !!(game && game.id.indexOf('wiki-') === 0);
+        b.disabled = !ok;
+        if (ok) { b.removeAttribute('title'); }
+        else { b.title = '仅知识库板块可用'; }
+      }
+    });
     state.version = 'all';
     var cats = categoryStats();
     renderStats();
@@ -584,6 +961,13 @@
     bindSearch();
     bindView();
     bindVersion();
+    // 相关条目内链跳转委托（卡片重建时无需重复绑定）
+    el.grid.addEventListener('click', function (ev) {
+      var a = ev.target.closest ? ev.target.closest('.db-related-item') : null;
+      if (!a) return;
+      ev.preventDefault();
+      jumpTo(a.getAttribute('data-hash'), a.getAttribute('data-game'));
+    });
     switchGame();
   }
 

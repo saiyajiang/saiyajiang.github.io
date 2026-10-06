@@ -49,3 +49,133 @@ body {
   --text-1: #3c4f6d;
   --text-2: #5b6e8d;
 }
+
+/* ============ 知识条目 · 相关条目内链（卡片展开区） ============ */
+.db-related {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(var(--wiki-accent-rgb), 0.28);
+}
+.db-related-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--wiki-accent);
+}
+.db-related-head em {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--text-2);
+}
+.db-related-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.db-related-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border: 1px solid rgba(var(--wiki-accent-rgb), 0.35);
+  border-radius: 999px;
+  background: rgba(var(--wiki-accent-rgb), 0.08);
+  color: var(--text-0);
+  font-size: 12px;
+  text-decoration: none;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+}
+.db-related-item:hover {
+  background: rgba(var(--wiki-accent-rgb), 0.18);
+  border-color: var(--wiki-accent);
+  transform: translateY(-1px);
+}
+.db-related-name { font-weight: 600; }
+.db-related-cat {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-2);
+}
+.db-related-cross { color: var(--wiki-accent-2); font-size: 11px; }
+
+/* 跳转目标卡片高亮 */
+.db-card.jump-target {
+  border-color: var(--wiki-accent);
+  box-shadow: 0 0 0 2px rgba(var(--wiki-accent-rgb), 0.55), 0 12px 34px rgba(0, 0, 0, 0.4);
+  animation: jump-flash 1.6s ease;
+}
+@keyframes jump-flash {
+  0%, 55% { box-shadow: 0 0 0 2px rgba(var(--wiki-accent-rgb), 0.7), 0 12px 34px rgba(0, 0, 0, 0.45); }
+  100% { box-shadow: 0 0 0 2px rgba(var(--wiki-accent-rgb), 0.55), 0 12px 34px rgba(0, 0, 0, 0.4); }
+}
+
+/* ============ 知识关联图谱（纯 SVG 力导向） ============ */
+.db-grid.graph-view {
+  display: block;
+  padding-top: 14px;
+}
+.db-graph-wrap {
+  position: relative;
+  height: 560px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(480px 300px at 50% 0%, rgba(var(--wiki-accent-rgb), 0.06), transparent 65%),
+    rgba(11, 17, 28, 0.55);
+  overflow: hidden;
+}
+[data-theme="light"] .db-graph-wrap { background: rgba(255, 255, 255, 0.55); }
+.db-graph-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.db-graph-svg:active { cursor: grabbing; }
+.db-graph-edge {
+  stroke: rgba(var(--wiki-accent-rgb), 0.38);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+.db-graph-node { cursor: pointer; }
+.db-graph-node rect {
+  fill: var(--bg-2);
+  stroke: rgba(var(--wiki-accent-rgb), 0.85);
+  stroke-width: 1.6;
+  transition: fill 0.15s, stroke-width 0.15s;
+}
+.db-graph-node:hover rect {
+  fill: var(--bg-3);
+  stroke: var(--wiki-accent);
+  stroke-width: 2.4;
+}
+.db-graph-node text {
+  fill: var(--text-0);
+  font-size: 12px;
+  font-family: var(--mono);
+  pointer-events: none;
+}
+.db-graph-hint {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+  background: rgba(10, 15, 22, 0.72);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  pointer-events: none;
+}
+[data-theme="light"] .db-graph-hint { background: rgba(238, 242, 248, 0.82); }
