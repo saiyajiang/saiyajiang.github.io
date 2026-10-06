@@ -31,6 +31,8 @@
   <a href="taiwu/index.html">太吾绘卷</a>
   <a href="mingchao/index.html">鸣潮 <span class="subnav-count">框架</span></a>
   <a href="db/index.html">数据库 · 知识库</a>
+  <a href="graph/index.html">图谱 <span class="subnav-count">含短句</span></a>
+  <a href="recommend/index.html">推荐与不推荐</a>
 </nav>
 
 <main class="wiki-main">
@@ -54,9 +56,10 @@
     </div>
 
     <div class="wiki-stats">
-      <div class="wiki-stat"><span>板块</span><b>3</b></div>
+      <div class="wiki-stat"><span>板块</span><b>5</b></div>
       <div class="wiki-stat"><span>太吾条目</span><b id="portalStatTaiwu">0</b></div>
       <div class="wiki-stat"><span>数据库记录</span><b id="portalStatDb">0</b></div>
+      <div class="wiki-stat"><span>图谱词条</span><b id="portalStatGraph">0</b></div>
       <div class="wiki-stat"><span>鸣潮</span><b>建设中</b></div>
     </div>
   </header>
@@ -94,14 +97,34 @@
       </div>
     </a>
 
+    <a class="wiki-card" href="graph/index.html">
+      <div class="wiki-card-icon">◈</div>
+      <div class="wiki-card-body">
+        <h3>知识图谱</h3>
+        <p>全知识库关联图谱：11 个板块词条力导向网络，含短语拾遗短句关联；点击节点直达词条详情页。</p>
+        <span class="wiki-card-meta">wiki/graph/</span>
+        <span class="wiki-card-badge" data-count="graph">0 条</span>
+      </div>
+    </a>
+
+    <a class="wiki-card" href="recommend/index.html">
+      <div class="wiki-card-icon">荐</div>
+      <div class="wiki-card-body">
+        <h3>推荐与不推荐</h3>
+        <p>影视与 UP主避坑记录：电视剧 / B站UP主 / 广告媒体等，不推荐条目均附「不推荐原因」，可按类型筛选。</p>
+        <span class="wiki-card-meta">wiki/recommend/</span>
+        <span class="wiki-card-badge" data-count="recommend">0 条</span>
+      </div>
+    </a>
+
   </section>
 
   <section class="wiki-note">
     <h3>说明</h3>
     <ul>
-      <li>站内搜索支持太吾门派词条直达（如“少林派”“铸剑山庄”），回车可跳转太吾列表页继续筛选。</li>
+      <li>站内搜索支持太吾门派词条直达（如“少林派”“铸剑山庄”）、知识图谱词条直达与推荐记录跳转，回车可跳转太吾列表页继续筛选。</li>
       <li>各子板块页共享统一站点导航、子板块导航、面包屑、Hero、统计条与底部 Dock，仅通过强调色区分板块。</li>
-      <li>太吾绘卷板块沿用 21 条门派剧情数据与暖金强调色；鸣潮板块为框架占位，数据待补充；数据库页保持既有能力。</li>
+      <li>太吾绘卷板块沿用 21 条门派剧情数据与暖金强调色；鸣潮板块为框架占位，数据待补充；数据库页保持既有能力；知识图谱展示全库关联；推荐与不推荐收录避坑记录。</li>
     </ul>
   </section>
 </main>
@@ -112,12 +135,15 @@
   <a href="taiwu/index.html">太吾绘卷</a>
   <a href="mingchao/index.html">鸣潮</a>
   <a href="db/index.html">数据库 · 知识库</a>
+  <a href="graph/index.html">图谱</a>
+  <a href="recommend/index.html">推荐与不推荐</a>
 </nav>
 
 <!-- 数据：太吾门派剧情（只读，用于门户搜索与徽标统计） -->
 <script src="taiwu/data/taiwu-core.js"></script>
 <script src="taiwu/data/sects.js"></script>
 <script src="db/data/recommend.js"></script>
+<script src="db/data/knowledge.js"></script>
 <!-- 门户逻辑 -->
 <script src="wiki-portal.js"></script>
 <script>

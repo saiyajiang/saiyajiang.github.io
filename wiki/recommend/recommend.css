@@ -1,0 +1,134 @@
+/* ============================================================
+   推荐与不推荐板块专属样式 — recommend.css
+   统一框架由 wiki-base.css 承载；本文件覆盖强调色（绯红）
+   与记录卡片样式。
+   ============================================================ */
+
+:root {
+  /* 推荐与不推荐板块 · 绯红 accent */
+  --bg-0: #140d10;
+  --bg-1: #1f1418;
+  --bg-2: #2d1d22;
+  --bg-3: #40292f;
+  --line: rgba(240, 150, 150, 0.16);
+  --line-strong: rgba(240, 150, 150, 0.32);
+  --text-0: #ffeef0;
+  --text-1: #dfb7bc;
+  --text-2: #a17a80;
+  --wiki-accent: #f07c8f;
+  --wiki-accent-rgb: 240, 124, 143;
+  --wiki-accent-2: #f2b54c;
+  --wiki-accent-2-rgb: 242, 181, 76;
+}
+
+body {
+  background:
+    radial-gradient(1100px 520px at 85% -10%, rgba(240, 124, 143, 0.10), transparent 60%),
+    radial-gradient(800px 460px at -10% 30%, rgba(242, 181, 76, 0.05), transparent 55%),
+    var(--bg-0);
+}
+
+::selection { background: rgba(240, 124, 143, 0.28); }
+
+.wiki-hero {
+  background:
+    radial-gradient(620px 260px at 88% -25%, rgba(240, 124, 143, 0.14), transparent 60%),
+    radial-gradient(520px 240px at 0% 120%, rgba(242, 181, 76, 0.06), transparent 55%),
+    linear-gradient(170deg, var(--bg-2), var(--bg-1));
+}
+
+[data-theme="light"] {
+  --bg-0: #f8eff1;
+  --bg-1: #f0e2e5;
+  --bg-2: #e3cdd2;
+  --bg-3: #d2b4bb;
+  --line: rgba(120, 40, 55, 0.16);
+  --line-strong: rgba(120, 40, 55, 0.32);
+  --text-0: #3a1f25;
+  --text-1: #6d444c;
+  --text-2: #95707a;
+}
+
+/* ============ 记录卡片 ============ */
+.rec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+.rec-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-1);
+  padding: 16px 18px;
+  transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+}
+.rec-card:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+}
+.rec-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.rec-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-0);
+  line-height: 1.5;
+  word-break: break-all;
+}
+.rec-type {
+  flex-shrink: 0;
+  padding: 2px 10px;
+  border: 1px solid rgba(var(--wiki-accent-rgb), 0.4);
+  border-radius: 999px;
+  background: rgba(var(--wiki-accent-rgb), 0.08);
+  color: var(--wiki-accent);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.rec-fields {
+  margin-top: 12px;
+  display: grid;
+  gap: 4px;
+}
+.rec-field {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-1);
+}
+.rec-field .k {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  min-width: 62px;
+}
+.rec-field .v { word-break: break-all; }
+.rec-reason {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--wiki-accent);
+  border-radius: 0 8px 8px 0;
+  background: rgba(var(--wiki-accent-rgb), 0.08);
+  font-size: 13px;
+  color: var(--text-0);
+  line-height: 1.7;
+}
+.rec-reason .k {
+  font-weight: 700;
+  color: var(--wiki-accent);
+  margin-right: 6px;
+}
+.rec-date {
+  margin-top: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+}

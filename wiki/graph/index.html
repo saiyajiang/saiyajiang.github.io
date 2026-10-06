@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>知识图谱 · Wiki · 悲歌</title>
+  <link rel="stylesheet" href="../wiki-base.css" />
+  <link rel="stylesheet" href="graph.css" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+</head>
+<body>
+
+<!-- ==================== 站点统一导航 ==================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    <nav class="nav-menu" id="navMenu">
+      <a href="../../index.html">~/blog</a>
+      <a href="../../archive.html">~/archive</a>
+      <a href="../index.html" class="active">~/wiki</a>
+      <a href="../../about.html">~/about</a>
+      <a href="../../quotes.html">~/quotes</a>
+      <a href="../../changelog.html">~/changelog</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">&#9788;</button>
+  </div>
+</header>
+
+<!-- ==================== Wiki 子板块导航 ==================== -->
+<nav class="wiki-subnav" aria-label="Wiki 子板块导航">
+  <a href="../index.html">门户</a>
+  <a href="../taiwu/index.html">太吾绘卷</a>
+  <a href="../mingchao/index.html">鸣潮 <span class="subnav-count">框架</span></a>
+  <a href="../db/index.html">数据库 · 知识库</a>
+  <a href="index.html" class="active">图谱 <span class="subnav-count">含短句</span></a>
+  <a href="../recommend/index.html">推荐与不推荐</a>
+</nav>
+
+<main class="wiki-main">
+
+  <!-- ==================== 面包屑 ==================== -->
+  <nav class="wiki-breadcrumb" aria-label="面包屑">
+    <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><span>知识图谱</span>
+  </nav>
+
+  <!-- ==================== Hero：标题 + 统计 ==================== -->
+  <header class="wiki-hero">
+    <div class="wiki-hero-badge">KNOWLEDGE GRAPH</div>
+    <h1 class="wiki-hero-title">知识图谱 <em>全库关联</em></h1>
+    <p class="wiki-hero-sub">11 个知识板块全部词条的力导向关联网 —— 节点按板块着色，连线表示显式关联与文本命中；拖拽节点 · 滚轮缩放 · 拖动画布平移，点击节点进入词条详情页。</p>
+    <div class="wiki-stats">
+      <div class="wiki-stat"><span>板块</span><b id="statBoard">0</b></div>
+      <div class="wiki-stat"><span>词条节点</span><b id="statNode">0</b></div>
+      <div class="wiki-stat"><span>关联连线</span><b id="statEdge">0</b></div>
+      <div class="wiki-stat"><span>短句关联</span><b id="statPhrase">0</b></div>
+    </div>
+  </header>
+
+  <!-- ==================== 图例：板块颜色 ==================== -->
+  <div class="graph-legend" id="graphLegend" aria-label="板块图例"></div>
+
+  <!-- ==================== 图谱画布 ==================== -->
+  <section class="graph-wrap" id="graphWrap" aria-label="知识图谱画布">
+    <svg class="graph-svg" id="graphSvg" role="img" aria-label="全知识库关联图谱"></svg>
+    <span class="graph-hint">拖动节点 · 滚轮缩放 · 空白拖动画布 · 点击节点看详情</span>
+  </section>
+
+</main>
+
+<!-- ==================== 底部 Dock ==================== -->
+<nav class="wiki-dock" aria-label="板块快捷导航">
+  <a href="../index.html">门户</a>
+  <a href="../taiwu/index.html">太吾绘卷</a>
+  <a href="../mingchao/index.html">鸣潮</a>
+  <a href="../db/index.html">数据库 · 知识库</a>
+  <a href="index.html" class="active">图谱</a>
+  <a href="../recommend/index.html">推荐与不推荐</a>
+</nav>
+
+<!-- 数据：全知识库单一数据源（与 db 板块共用） -->
+<script src="../db/data/knowledge.js"></script>
+<!-- 图谱逻辑 -->
+<script src="graph.js"></script>
+<script>
+  // 站点统一 Header 交互：移动端菜单 + 主题切换
+  (function () {
+    var menuBtn = document.getElementById('menuToggle');
+    var navMenu = document.getElementById('navMenu');
+    if (menuBtn && navMenu) {
+      menuBtn.addEventListener('click', function () {
+        navMenu.classList.toggle('open');
+      });
+    }
+    var themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function () {
+        var root = document.documentElement;
+        root.setAttribute('data-theme', root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+      });
+    }
+  })();
+</script>
+</body>
+</html>

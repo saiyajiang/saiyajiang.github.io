@@ -1,0 +1,270 @@
+/* ============================================================
+   知识图谱板块专属样式 — graph.css
+   统一框架由 wiki-base.css 承载；本文件覆盖强调色（紫罗兰）
+   与图谱/词条详情页专属样式。
+   ============================================================ */
+
+:root {
+  /* 图谱板块 · 紫罗兰 accent */
+  --bg-0: #0d0a16;
+  --bg-1: #141126;
+  --bg-2: #1d1838;
+  --bg-3: #2a2450;
+  --line: rgba(180, 150, 240, 0.16);
+  --line-strong: rgba(180, 150, 240, 0.32);
+  --text-0: #efeaff;
+  --text-1: #b8aede;
+  --text-2: #7b6fa6;
+  --wiki-accent: #b07cf0;
+  --wiki-accent-rgb: 176, 124, 240;
+  --wiki-accent-2: #f2b54c;
+  --wiki-accent-2-rgb: 242, 181, 76;
+}
+
+body {
+  background:
+    radial-gradient(1100px 520px at 85% -10%, rgba(176, 124, 240, 0.10), transparent 60%),
+    radial-gradient(800px 460px at -10% 30%, rgba(242, 181, 76, 0.05), transparent 55%),
+    var(--bg-0);
+}
+
+::selection { background: rgba(176, 124, 240, 0.28); }
+
+.wiki-hero {
+  background:
+    radial-gradient(620px 260px at 88% -25%, rgba(176, 124, 240, 0.14), transparent 60%),
+    radial-gradient(520px 240px at 0% 120%, rgba(242, 181, 76, 0.06), transparent 55%),
+    linear-gradient(170deg, var(--bg-2), var(--bg-1));
+}
+
+[data-theme="light"] {
+  --bg-0: #f1eef8;
+  --bg-1: #e6e1f2;
+  --bg-2: #d6ceeb;
+  --bg-3: #c2b8dd;
+  --line: rgba(60, 40, 110, 0.16);
+  --line-strong: rgba(60, 40, 110, 0.32);
+  --text-0: #221a3a;
+  --text-1: #4a3f6d;
+  --text-2: #6d6194;
+}
+
+/* ============ 图谱图例 ============ */
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.graph-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--text-1);
+  background: var(--bg-2);
+}
+.graph-legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.graph-legend-item b {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  font-weight: 400;
+}
+
+/* ============ 图谱容器：纯 SVG 力导向 ============ */
+.graph-wrap {
+  position: relative;
+  height: 620px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(520px 340px at 50% 0%, rgba(var(--wiki-accent-rgb), 0.06), transparent 65%),
+    rgba(13, 10, 22, 0.55);
+  overflow: hidden;
+}
+[data-theme="light"] .graph-wrap { background: rgba(255, 255, 255, 0.55); }
+.graph-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.graph-svg:active { cursor: grabbing; }
+.graph-edge {
+  stroke: rgba(var(--wiki-accent-rgb), 0.30);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.graph-node { cursor: pointer; }
+.graph-node rect {
+  stroke-width: 1.5;
+  transition: fill 0.15s, stroke-width 0.15s;
+}
+.graph-node:hover rect {
+  stroke-width: 2.6;
+  filter: drop-shadow(0 0 6px rgba(var(--wiki-accent-rgb), 0.55));
+}
+.graph-node text {
+  fill: var(--text-0);
+  font-size: 11px;
+  font-family: var(--mono);
+  pointer-events: none;
+}
+.graph-hint {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+  background: rgba(13, 10, 22, 0.72);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  pointer-events: none;
+}
+[data-theme="light"] .graph-hint { background: rgba(241, 238, 248, 0.85); }
+
+/* ============ 词条详情页 ============ */
+.entry-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--text-1);
+  text-decoration: none;
+  background: var(--bg-2);
+  transition: color 0.18s, border-color 0.18s, background 0.18s;
+}
+.entry-back:hover {
+  color: var(--text-0);
+  border-color: var(--wiki-accent);
+  background: var(--bg-3);
+}
+.entry-panel {
+  margin-top: 18px;
+  padding: 24px 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-1);
+}
+.entry-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.entry-board {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border: 1px solid rgba(var(--wiki-accent-rgb), 0.45);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--wiki-accent);
+  background: rgba(var(--wiki-accent-rgb), 0.08);
+}
+.entry-title {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.4;
+  color: var(--text-0);
+  letter-spacing: 0.02em;
+  word-break: break-all;
+}
+.entry-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  letter-spacing: 0.08em;
+}
+.entry-text {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-left: 3px solid rgba(var(--wiki-accent-rgb), 0.45);
+  background: var(--bg-2);
+  border-radius: 0 10px 10px 0;
+  font-size: 14px;
+  line-height: 2;
+  color: var(--text-1);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.entry-related {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(var(--wiki-accent-rgb), 0.28);
+}
+.entry-related-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--wiki-accent);
+}
+.entry-related-head em {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--text-2);
+}
+.entry-related-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.entry-related-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid rgba(var(--wiki-accent-rgb), 0.35);
+  border-radius: 999px;
+  background: rgba(var(--wiki-accent-rgb), 0.08);
+  color: var(--text-0);
+  font-size: 12px;
+  text-decoration: none;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+}
+.entry-related-item:hover {
+  background: rgba(var(--wiki-accent-rgb), 0.18);
+  border-color: var(--wiki-accent);
+  transform: translateY(-1px);
+}
+.entry-related-name { font-weight: 600; }
+.entry-related-cross {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--wiki-accent-2);
+}
+.entry-missing {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-2);
+}
+.entry-missing .wiki-empty-icon { font-size: 44px; margin-bottom: 12px; opacity: 0.5; }
+.entry-missing p { font-size: 16px; color: var(--text-1); margin: 0 0 6px; }
+.entry-missing a { color: var(--wiki-accent); }

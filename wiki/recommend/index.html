@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>太吾绘卷 · Taiwu Wiki · 悲歌</title>
+  <title>推荐与不推荐 · Wiki · 悲歌</title>
   <link rel="stylesheet" href="../wiki-base.css" />
-  <link rel="stylesheet" href="taiwu.css" />
+  <link rel="stylesheet" href="recommend.css" />
   <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
 </head>
 <body>
@@ -17,7 +17,7 @@
     <nav class="nav-menu" id="navMenu">
       <a href="../../index.html">~/blog</a>
       <a href="../../archive.html">~/archive</a>
-      <a href="../index.html">~/wiki</a>
+      <a href="../index.html" class="active">~/wiki</a>
       <a href="../../about.html">~/about</a>
       <a href="../../quotes.html">~/quotes</a>
       <a href="../../changelog.html">~/changelog</a>
@@ -29,68 +29,68 @@
 <!-- ==================== Wiki 子板块导航 ==================== -->
 <nav class="wiki-subnav" aria-label="Wiki 子板块导航">
   <a href="../index.html">门户</a>
-  <a href="index.html" class="active">太吾绘卷</a>
+  <a href="../taiwu/index.html">太吾绘卷</a>
   <a href="../mingchao/index.html">鸣潮 <span class="subnav-count">框架</span></a>
   <a href="../db/index.html">数据库 · 知识库</a>
   <a href="../graph/index.html">图谱 <span class="subnav-count">含短句</span></a>
-  <a href="../recommend/index.html">推荐与不推荐</a>
+  <a href="index.html" class="active">推荐与不推荐</a>
 </nav>
 
 <main class="wiki-main">
 
   <!-- ==================== 面包屑 ==================== -->
   <nav class="wiki-breadcrumb" aria-label="面包屑">
-    <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><a href="index.html">太吾绘卷</a><span class="crumb-sep">/</span><span id="crumbBoard">门派剧情</span>
+    <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><span>推荐与不推荐</span>
   </nav>
 
-  <!-- ==================== Hero 标题区 + 统计条 ==================== -->
+  <!-- ==================== Hero：标题 + 统计 ==================== -->
   <header class="wiki-hero">
-    <div class="wiki-hero-badge">TAIWU WIKI</div>
-    <h1 class="wiki-hero-title">太吾绘卷 <em>门派剧情</em></h1>
-    <p class="wiki-hero-sub">门派 · 立场 · 传承 —— 21 条门派剧情考据，infobox 信息盒 + 章节化正文。</p>
+    <div class="wiki-hero-badge">RECOMMEND &amp; AVOID</div>
+    <h1 class="wiki-hero-title">推荐与不推荐 <em>避坑清单</em></h1>
+    <p class="wiki-hero-sub">影视剧 / UP主 / 广告媒体等记录 —— 不推荐条目均附「不推荐原因」，按类型筛选或关键词搜索快速定位。</p>
     <div class="wiki-stats">
-      <div class="wiki-stat"><span>板块</span><b id="statBoard">0</b></div>
-      <div class="wiki-stat"><span>分类</span><b id="statCat">0</b></div>
-      <div class="wiki-stat"><span>条目</span><b id="statItem">0</b></div>
+      <div class="wiki-stat"><span>推荐</span><b id="statRec">0</b></div>
+      <div class="wiki-stat"><span>不推荐</span><b id="statAvoid">0</b></div>
+      <div class="wiki-stat"><span>共记录</span><b id="statTotal">0</b></div>
     </div>
   </header>
 
-  <div class="wiki-desc" id="statDesc"></div>
-
-  <!-- ==================== 板块切换 ==================== -->
-  <nav class="wiki-tabs" id="boardTabs" aria-label="Taiwu 板块切换"></nav>
-
-  <!-- ==================== 筛选 + 视图切换 ==================== -->
+  <!-- ==================== 筛选 + 搜索 ==================== -->
   <div class="wiki-toolbar">
     <div class="wiki-search">
       <span class="wiki-search-icon">⌕</span>
-      <input id="searchInput" type="text" placeholder="搜索门派、事件、对话、关键词…" autocomplete="off" />
+      <input id="searchInput" type="text" placeholder="搜索：名称 / 主演 / 编剧 / 导演 / 出品公司 / UID / 原因…" autocomplete="off" />
       <kbd>/</kbd>
     </div>
-    <div class="wiki-chips" id="categoryChips"></div>
-    <div class="wiki-viewswitch" role="tablist" aria-label="视图切换">
-      <button class="active" data-view="card" role="tab" aria-selected="true">▦ 卡片</button>
-      <button data-view="table" role="tab" aria-selected="false">☰ 表格</button>
-    </div>
+    <div class="wiki-chips" id="typeChips"></div>
   </div>
 
-  <!-- ==================== 主体 ==================== -->
-  <main id="dbGrid" class="wiki-grid" aria-live="polite"></main>
+  <!-- ==================== 记录列表 ==================== -->
+  <main id="recGrid" class="rec-grid" aria-live="polite"></main>
   <div id="emptyState" class="wiki-empty" hidden>
     <div class="wiki-empty-icon">∅</div>
-    <p id="emptyTitle">暂无数据</p>
-    <span id="emptyDesc">在 wiki/taiwu/data/ 中添加板块数据 · 词条页 URL：taiwu/sect.html?id=词条ID</span>
+    <p id="emptyTitle">暂无记录</p>
+    <span id="emptyDesc">调整筛选或关键词后再试</span>
   </div>
+
 </main>
 
 <!-- ==================== 底部 Dock ==================== -->
-<nav class="wiki-dock" id="dbDock" aria-label="分类快捷导航"></nav>
+<nav class="wiki-dock" aria-label="板块快捷导航">
+  <a href="../index.html">门户</a>
+  <a href="../taiwu/index.html">太吾绘卷</a>
+  <a href="../mingchao/index.html">鸣潮</a>
+  <a href="../db/index.html">数据库 · 知识库</a>
+  <a href="../graph/index.html">图谱</a>
+  <a href="index.html" class="active">推荐与不推荐</a>
+</nav>
 
-<script src="data/taiwu-core.js"></script>
-<script src="data/sects.js"></script>
-<script src="taiwu.js"></script>
+<!-- 数据：推荐与不推荐独立数据源 -->
+<script src="../db/data/recommend.js"></script>
+<!-- 列表逻辑 -->
+<script src="recommend.js"></script>
 <script>
-  // 站点统一 Header 交互：移动端菜单 + 主题切换（不引入 site.js，避免播放器）
+  // 站点统一 Header 交互：移动端菜单 + 主题切换
   (function () {
     var menuBtn = document.getElementById('menuToggle');
     var navMenu = document.getElementById('navMenu');

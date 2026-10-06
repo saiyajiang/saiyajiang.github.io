@@ -1,9 +1,10 @@
 /* ============================================================
    Wiki 门户首页逻辑 — wiki-portal.js
    依赖：taiwu/data/taiwu-core.js + sects.js（TAIWU_BOARDS）、
-         db/data/recommend.js（RECOMMEND_DB）
-   职责：板块徽标统计、站内大搜索（太吾词条直达 / 板块跳转 /
-         数据库记录跳板块页）
+         db/data/recommend.js（RECOMMEND_DB）、
+         db/data/knowledge.js（WIKI_DATA）
+   职责：板块徽标统计、站内大搜索（太吾词条直达 / 图谱词条直达 /
+         推荐记录跳板块页 / 板块跳转）
    ============================================================ */
 (function () {
   'use strict';
@@ -12,6 +13,11 @@
     var h = 0;
     for (var i = 0; i < s.length; i++) { h = ((h << 5) - h + s.charCodeAt(i)) | 0; }
     return (h >>> 0).toString(36);
+  }
+
+  function extractName(text) {
+    var i = String(text).indexOf(' — ');
+    return i > 0 ? String(text).slice(0, i).trim() : '';
   }
 
   /* ---------- 数据收集 ---------- */
@@ -47,30 +53,51 @@
     });
   }
 
+  var graphEntries = [];
+  (window.WIKI_DATA || []).forEach(function (sec) {
+    (sec.items || []).forEach(function (it) {
+      var text = it.text || '';
+      graphEntries.push({
+        board: sec.title || sec.id,
+        name: extractName(text) || text.slice(0, 12),
+        text: text
+      });
+    });
+  });
+
   var blocks = [
     { key: '太吾', name: '太吾绘卷', url: 'taiwu/index.html' },
     { key: '鸣潮', name: '鸣潮', url: 'mingchao/index.html' },
-    { key: '数据库', name: '数据库', url: 'db/index.html' }
+    { key: '数据库', name: '数据库', url: 'db/index.html' },
+    { key: '图谱', name: '知识图谱', url: 'graph/index.html' },
+    { key: '推荐', name: '推荐与不推荐', url: 'recommend/index.html' }
   ];
 
   /* ---------- 徽标统计 ---------- */
   function renderBadges() {
     var taiwuCount = taiwuEntries.length;
     var dbCount = dbRecords.length;
+    var graphCount = graphEntries.length;
     document.querySelectorAll('[data-count]').forEach(function (node) {
       var key = node.getAttribute('data-count');
-      var n = key === 'taiwu' ? taiwuCount : key === 'db' ? dbCount : 0;
+      var n = key === 'taiwu' ? taiwuCount
+        : key === 'db' ? dbCount
+          : key === 'graph' ? graphCount
+            : key === 'recommend' ? dbCount
+              : 0;
       node.textContent = n + ' 条';
     });
     var statItem = document.getElementById('portalStatTaiwu');
     if (statItem) statItem.textContent = taiwuCount;
     var statDb = document.getElementById('portalStatDb');
     if (statDb) statDb.textContent = dbCount;
+    var statGraph = document.getElementById('portalStatGraph');
+    if (statGraph) statGraph.textContent = graphCount;
   }
 
   /* ---------- 站内搜索 ---------- */
   function matchAll(q) {
-    var out = { blocks: [], taiwu: [], db: [] };
+    var out = { blocks: [], taiwu: [], graph: [], db: [] };
     blocks.forEach(function (b) {
       if (b.name.indexOf(q) !== -1 || b.key.indexOf(q) !== -1) out.blocks.push(b);
     });
@@ -78,6 +105,10 @@
       var hay = (e.title + ' ' + e.tag + ' ' + e.sub + ' ' + e.text +
         e.sections.map(function (s) { return s.k + ' ' + s.v; }).join(' ')).toLowerCase();
       if (hay.indexOf(q) !== -1) out.taiwu.push(e);
+    });
+    graphEntries.forEach(function (e) {
+      var hay = (e.name + ' ' + e.board + ' ' + e.text).toLowerCase();
+      if (hay.indexOf(q) !== -1) out.graph.push(e);
     });
     dbRecords.forEach(function (r) {
       if ((r.name + ' ' + r.reason + ' ' + r.cat).toLowerCase().indexOf(q) !== -1) out.db.push(r);
@@ -105,9 +136,15 @@
           '<span class="sg-desc">' + esc(e.sub || e.text || '') + '</span></a>';
       }).join('') });
     }
+    if (out.graph.length) {
+      list.push({ group: '知识图谱 · 词条', html: out.graph.slice(0, 5).map(function (e) {
+        return '<a href="graph/entry.html?t=' + encodeURIComponent(e.name) + '"><span class="sg-cat">' + esc(e.board) + '</span>' + esc(e.name) +
+          '<span class="sg-desc">' + esc(e.text.slice(0, 40)) + '</span></a>';
+      }).join('') });
+    }
     if (out.db.length) {
-      list.push({ group: '数据库 · 推荐记录', html: out.db.slice(0, 4).map(function (r) {
-        return '<a href="db/index.html"><span class="sg-cat">' + esc(r.cat) + '</span>' + esc(r.name) +
+      list.push({ group: '推荐与不推荐 · 记录', html: out.db.slice(0, 4).map(function (r) {
+        return '<a href="recommend/index.html"><span class="sg-cat">' + esc(r.cat) + '</span>' + esc(r.name) +
           '<span class="sg-desc">' + esc(r.reason || '') + '</span></a>';
       }).join('') });
     }
@@ -127,7 +164,8 @@
   function goFirst(out) {
     if (out.blocks.length) { window.location.href = out.blocks[0].url; return; }
     if (out.taiwu.length) { window.location.href = 'taiwu/sect.html?id=' + out.taiwu[0].hash; return; }
-    if (out.db.length) { window.location.href = 'db/index.html'; return; }
+    if (out.graph.length) { window.location.href = 'graph/entry.html?t=' + encodeURIComponent(out.graph[0].name); return; }
+    if (out.db.length) { window.location.href = 'recommend/index.html'; return; }
     var q = input.value.trim();
     window.location.href = 'taiwu/index.html?q=' + encodeURIComponent(q);
   }
