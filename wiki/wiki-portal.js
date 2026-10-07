@@ -69,7 +69,7 @@
     { key: '太吾', name: '太吾绘卷', url: 'taiwu/index.html' },
     { key: '鸣潮', name: '鸣潮', url: 'mingchao/index.html' },
     { key: '数据库', name: '数据库', url: 'db/index.html' },
-    { key: '图谱', name: '知识图谱', url: 'graph/index.html' },
+    { key: '图谱', name: '词条图谱', url: 'graph/index.html' },
     { key: '推荐', name: '推荐与不推荐', url: 'recommend/index.html' }
   ];
 
@@ -137,7 +137,7 @@
       }).join('') });
     }
     if (out.graph.length) {
-      list.push({ group: '知识图谱 · 词条', html: out.graph.slice(0, 5).map(function (e) {
+      list.push({ group: '词条图谱 · 词条', html: out.graph.slice(0, 5).map(function (e) {
         return '<a href="graph/entry.html?t=' + encodeURIComponent(e.name) + '"><span class="sg-cat">' + esc(e.board) + '</span>' + esc(e.name) +
           '<span class="sg-desc">' + esc(e.text.slice(0, 40)) + '</span></a>';
       }).join('') });

@@ -1,5 +1,5 @@
 /* ============================================================
-   知识图谱板块逻辑 — graph.js
+   词条图谱板块逻辑 — graph.js
    依赖：wiki/db/data/knowledge.js（window.WIKI_DATA，11 板块全条目）
    职责：全库词条关联解析（links 显式 + 文本命中自动匹配）、
          图例着色、纯 SVG 力导向图渲染（自实现，无外部 CDN）、
@@ -172,13 +172,14 @@
         var key = n.e.name < r.name ? n.e.name + '|' + r.name : r.name + '|' + n.e.name;
         if (seenEdge[key]) return;
         seenEdge[key] = true;
-        edges.push({ a: n, b: t });
+        edges.push({ a: n, b: t, key: key });
       });
     });
     setText('statEdge', edges.length);
 
-    // 力导向物理参数
-    var REP = 3200, K = 0.055, REST = 132, DAMP = 0.82;
+    // 力导向物理参数（REP 回退至安全区间；斥力加距离下限、速度钳制、边界软约束防爆炸堆叠）
+    var REP = 4800, K = 0.05, REST = 240, DAMP = 0.82;
+    var REP_MIN_D = 40, MAX_SPEED = 50;
     function step() {
       var i, j, a, b, dx, dy, d, f, fx, fy;
       for (i = 0; i < nodes.length; i++) {
@@ -186,6 +187,7 @@
           a = nodes[i]; b = nodes[j];
           dx = a.x - b.x; dy = a.y - b.y;
           d = Math.sqrt(dx * dx + dy * dy) || 1;
+          d = Math.max(d, REP_MIN_D);  // 距离下限：防止 d→0 时 f=REP/d² 力爆炸
           f = REP / (d * d);
           fx = (dx / d) * f; fy = (dy / d) * f;
           if (a.fx === null) { a.vx += fx; a.vy += fy; }
@@ -206,21 +208,27 @@
         n.vx += (W / 2 - n.x) * 0.012;
         n.vy += (H / 2 - n.y) * 0.012;
         n.vx *= DAMP; n.vy *= DAMP;
+        var sp = Math.sqrt(n.vx * n.vx + n.vy * n.vy);
+        if (sp > MAX_SPEED) { n.vx *= MAX_SPEED / sp; n.vy *= MAX_SPEED / sp; }  // 每帧速度上限
         n.x += n.vx; n.y += n.vy;
-        if (n.x < 24) n.x = 24;
-        if (n.x > W - 24) n.x = W - 24;
-        if (n.y < 24) n.y = 24;
-        if (n.y > H - 24) n.y = H - 24;
+        // 边界软约束（弹性回弹）：越界部分折半弹回、速度反向衰减，不硬钳死角落
+        if (n.x < 24) { n.x = 24 + (24 - n.x) * 0.5; n.vx = Math.abs(n.vx) * 0.4; }
+        if (n.x > W - 24) { n.x = (W - 24) - (n.x - (W - 24)) * 0.5; n.vx = -Math.abs(n.vx) * 0.4; }
+        if (n.y < 24) { n.y = 24 + (24 - n.y) * 0.5; n.vy = Math.abs(n.vy) * 0.4; }
+        if (n.y > H - 24) { n.y = (H - 24) - (n.y - (H - 24)) * 0.5; n.vy = -Math.abs(n.vy) * 0.4; }
       });
     }
 
-    var panX = 0, panY = 0, scale = 1;
+    // 初始视口：动画期间默认放大 1.3 倍并将布局中心对齐到画布中心；收敛后由 fitView 按包围盒自动适配
+    var INIT_SCALE = 1.3;
+    var panX = (W - W * INIT_SCALE) / 2, panY = (H - H * INIT_SCALE) / 2, scale = INIT_SCALE;
     function paint() {
       gMain.setAttribute('transform', 'translate(' + panX + ',' + panY + ') scale(' + scale + ')');
       edges.forEach(function (ed) {
         if (!ed.line) {
           ed.line = document.createElementNS(NS, 'line');
           ed.line.setAttribute('class', 'graph-edge');
+          ed.line.style.transition = 'opacity 0.4s';
           gMain.appendChild(ed.line);
         }
         ed.line.setAttribute('x1', ed.a.x); ed.line.setAttribute('y1', ed.a.y);
@@ -231,35 +239,224 @@
           n.g = document.createElementNS(NS, 'g');
           n.g.setAttribute('class', 'graph-node');
           n.g.setAttribute('data-name', n.e.name);
+          n.g.style.transition = 'opacity 0.4s';
           n.rect = document.createElementNS(NS, 'rect');
           n.rect.setAttribute('rx', 8); n.rect.setAttribute('ry', 8);
+          var titleEl = document.createElementNS(NS, 'title');
+          titleEl.textContent = n.e.name;
+          n.rect.appendChild(titleEl);
           n.g.appendChild(n.rect);
+          // 超长标签（>8 字符）矩形内截断显示，悬浮 title 提示原文
+          n.dispName = n.e.name.length > 8 ? n.e.name.slice(0, 8) + '…' : n.e.name;
           var t = document.createElementNS(NS, 'text');
-          t.textContent = n.e.name;
+          t.textContent = n.dispName;
           n.g.appendChild(t);
           gMain.appendChild(n.g);
         }
         var color = BOARD_COLORS[n.e.boardId] || '#b07cf0';
-        var w = Math.max(64, n.e.name.length * 13 + 26);
-        n.rect.setAttribute('x', -w / 2); n.rect.setAttribute('y', -15);
-        n.rect.setAttribute('width', w); n.rect.setAttribute('height', 30);
+        var w = Math.max(72, n.dispName.length * 12 + 30);
+        n._w = w;
+        n.rect.setAttribute('x', -w / 2); n.rect.setAttribute('y', -17);
+        n.rect.setAttribute('width', w); n.rect.setAttribute('height', 34);
         n.rect.setAttribute('fill', 'rgba(' + hexToRgb(color) + ', 0.13)');
         n.rect.setAttribute('stroke', color);
         n.g.setAttribute('transform', 'translate(' + n.x + ',' + n.y + ')');
         var t = n.g.querySelector('text');
-        t.setAttribute('x', 0); t.setAttribute('y', 4);
+        t.setAttribute('x', 0); t.setAttribute('y', 5);
         t.setAttribute('text-anchor', 'middle');
       });
     }
 
-    var iter = 0, MAX = 380, dragging = false;
+    var iter = 0, MAX = 480, dragging = false, fitted = false;
     function tick() {
       if (iter < MAX) { step(); iter++; }
       paint();
+      if (iter >= MAX && !fitted) { fitted = true; fitView(); return; }
       if (iter < MAX && !dragging) requestAnimationFrame(tick);
     }
 
-    // 交互：拖拽节点 / 平移画布 / 滚轮缩放 / 点击节点跳详情
+    // 收敛后按全部节点包围盒自动 fit 缩放居中（替代固定 INIT_SCALE），保留后续手动缩放/平移
+    function fitView() {
+      if (!nodes.length) return;
+      var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      nodes.forEach(function (n) {
+        var hw = (n._w || 72) / 2 + 10, hh = 17 + 10;
+        if (n.x - hw < minX) minX = n.x - hw;
+        if (n.x + hw > maxX) maxX = n.x + hw;
+        if (n.y - hh < minY) minY = n.y - hh;
+        if (n.y + hh > maxY) maxY = n.y + hh;
+      });
+      var bw = Math.max(1, maxX - minX), bh = Math.max(1, maxY - minY);
+      var ns = Math.min(W / bw, H / bh, 1.6);
+      ns = Math.max(0.35, ns);
+      scale = ns;
+      panX = W / 2 - ((minX + maxX) / 2) * ns;
+      panY = H / 2 - ((minY + maxY) / 2) * ns;
+      paint();
+      // 记录收敛后原始布局位置，供退出聚焦时补间回归
+      nodes.forEach(function (n) { n.homeX = n.x; n.homeY = n.y; });
+    }
+
+    // ============ 聚焦模式：点击词条居中放大 + 邻居环形环绕 + 非邻居淡出 ============
+    var FOCUS_ANIM_MS = 400;            // 聚焦切换补间动画时长（ms）
+    var focusName = null;               // 当前聚焦词条名；null = 全图谱视图
+    var focusNeighbors = null;          // 当前聚焦邻居名集合 {name:true}
+    var focusEdgeKeys = {};             // 聚焦模式下仅显示的边 key（根↔邻居）
+    var focusAnim = null;               // 进行中的补间动画句柄（用于中断/取代）
+    var hitLink = null;                 // pointerdown 命中的「详情 ↗」链接
+    var linkA = null;                   // 根节点「详情 ↗」入口（SVG <a>）
+    var exitBtn = null;                 // 「退出聚焦」按钮
+
+    function neighborsOf(n) {
+      var out = [];
+      n.e.related.forEach(function (r) {
+        var t = byName[r.name];
+        if (t && t !== n) out.push(t);
+      });
+      return out;
+    }
+
+    // 聚焦布局：根居中；邻居按原方位角排序后均匀铺到圆周（保持相对方位）
+    // 半径按邻居数量与平均矩形宽自适应，避免重叠；上限受画布可视高度约束
+    function focusTargets(name) {
+      var root = byName[name];
+      if (!root) return null;
+      var neigh = neighborsOf(root);
+      var cx = (W / 2 - panX) / scale, cy = (H / 2 - panY) / scale; // 视口中心对应逻辑坐标
+      var k = neigh.length;
+      var avgW = 96;
+      if (k) {
+        var sw = 0, c = 0;
+        neigh.forEach(function (m) { if (m._w) { sw += m._w; c++; } });
+        avgW = c ? sw / c : 96;
+      }
+      var R = Math.max(210, (k * (avgW + 26)) / (2 * Math.PI) * 1.35);
+      R = Math.min(R, 340, (H * 0.44) / scale); // 显示半径 ≤ 画布高 44%，避免溢出可视区
+      var targets = [{ n: root, tx: cx, ty: cy }];
+      if (!k) return { root: root, neigh: neigh, targets: targets, R: R };
+      var sorted = neigh.map(function (m) {
+        return { m: m, a: Math.atan2(m.y - root.y, m.x - root.x) };
+      }).sort(function (x, y) { return x.a - y.a; });
+      var startA = k === 1 ? 0 : -Math.PI / 2;
+      var stepA = (2 * Math.PI) / k;
+      sorted.forEach(function (s, i) {
+        var a = startA + i * stepA;
+        targets.push({ n: s.m, tx: cx + Math.cos(a) * R, ty: cy + Math.sin(a) * R });
+      });
+      return { root: root, neigh: neigh, targets: targets, R: R };
+    }
+
+    // 补间动画（easeOutCubic，默认 400ms）：从当前位置平滑移动到目标
+    function animatePositions(targets, dur, onDone) {
+      var start = targets.map(function (t) {
+        return { n: t.n, sx: t.n.x, sy: t.n.y, tx: t.tx, ty: t.ty };
+      });
+      var t0 = performance.now();
+      var f = { start: start, t0: t0, dur: dur, onDone: onDone };
+      focusAnim = f;
+      function frame(now) {
+        if (focusAnim !== f) return; // 已被新动画或退出取代，立即停止
+        var p = Math.min(1, (now - f.t0) / f.dur);
+        var e = 1 - Math.pow(1 - p, 3);
+        f.start.forEach(function (s) {
+          s.n.x = s.sx + (s.tx - s.sx) * e;
+          s.n.y = s.sy + (s.ty - s.sy) * e;
+        });
+        paint();
+        if (p < 1) requestAnimationFrame(frame);
+        else { focusAnim = null; if (f.onDone) f.onDone(); }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // 聚焦可见性：非邻居淡出（opacity 0.06 + 禁指针），连线仅保留根↔邻居
+    function applyFocusVisibility() {
+      nodes.forEach(function (n) {
+        var vis = !focusName || n.e.name === focusName || (focusNeighbors && focusNeighbors[n.e.name]);
+        n.g.style.opacity = vis ? '1' : '0.06';
+        n.g.style.pointerEvents = vis ? 'auto' : 'none';
+      });
+      edges.forEach(function (ed) {
+        var vis = !focusName || focusEdgeKeys[ed.key];
+        ed.line.style.opacity = vis ? '1' : '0';
+        ed.line.style.pointerEvents = vis ? 'auto' : 'none';
+      });
+    }
+
+    function buildDetailLink() {
+      linkA = document.createElementNS(NS, 'a');
+      linkA.setAttribute('class', 'graph-node-link');
+      var linkText = document.createElementNS(NS, 'text');
+      linkText.setAttribute('class', 'graph-node-detail-text');
+      linkText.textContent = '详情 ↗';
+      linkText.setAttribute('text-anchor', 'middle');
+      linkA.appendChild(linkText);
+      gMain.appendChild(linkA);
+      linkA.style.display = 'none';
+    }
+
+    function buildExitBtn() {
+      exitBtn = document.createElement('button');
+      exitBtn.type = 'button';
+      exitBtn.className = 'graph-focus-exit';
+      exitBtn.textContent = '退出聚焦';
+      exitBtn.addEventListener('click', exitFocus);
+      wrap.appendChild(exitBtn);
+      exitBtn.style.display = 'none';
+    }
+
+    // 聚焦到指定词条（进入或切换）：根居中高亮、邻居环绕、非邻居淡出
+    function focusTo(name) {
+      if (focusAnim) return; // 动画进行中忽略新请求
+      var plan = focusTargets(name);
+      if (!plan) return;
+      focusName = name;
+      focusNeighbors = {};
+      plan.neigh.forEach(function (m) { focusNeighbors[m.e.name] = true; });
+      focusEdgeKeys = {};
+      edges.forEach(function (ed) {
+        var aN = ed.a.e.name, bN = ed.b.e.name;
+        if ((aN === name && focusNeighbors[bN]) || (bN === name && focusNeighbors[aN])) {
+          focusEdgeKeys[ed.key] = true;
+        }
+      });
+      nodes.forEach(function (n) {
+        n.g.classList.toggle('graph-node-root', n.e.name === name);
+      });
+      if (!linkA) buildDetailLink();
+      linkA.style.display = '';
+      linkA.setAttribute('transform', 'translate(' + plan.root.x + ',' + (plan.root.y + 30) + ')');
+      linkA.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
+        'entry.html?t=' + encodeURIComponent(name));
+      if (!exitBtn) buildExitBtn();
+      exitBtn.style.display = '';
+      applyFocusVisibility();
+      animatePositions(plan.targets, FOCUS_ANIM_MS, function () {
+        if (focusName === name) {
+          linkA.setAttribute('transform', 'translate(' + plan.targets[0].tx + ',' + (plan.targets[0].ty + 30) + ')');
+        }
+      });
+    }
+
+    // 退出聚焦：节点补间回归原始布局，恢复全量显示，隐藏聚焦 UI
+    function exitFocus() {
+      if (!focusName) return;
+      focusAnim = null;
+      focusName = null;
+      focusNeighbors = null;
+      focusEdgeKeys = {};
+      var targets = [];
+      nodes.forEach(function (n) {
+        if (n.homeX !== undefined) targets.push({ n: n, tx: n.homeX, ty: n.homeY });
+      });
+      applyFocusVisibility();
+      animatePositions(targets, FOCUS_ANIM_MS);
+      nodes.forEach(function (n) { n.g.classList.remove('graph-node-root'); });
+      if (linkA) linkA.style.display = 'none';
+      if (exitBtn) exitBtn.style.display = 'none';
+    }
+
+    // 交互：拖拽节点 / 平移画布 / 滚轮缩放 / 点击节点聚焦 / 空白或 Esc 退出聚焦
     var draggingNode = null, panning = false, moved = 0, downX = 0, downY = 0;
     var hitNode = null;  // pointerdown 命中节点引用（指针捕获会使 pointerup.target 漂移为 svg）
     function svgPos(ev) {
@@ -267,9 +464,16 @@
       return { x: (ev.clientX - r.left - panX) / scale, y: (ev.clientY - r.top - panY) / scale };
     }
     svg.addEventListener('pointerdown', function (ev) {
+      var linkEl = ev.target.closest ? ev.target.closest('.graph-node-link') : null;
+      hitLink = linkEl;
+      downX = ev.clientX; downY = ev.clientY; moved = 0;
+      if (linkEl) {
+        dragging = true;
+        svg.setPointerCapture(ev.pointerId);
+        return;
+      }
       var nEl = ev.target.closest ? ev.target.closest('.graph-node') : null;
       hitNode = nEl;
-      downX = ev.clientX; downY = ev.clientY; moved = 0;
       if (nEl) {
         draggingNode = byName[nEl.getAttribute('data-name')];
         if (draggingNode) { dragging = true; draggingNode.fx = draggingNode.x; draggingNode.fy = draggingNode.y; }
@@ -294,21 +498,40 @@
     });
     function endDrag(ev) {
       var nEl = hitNode; hitNode = null;
+      var linkEl = hitLink; hitLink = null;
       if (draggingNode) { draggingNode.fx = null; draggingNode.fy = null; draggingNode = null; }
       panning = false;
-      if (dragging && moved < 5 && nEl) {
-        var name = nEl.getAttribute('data-name');
-        if (name) {
+      if (dragging && moved < 5) {
+        // 「详情 ↗」入口：仍跳词条详情页
+        if (linkEl) {
           dragging = false;
-          window.location.href = 'entry.html?t=' + encodeURIComponent(name);
+          if (focusName) window.location.href = 'entry.html?t=' + encodeURIComponent(focusName);
           return;
         }
+        if (nEl) {
+          var name = nEl.getAttribute('data-name');
+          if (name) {
+            dragging = false;
+            if (focusName) {
+              // 聚焦模式下点击邻居 → 平滑切换聚焦；点击根自身忽略
+              if (name !== focusName && focusNeighbors && focusNeighbors[name]) focusTo(name);
+            } else {
+              focusTo(name); // 非聚焦模式：进入聚焦（不再默认跳 entry.html）
+            }
+            return;
+          }
+        }
       }
+      // 点击画布空白（轻点，非拖拽平移）：聚焦模式下退出聚焦
+      if (!nEl && !linkEl && moved < 5 && focusName) { dragging = false; exitFocus(); return; }
       dragging = false;
       if (iter < MAX) requestAnimationFrame(tick);
     }
     svg.addEventListener('pointerup', endDrag);
     svg.addEventListener('pointercancel', endDrag);
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && focusName) exitFocus();
+    });
     svg.addEventListener('wheel', function (ev) {
       ev.preventDefault();
       var r = svg.getBoundingClientRect();

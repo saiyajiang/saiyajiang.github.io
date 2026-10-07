@@ -1,5 +1,5 @@
 /* ============================================================
-   知识图谱词条详情页逻辑 — entry.js
+   词条图谱词条详情页逻辑 — entry.js
    依赖：wiki/db/data/knowledge.js（window.WIKI_DATA）
    职责：entry.html?t=<词条名> 语义化 URL 定位词条；
          渲染「← 返回」、板块分类、词条正文、「相关词条」区块
@@ -88,17 +88,17 @@
       '<div class="entry-missing">' +
       '<div class="wiki-empty-icon">∅</div>' +
       '<p>未找到该词条</p>' +
-      '<span>请返回知识图谱重新选择节点</span><br /><br />' +
+      '<span>请返回词条图谱重新选择节点</span><br /><br />' +
       '<a class="entry-back" href="index.html">← 返回图谱</a>' +
       '</div>';
-    document.title = '未找到词条 · 知识图谱 · Wiki · 悲歌';
+    document.title = '未找到词条 · 词条图谱 · Wiki · 悲歌';
   }
 
   function render(entry, term) {
     var root = document.getElementById('entryRoot');
     var crumb = document.getElementById('crumbTerm');
     if (crumb) crumb.textContent = entry.name;
-    document.title = entry.name + ' · ' + BOARD_TITLES[entry.boardId] + ' · 知识图谱 · Wiki · 悲歌';
+    document.title = entry.name + ' · ' + BOARD_TITLES[entry.boardId] + ' · 词条图谱 · Wiki · 悲歌';
 
     var related = resolveRelated(entry);
     var relatedHtml = '';

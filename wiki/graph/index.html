@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>知识图谱 · Wiki · 悲歌</title>
+  <title>词条图谱 · Wiki · 悲歌</title>
   <link rel="stylesheet" href="../wiki-base.css" />
   <link rel="stylesheet" href="graph.css" />
   <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
@@ -40,13 +40,13 @@
 
   <!-- ==================== 面包屑 ==================== -->
   <nav class="wiki-breadcrumb" aria-label="面包屑">
-    <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><span>知识图谱</span>
+    <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><span>词条图谱</span>
   </nav>
 
   <!-- ==================== Hero：标题 + 统计 ==================== -->
   <header class="wiki-hero">
     <div class="wiki-hero-badge">KNOWLEDGE GRAPH</div>
-    <h1 class="wiki-hero-title">知识图谱 <em>全库关联</em></h1>
+    <h1 class="wiki-hero-title">词条图谱 <em>全库关联</em></h1>
     <p class="wiki-hero-sub">11 个知识板块全部词条的力导向关联网 —— 节点按板块着色，连线表示显式关联与文本命中；拖拽节点 · 滚轮缩放 · 拖动画布平移，点击节点进入词条详情页。</p>
     <div class="wiki-stats">
       <div class="wiki-stat"><span>板块</span><b id="statBoard">0</b></div>
@@ -60,7 +60,7 @@
   <div class="graph-legend" id="graphLegend" aria-label="板块图例"></div>
 
   <!-- ==================== 图谱画布 ==================== -->
-  <section class="graph-wrap" id="graphWrap" aria-label="知识图谱画布">
+  <section class="graph-wrap" id="graphWrap" aria-label="词条图谱画布">
     <svg class="graph-svg" id="graphSvg" role="img" aria-label="全知识库关联图谱"></svg>
     <span class="graph-hint">拖动节点 · 滚轮缩放 · 空白拖动画布 · 点击节点看详情</span>
   </section>
