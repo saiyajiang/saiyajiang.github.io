@@ -7,6 +7,8 @@
    ============================================================ */
 window.MOVIE_DB = [
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "蜂巢",
     year: "2023",
     genre: "革命",
@@ -19,6 +21,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "战神",
     year: "2014",
     genre: "战争",
@@ -31,6 +35,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "剿匪英雄",
     year: "2014",
     genre: "战争",
@@ -43,6 +49,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "红色娘子军",
     year: "2005",
     genre: "革命",
@@ -55,6 +63,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "烈火战马",
     year: "2020",
     genre: "革命",
@@ -67,6 +77,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "女子特战队",
     year: "2016",
     genre: "革命",
@@ -79,6 +91,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "绝密任务",
     year: "2015",
     genre: "革命",
@@ -91,6 +105,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "山河同在",
     year: "2015",
     genre: "革命",
@@ -103,6 +119,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "冬日惊雷",
     year: "2012",
     genre: "革命",
@@ -115,6 +133,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "黑玫瑰之铁血女骑兵",
     year: "2012",
     genre: "战争",
@@ -127,6 +147,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "学生兵",
     year: "2017",
     genre: "革命",
@@ -139,6 +161,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "神枪之出生入死",
     year: "2013",
     genre: "战争",
@@ -151,6 +175,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "血色玫瑰",
     year: "2008",
     genre: "战争",
@@ -163,6 +189,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "血色玫瑰2之女子别动队",
     year: "2011",
     genre: "战争",
@@ -175,6 +203,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "铁血玫瑰",
     year: "2013",
     genre: "动作",
@@ -187,6 +217,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "红色追剿1949",
     year: "2015",
     genre: "战争",
@@ -199,6 +231,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "烽火英雄传",
     year: "2014",
     genre: "革命",
@@ -211,6 +245,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "枪火",
     year: "2014",
     genre: "战争",
@@ -223,6 +259,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "游击英雄",
     year: "2015",
     genre: "革命",
@@ -235,6 +273,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "红狐",
     year: "2013",
     genre: "战争",
@@ -247,6 +287,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "军刺",
     year: "2013",
     genre: "战争",
@@ -259,6 +301,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "我是传奇",
     year: "2011",
     genre: "革命",
@@ -271,6 +315,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "我要当八路",
     year: "2014",
     genre: "革命",
@@ -283,6 +329,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "战地狮吼",
     year: "2013",
     genre: "战争",
@@ -295,6 +343,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "兄弟们上",
     year: "2014",
     genre: "战争",
@@ -307,6 +357,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "女子奇袭队",
     year: "2015",
     genre: "革命",
@@ -319,6 +371,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "兵临村下",
     year: "2013",
     genre: "战争",
@@ -331,6 +385,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "铁血使命",
     year: "2011",
     genre: "战争",
@@ -343,6 +399,8 @@ window.MOVIE_DB = [
     note: ""
   },
   {
+    category: "不推荐",
+    reason: "无逻辑无常识",
     name: "雪鹰出击",
     year: "2014",
     genre: "战争",

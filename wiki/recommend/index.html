@@ -65,13 +65,33 @@
     <div class="wiki-chips" id="typeChips"></div>
   </div>
 
-  <!-- ==================== 记录列表 ==================== -->
-  <main id="recGrid" class="rec-grid" aria-live="polite"></main>
-  <div id="emptyState" class="wiki-empty" hidden>
-    <div class="wiki-empty-icon">∅</div>
-    <p id="emptyTitle">暂无记录</p>
-    <span id="emptyDesc">调整筛选或关键词后再试</span>
-  </div>
+  <!-- ==================== 推荐 / 不推荐 分区列表 ==================== -->
+  <main aria-live="polite">
+    <section class="rec-section" id="recSection">
+      <header class="rec-section-head">
+        <h2 class="rec-section-title">推荐</h2>
+        <span class="rec-section-count" id="recCount">0</span>
+      </header>
+      <div id="recGrid" class="rec-grid"></div>
+      <div id="recEmpty" class="rec-section-empty" hidden>
+        <div class="rec-section-empty-icon">∅</div>
+        <p>暂无推荐内容</p>
+        <span>调整筛选或关键词后再试</span>
+      </div>
+    </section>
+    <section class="rec-section" id="notRecSection">
+      <header class="rec-section-head">
+        <h2 class="rec-section-title">不推荐</h2>
+        <span class="rec-section-count" id="notRecCount">0</span>
+      </header>
+      <div id="notRecGrid" class="rec-grid"></div>
+      <div id="notRecEmpty" class="rec-section-empty" hidden>
+        <div class="rec-section-empty-icon">∅</div>
+        <p>暂无不推荐内容</p>
+        <span>调整筛选或关键词后再试</span>
+      </div>
+    </section>
+  </main>
 
 </main>
 

@@ -228,3 +228,219 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ============ 推荐 / 不推荐 分区 ============ */
+.rec-section {
+  margin-top: 22px;
+}
+.rec-section:first-child {
+  margin-top: 16px;
+}
+.rec-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.rec-section-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+#recSection .rec-section-title {
+  color: var(--wiki-accent-2);
+}
+#notRecSection .rec-section-title {
+  color: var(--wiki-accent);
+}
+.rec-section-count {
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+}
+.rec-section-empty {
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg-1);
+  padding: 36px 20px;
+  text-align: center;
+  color: var(--text-2);
+}
+.rec-section-empty-icon {
+  font-size: 26px;
+  line-height: 1;
+  color: var(--text-2);
+  opacity: 0.7;
+}
+.rec-section-empty p {
+  margin: 8px 0 4px;
+  font-size: 14px;
+  color: var(--text-1);
+}
+.rec-section-empty span {
+  font-size: 12px;
+}
+
+/* 卡片可点击 */
+.movie-card,
+.rec-card {
+  cursor: pointer;
+}
+
+/* 影视卡正面：不推荐原因 */
+.movie-reason {
+  margin-top: 2px;
+  padding: 4px 8px;
+  border-left: 3px solid var(--wiki-accent);
+  border-radius: 0 6px 6px 0;
+  background: rgba(var(--wiki-accent-rgb), 0.10);
+  font-size: 12px;
+  color: var(--text-0);
+  line-height: 1.6;
+}
+.movie-reason .k {
+  font-weight: 700;
+  color: var(--wiki-accent);
+  margin-right: 5px;
+}
+
+/* ============ 详情弹层 ============ */
+.rec-modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.rec-modal {
+  position: relative;
+  background: var(--bg-1);
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  max-width: 640px;
+  width: 100%;
+  max-height: 84vh;
+  overflow-y: auto;
+  padding: 22px 24px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+  animation: recModalIn 0.22s ease;
+}
+@keyframes recModalIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.rec-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--text-1);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.18s, color 0.18s;
+}
+.rec-modal-close:hover {
+  border-color: var(--line-strong);
+  color: var(--text-0);
+}
+.rec-modal-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-right: 34px;
+}
+.rec-modal-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-0);
+  margin: 0;
+  line-height: 1.4;
+  word-break: break-all;
+}
+.rec-modal-content {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+.rec-modal-media {
+  flex-shrink: 0;
+}
+.rec-modal-poster {
+  width: 180px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+}
+.rec-modal-info {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+.rec-modal-row {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-1);
+  word-break: break-all;
+}
+.rec-modal-row .k {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  min-width: 64px;
+}
+.rec-modal-reason {
+  padding: 8px 12px;
+  border-left: 3px solid var(--wiki-accent);
+  border-radius: 0 8px 8px 0;
+  background: rgba(var(--wiki-accent-rgb), 0.10);
+  font-size: 13px;
+  color: var(--text-0);
+  line-height: 1.7;
+}
+.rec-modal-reason .k {
+  font-weight: 700;
+  color: var(--wiki-accent);
+  margin-right: 8px;
+}
+.rec-modal-link {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--wiki-accent-2);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(var(--wiki-accent-2-rgb), 0.5);
+}
+.rec-modal-link:hover {
+  color: var(--wiki-accent);
+}
+.rec-modal-open {
+  overflow: hidden;
+}
+@media (max-width: 520px) {
+  .rec-modal-content {
+    flex-direction: column;
+  }
+  .rec-modal-poster {
+    width: 100%;
+  }
+}
