@@ -319,6 +319,11 @@ body {
   justify-content: center;
   padding: 20px;
 }
+/* hidden 属性（JS closeModal/openModal 通过它控制显隐）必须优先生效，
+   否则 display:flex 会覆盖 UA 样式 display:none 导致弹层无法关闭 */
+.rec-modal-mask[hidden] {
+  display: none;
+}
 .rec-modal {
   position: relative;
   background: var(--bg-1);
