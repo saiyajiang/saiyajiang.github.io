@@ -1,7 +1,8 @@
 /* ============================================================
    推荐与不推荐板块逻辑 — recommend.js
-   依赖：wiki/db/data/recommend.js（window.RECOMMEND_DB）
-   职责：记录卡片渲染、按类型筛选、关键词搜索、统计展示
+   数据：data/movies.js（window.MOVIE_DB，影视海报墙）
+        data/texts.js（window.TEXT_DB，UP主 / 广告媒体文字卡片）
+   职责：海报墙卡片 / 文字卡片渲染、类型筛选、关键词搜索、统计展示
    ============================================================ */
 (function () {
   'use strict';
@@ -13,30 +14,49 @@
   }
 
   /* ---------- 数据扁平化 ---------- */
-  var records = [];   // {cat, type, name, 主演, 编剧, 导演, 出品公司, 其他片名, UID, reason, date}
+  var records = [];   // {kind, type, name, year, genre, episodes, director, actors, intro, poster, uid, reason, date, note}
   var typeSet = {};
 
-  (window.RECOMMEND_DB || []).forEach(function (board) {
-    (board.categories || []).forEach(function (c) {
-      (c.items || []).forEach(function (it) {
-        var r = {
-          cat: c.name,
-          type: it['类型'] || '',
-          name: it['名称'] || '',
-          actors: it['主演'] || '',
-          writer: it['编剧'] || '',
-          director: it['导演'] || '',
-          company: it['出品公司'] || '',
-          alias: it['其他片名'] || '',
-          uid: it['UID'] || '',
-          reason: it['不推荐原因'] || it['推荐理由'] || '',
-          date: it['日期'] || ''
-        };
-        records.push(r);
-        if (r.type) typeSet[r.type] = true;
-      });
+  (window.MOVIE_DB || []).forEach(function (m) {
+    records.push({
+      kind: 'movie',
+      type: '电视剧',
+      name: m.name || '',
+      year: m.year || '',
+      genre: m.genre || '',
+      episodes: m.episodes || '',
+      director: (m.director || []).join('、'),
+      actors: (m.actors || []).join('、'),
+      intro: m.intro || '',
+      poster: m.poster || '',
+      uid: '',
+      reason: '无逻辑无常识',
+      date: m.year ? m.year : '',
+      note: m.note || '',
+      tvmao_url: m.tvmao_url || ''
     });
   });
+  (window.TEXT_DB || []).forEach(function (t) {
+    records.push({
+      kind: 'text',
+      type: t.type || '',
+      name: t.name || '',
+      year: '',
+      genre: '',
+      episodes: '',
+      director: '',
+      actors: '',
+      intro: '',
+      poster: '',
+      uid: t.uid || '',
+      reason: t.reason || '',
+      date: t.date || '',
+      note: '',
+      tvmao_url: ''
+    });
+  });
+
+  records.forEach(function (r) { if (r.type) typeSet[r.type] = true; });
 
   var state = { query: '', type: '全部' };
 
@@ -45,17 +65,17 @@
     chips: document.getElementById('typeChips'),
     grid: document.getElementById('recGrid'),
     empty: document.getElementById('emptyState'),
-    statRec: document.getElementById('statRec'),
-    statAvoid: document.getElementById('statAvoid'),
+    statMovie: document.getElementById('statMovie'),
+    statText: document.getElementById('statText'),
     statTotal: document.getElementById('statTotal')
   };
 
   /* ---------- 统计 ---------- */
   function renderStats() {
-    var rec = records.filter(function (r) { return r.cat === '推荐'; }).length;
-    var avoid = records.length - rec;
-    if (el.statRec) el.statRec.textContent = rec;
-    if (el.statAvoid) el.statAvoid.textContent = avoid;
+    var movie = records.filter(function (r) { return r.kind === 'movie'; }).length;
+    var text = records.length - movie;
+    if (el.statMovie) el.statMovie.textContent = movie;
+    if (el.statText) el.statText.textContent = text;
     if (el.statTotal) el.statTotal.textContent = records.length;
   }
 
@@ -85,13 +105,78 @@
     return records.filter(function (r) {
       if (state.type !== '全部' && r.type !== state.type) return false;
       if (!q) return true;
-      var hay = (r.cat + ' ' + r.type + ' ' + r.name + ' ' + r.actors + ' ' + r.writer + ' ' +
-        r.director + ' ' + r.company + ' ' + r.alias + ' ' + r.uid + ' ' + r.reason + ' ' + r.date).toLowerCase();
+      var hay = (r.type + ' ' + r.name + ' ' + r.year + ' ' + r.genre + ' ' + r.episodes + ' ' +
+        r.director + ' ' + r.actors + ' ' + r.intro + ' ' + r.uid + ' ' + r.reason + ' ' + r.date + ' ' + r.note).toLowerCase();
       return hay.indexOf(q) !== -1;
     });
   }
 
-  /* ---------- 渲染卡片 ---------- */
+  /* ---------- 影视海报墙卡片 ---------- */
+  function movieCard(r) {
+    var card = document.createElement('div');
+    card.className = 'movie-card';
+
+    var meta = [];
+    if (r.year) meta.push(esc(r.year));
+    if (r.genre) meta.push(esc(r.genre));
+    if (r.episodes) meta.push(esc(r.episodes) + '集');
+    var metaHtml = meta.length ? '<div class="movie-meta">' + meta.join('<span class="dot">·</span>') + '</div>' : '';
+
+    var dirHtml = r.director ? '<div class="movie-line"><span class="k">导演</span>' + esc(r.director) + '</div>' : '';
+    var actHtml = r.actors ? '<div class="movie-line"><span class="k">主演</span>' + esc(r.actors) + '</div>' : '';
+
+    var noteHtml = '';
+    if (r.note) {
+      noteHtml = '<div class="movie-note">' + esc(r.note) + '</div>';
+    }
+
+    var introHtml = r.intro ? '<div class="movie-intro">' + esc(r.intro) + '</div>' : '';
+
+    var src = r.poster || '';
+    var imgHtml = src
+      ? '<img class="movie-poster" src="' + esc(src) + '" alt="' + esc(r.name) + '" loading="lazy" onerror="this.style.visibility=\'hidden\';" />'
+      : '<div class="movie-poster movie-poster-empty">' + esc(r.name) + '</div>';
+
+    card.innerHTML =
+      '<div class="movie-card-inner">' +
+      '<div class="movie-media">' + imgHtml + '</div>' +
+      '<div class="movie-body">' +
+      '<div class="movie-title">' + esc(r.name) + '</div>' +
+      metaHtml +
+      dirHtml +
+      actHtml +
+      noteHtml +
+      introHtml +
+      '</div>' +
+      '</div>';
+    return card;
+  }
+
+  /* ---------- 文字卡片 ---------- */
+  function textCard(r) {
+    var card = document.createElement('div');
+    card.className = 'rec-card';
+
+    var fields = '';
+    if (r.uid) {
+      fields += '<div class="rec-field"><span class="k">UID</span><span class="v">' + esc(r.uid) + '</span></div>';
+    }
+    var reasonHtml = r.reason
+      ? '<div class="rec-reason"><span class="k">不推荐原因</span>' + esc(r.reason) + '</div>'
+      : '';
+
+    card.innerHTML =
+      '<div class="rec-card-top">' +
+      '<span class="rec-name">' + esc(r.name) + '</span>' +
+      (r.type ? '<span class="rec-type">' + esc(r.type) + '</span>' : '') +
+      '</div>' +
+      (fields ? '<div class="rec-fields">' + fields + '</div>' : '') +
+      reasonHtml +
+      (r.date ? '<div class="rec-date">' + esc(r.date) + '</div>' : '');
+    return card;
+  }
+
+  /* ---------- 渲染列表 ---------- */
   function renderList() {
     if (!el.grid) return;
     var list = filtered();
@@ -102,35 +187,8 @@
     }
     el.grid.innerHTML = '';
     list.forEach(function (r, i) {
-      var card = document.createElement('div');
-      card.className = 'rec-card';
-      card.style.animationDelay = Math.min(i * 0.03, 0.4) + 's';
-
-      var fields = '';
-      var pairs = [
-        ['主演', r.actors], ['编剧', r.writer], ['导演', r.director],
-        ['出品公司', r.company], ['其他片名', r.alias], ['UID', r.uid]
-      ];
-      pairs.forEach(function (p) {
-        if (!p[1]) return;
-        fields += '<div class="rec-field"><span class="k">' + esc(p[0]) + '</span><span class="v">' + esc(p[1]) + '</span></div>';
-      });
-
-      var reasonHtml = '';
-      if (r.cat === '不推荐' && r.reason) {
-        reasonHtml = '<div class="rec-reason"><span class="k">不推荐原因</span>' + esc(r.reason) + '</div>';
-      } else if (r.reason) {
-        reasonHtml = '<div class="rec-reason"><span class="k">推荐理由</span>' + esc(r.reason) + '</div>';
-      }
-
-      card.innerHTML =
-        '<div class="rec-card-top">' +
-        '<span class="rec-name">' + esc(r.name) + '</span>' +
-        (r.type ? '<span class="rec-type">' + esc(r.type) + '</span>' : '') +
-        '</div>' +
-        (fields ? '<div class="rec-fields">' + fields + '</div>' : '') +
-        reasonHtml +
-        (r.date ? '<div class="rec-date">' + esc(r.date) + '</div>' : '');
+      var card = r.kind === 'movie' ? movieCard(r) : textCard(r);
+      card.style.animationDelay = Math.min(i * 0.02, 0.4) + 's';
       el.grid.appendChild(card);
     });
   }

@@ -46,11 +46,11 @@
   <!-- ==================== Hero：标题 + 统计 ==================== -->
   <header class="wiki-hero">
     <div class="wiki-hero-badge">RECOMMEND &amp; AVOID</div>
-    <h1 class="wiki-hero-title">推荐与不推荐 <em>避坑清单</em></h1>
-    <p class="wiki-hero-sub">影视剧 / UP主 / 广告媒体等记录 —— 不推荐条目均附「不推荐原因」，按类型筛选或关键词搜索快速定位。</p>
+    <h1 class="wiki-hero-title">推荐与不推荐 <em>影视避坑墙</em></h1>
+    <p class="wiki-hero-sub">不推荐电视剧影视海报墙（信息采自电视猫 tvmao 与联网搜索兜底，禁用 TMDB API 与百度百科）；UP主 / 广告媒体保留文字卡片。</p>
     <div class="wiki-stats">
-      <div class="wiki-stat"><span>推荐</span><b id="statRec">0</b></div>
-      <div class="wiki-stat"><span>不推荐</span><b id="statAvoid">0</b></div>
+      <div class="wiki-stat"><span>影视海报</span><b id="statMovie">0</b></div>
+      <div class="wiki-stat"><span>UP主与媒体</span><b id="statText">0</b></div>
       <div class="wiki-stat"><span>共记录</span><b id="statTotal">0</b></div>
     </div>
   </header>
@@ -85,8 +85,9 @@
   <a href="index.html" class="active">推荐与不推荐</a>
 </nav>
 
-<!-- 数据：推荐与不推荐独立数据源 -->
-<script src="../db/data/recommend.js"></script>
+<!-- 数据：影视海报墙 + 文字卡片独立数据源（页面自包含，不依赖 db 数据） -->
+<script src="data/movies.js"></script>
+<script src="data/texts.js"></script>
 <!-- 列表逻辑 -->
 <script src="recommend.js"></script>
 <script>
