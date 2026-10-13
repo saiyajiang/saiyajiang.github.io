@@ -50,7 +50,10 @@
       var loc = r.location
         ? '<p class="mc-card-loc">位置：' + esc(r.location) + '</p>'
         : '';
-      return '' +
+      var open = r.detail
+        ? '<span class="mc-card-open">查看详情 ↗</span>'
+        : '';
+      var card = '' +
         '<article class="mc-card">' +
         img +
         '<div class="mc-card-body">' +
@@ -59,9 +62,14 @@
         achv +
         loc +
         (r.desc ? '<p class="mc-card-desc">' + esc(r.desc) + '</p>' : '') +
+        open +
         (r.date ? '<p class="mc-card-date">' + esc(r.date) + '</p>' : '') +
         '</div>' +
         '</article>';
+      if (r.detail) {
+        card = '<a class="mc-card-link" href="' + esc(r.detail) + '" target="_blank" rel="noopener">' + card + '</a>';
+      }
+      return card;
     }).join('');
   }
 

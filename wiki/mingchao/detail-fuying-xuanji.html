@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>缚影璇玑位置 · 哎！哎！生气了？ · 鸣潮 Wiki · 悲歌</title>
+  <link rel="stylesheet" href="../wiki-base.css" />
+  <link rel="stylesheet" href="mingchao.css" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+</head>
+<body>
+
+<!-- ==================== 站点统一导航 ==================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    <nav class="nav-menu" id="navMenu">
+      <a href="../../index.html">~/blog</a>
+      <a href="../../archive.html">~/archive</a>
+      <a href="../index.html">~/wiki</a>
+      <a href="../../about.html">~/about</a>
+      <a href="../../quotes.html">~/quotes</a>
+      <a href="../../changelog.html">~/changelog</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">&#9788;</button>
+  </div>
+</header>
+
+<!-- ==================== Wiki 子板块导航 ==================== -->
+<nav class="wiki-subnav" aria-label="Wiki 子板块导航">
+  <a href="../index.html">门户</a>
+  <a href="../taiwu/index.html">太吾绘卷</a>
+  <a href="index.html" class="active">鸣潮</a>
+  <a href="../db/index.html">数据库 · 知识库</a>
+  <a href="../graph/index.html">图谱 <span class="subnav-count">含短句</span></a>
+  <a href="../recommend/index.html">推荐与不推荐</a>
+</nav>
+
+<main class="wiki-main">
+
+  <!-- ==================== 面包屑 ==================== -->
+  <nav class="wiki-breadcrumb" aria-label="面包屑">
+    <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><a href="index.html">鸣潮</a><span class="crumb-sep">/</span><span>缚影璇玑位置</span>
+  </nav>
+
+  <!-- ==================== 条目 Hero ==================== -->
+  <header class="wiki-hero">
+    <div class="wiki-hero-badge">成就 · 探索点位</div>
+    <h1 class="wiki-hero-title">缚影璇玑位置</h1>
+    <p class="wiki-hero-sub">成就「哎！哎！生气了？」所需攻击目标 · 心相迷宫东侧</p>
+  </header>
+
+  <div class="wiki-desc">心相迷宫区域东侧（与烬心域交界处）· 黄色三角标记 · 白色平台建筑旁</div>
+
+  <!-- ==================== 大图 ==================== -->
+  <figure class="mc-detail-figure">
+    <img class="mc-detail-img" src="img/缚影璇玑位置-心相迷宫.webp" alt="缚影璇玑位置截图：心相迷宫东侧红色箭头指向黄色三角标记" loading="lazy" />
+    <figcaption class="mc-detail-caption">位置截图：红色箭头指向的黄色三角标记即为缚影璇玑所在处（紧邻白色平台建筑，附近地名为烬心域）</figcaption>
+  </figure>
+
+  <!-- ==================== 信息区块 ==================== -->
+  <section class="mc-detail-info">
+    <h2 class="mc-detail-heading">成就信息</h2>
+    <dl class="mc-detail-list">
+      <div class="mc-detail-row"><dt>成就名称</dt><dd>哎！哎！生气了？</dd></div>
+      <div class="mc-detail-row"><dt>条目</dt><dd>缚影璇玑位置</dd></div>
+      <div class="mc-detail-row"><dt>位置说明</dt><dd>缚影璇玑位于心相迷宫区域东侧、与烬心域交界处。截图红色箭头指向的黄色三角标记处，紧邻一座白色平台建筑。</dd></div>
+      <div class="mc-detail-row"><dt>获取方式</dt><dd>攻击缚影璇玑（心相迷宫东侧三角标记处）</dd></div>
+      <div class="mc-detail-row"><dt>操作提示</dt><dd>传送到心相迷宫区域后向东侧（烬心域方向）移动，在白色平台建筑旁的黄色三角标记处即可找到缚影璇玑，直接攻击即可触发成就进度。</dd></div>
+      <div class="mc-detail-row"><dt>收录日期</dt><dd>2026-10-12</dd></div>
+    </dl>
+  </section>
+
+  <!-- ==================== 返回 ==================== -->
+  <p class="mc-detail-back"><a href="index.html">← 返回鸣潮 Wiki</a></p>
+</main>
+
+<!-- ==================== 底部 Dock ==================== -->
+<nav class="wiki-dock" id="mcDock" aria-label="分类快捷导航">
+  <button>共鸣者</button>
+  <button>武器</button>
+  <button>声骸</button>
+  <button class="active">探索 · 地图</button>
+  <button>攻略 · 百科</button>
+</nav>
+
+<script>
+  // 站点统一 Header 交互：移动端菜单 + 主题切换
+  (function () {
+    var menuBtn = document.getElementById('menuToggle');
+    var navMenu = document.getElementById('navMenu');
+    if (menuBtn && navMenu) {
+      menuBtn.addEventListener('click', function () {
+        navMenu.classList.toggle('open');
+      });
+    }
+    var themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function () {
+        var root = document.documentElement;
+        root.setAttribute('data-theme', root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+      });
+    }
+  })();
+</script>
+</body>
+</html>
