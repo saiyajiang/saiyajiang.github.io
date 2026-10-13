@@ -1,6 +1,8 @@
 /* ============================================================
-   鸣潮 Wuthering Waves 板块 — 占位交互脚本（无数据）
-   框架阶段：分类 Tab 切换 + 占位文案联动，后续数据接入后扩展
+   鸣潮 Wuthering Waves 板块 — 交互脚本
+   分类 Tab 切换 + 占位文案联动；
+   「探索 · 地图」分类渲染 data/mc-data.js 中的真实条目
+   （成就位置 / 收集点位），其余分类暂为占位。
    ============================================================ */
 (function () {
   'use strict';
@@ -13,12 +15,21 @@
     '攻略': { title: '攻略 · 百科 · 建设中', desc: '养成指南、活动攻略等内容将在此呈现。' }
   };
 
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   var grid = document.getElementById('mcGrid');
   var chips = document.querySelectorAll('.wiki-tabs .chip');
   var dockBtns = document.querySelectorAll('.wiki-dock button');
   var catCount = document.getElementById('mcCatCount');
 
-  function render(cat) {
+  var DATA = window.MC_DATA || {};
+  var totalItems = Object.keys(DATA).reduce(function (n, k) { return n + DATA[k].length; }, 0);
+
+  function renderPlaceholder(cat) {
     var p = PLACEHOLDER[cat] || PLACEHOLDER['共鸣者'];
     grid.innerHTML =
       '<div class="mc-placeholder">' +
@@ -26,6 +37,41 @@
       '<p class="mc-placeholder-title">' + p.title + '</p>' +
       '<p class="mc-placeholder-desc">' + p.desc + '</p>' +
       '</div>';
+  }
+
+  function renderCards(items) {
+    grid.innerHTML = items.map(function (r) {
+      var img = r.img
+        ? '<div class="mc-card-media"><img src="' + esc(r.img) + '" alt="' + esc(r.title || r.name) + '" loading="lazy" /></div>'
+        : '';
+      var achv = r.name
+        ? '<p class="mc-card-achv">成就：' + esc(r.name) + '</p>'
+        : '';
+      var loc = r.location
+        ? '<p class="mc-card-loc">位置：' + esc(r.location) + '</p>'
+        : '';
+      return '' +
+        '<article class="mc-card">' +
+        img +
+        '<div class="mc-card-body">' +
+        (r.cat ? '<span class="mc-card-cat">' + esc(r.cat) + '</span>' : '') +
+        '<h3 class="mc-card-title">' + esc(r.title || r.name) + '</h3>' +
+        achv +
+        loc +
+        (r.desc ? '<p class="mc-card-desc">' + esc(r.desc) + '</p>' : '') +
+        (r.date ? '<p class="mc-card-date">' + esc(r.date) + '</p>' : '') +
+        '</div>' +
+        '</article>';
+    }).join('');
+  }
+
+  function render(cat) {
+    var items = DATA[cat];
+    if (items && items.length) {
+      renderCards(items);
+    } else {
+      renderPlaceholder(cat);
+    }
     chips.forEach(function (c) {
       c.classList.toggle('active', c.getAttribute('data-cat') === cat);
     });
@@ -46,5 +92,14 @@
     });
   });
 
-  render('共鸣者');
+  if (totalItems > 0) {
+    var statTotal = document.querySelector('.wiki-stats .wiki-stat:last-child b');
+    if (statTotal) statTotal.textContent = totalItems;
+    var statBoard = document.querySelector('.wiki-stats .wiki-stat:first-child b');
+    if (statBoard) statBoard.textContent = Object.keys(DATA).length;
+    var desc = document.querySelector('.wiki-desc');
+    if (desc) desc.textContent = '成就位置 / 探索点位数据已接入 · 其余板块建设中';
+  }
+
+  render('探索');
 })();

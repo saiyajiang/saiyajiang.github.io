@@ -49,3 +49,75 @@ body {
   --text-1: #3a556f;
   --text-2: #5d7692;
 }
+
+/* ---------- 成就 / 收集条目卡片 ---------- */
+.mc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(170deg, rgba(26, 44, 77, 0.55), rgba(12, 21, 36, 0.85));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+[data-theme="light"] .mc-card {
+  background: linear-gradient(170deg, rgba(204, 219, 233, 0.55), rgba(224, 233, 242, 0.85));
+}
+
+.mc-card-media {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.mc-card-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
+  background: var(--bg-0);
+}
+
+.mc-card-cat {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--bg-0);
+  background: var(--wiki-accent-2);
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+.mc-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-0);
+}
+
+.mc-card-achv {
+  font-size: 13px;
+  color: var(--wiki-accent);
+}
+
+.mc-card-loc {
+  font-size: 13px;
+  color: var(--wiki-accent-2);
+}
+
+.mc-card-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-1);
+}
+
+.mc-card-date {
+  font-size: 12px;
+  color: var(--text-2);
+}
