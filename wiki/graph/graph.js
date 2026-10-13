@@ -98,25 +98,76 @@
     });
   });
 
-  // 相关条目：links 显式指定优先，未指定则文本包含词条名自动关联（全库范围）
-  function resolveRelated(e) {
-    var seen = {};
-    var list = [];
-    function add(t) {
-      if (!t || t === e || seen[t.name]) return;
-      seen[t.name] = true;
-      list.push(t);
+  /* ---------- 主题节点：词条间不再直连，改由共同主题节点中转 ----------
+     规则：词条↔词条 的边全部移除；词条只连到其所属主题节点——
+     · 多个词条都与佛教有关 → 各自连到「佛教」节点
+     · 多个词条都与某个作品有关 → 各自连到该作品节点（不在图谱中则新增）
+     · 其余无佛教/作品归属的词条 → 连到板块兜底主题，避免孤立
+     主题节点名称/描述为新增信息，原词条节点字段（名称/描述/链接）一律不动 */
+  var THEME_COLOR = '#b07cf0';
+  // 主题定义与词条详情页（entry.js）共享，见 themes.js
+  var THEMES = window.WIKI_THEMES || [];
+
+  // 构建主题条目（boardId 用独立值 'theme'，节点信息为新增，不动原词条）
+  // 若主题名与已有词条同名（如作品「景德传灯录」本身即词条），复用该词条节点，避免重复
+  var themeByName = {};
+  THEMES.forEach(function (th) {
+    var existing = null;
+    entries.forEach(function (e) {
+      if (e.boardId !== 'theme' && e.name === th.name) existing = e;
+    });
+    if (existing) {
+      themeByName[th.name] = existing;
+      return;
     }
-    (e.links || []).forEach(function (kw) {
-      entries.forEach(function (t) { if (nameMatches(t.name, kw)) add(t); });
+    var te = {
+      boardId: 'theme',
+      name: th.name,
+      core: coreNameOf(th.name),
+      text: th.desc || '',
+      links: []
+    };
+    entries.push(te);
+    themeByName[th.name] = te;
+  });
+
+  // 词条 → 所属主题归属：
+  //  ① 先收集精确命中主题（词条名 === 成员名，或去英文核心名相等）
+  //  ② 若存在精确命中 → 只返回精确命中的主题（避免包含误连，如「铜过量与精神疾病」不再因含「疾病」二字连取名礼俗）
+  //  ③ 若完全无精确命中（典型为 phrases 长句条目）→ 退回宽松 nameMatches 兜底，保证长句能归入对应作品主题
+  function themesOf(e) {
+    var themes = THEMES;
+    var exact = [];
+    var ecore = coreNameOf(e.name);
+    themes.forEach(function (th) {
+      var hit = (th.members || []).some(function (m) {
+        return m && (e.name === m || (ecore && coreNameOf(m) && ecore === coreNameOf(m)));
+      });
+      if (hit) exact.push(th);
     });
-    entries.forEach(function (t) {
-      if (t === e) return;
-      if (textHits(e.text, t)) add(t);
+    if (exact.length) return exact;
+    var out = [];
+    themes.forEach(function (th) {
+      var hit = (th.members || []).some(function (m) { return nameMatches(e.name, m); });
+      if (hit) out.push(th);
     });
-    return list;
+    return out;
   }
-  entries.forEach(function (e) { e.related = resolveRelated(e); });
+
+  entries.forEach(function (e) {
+    if (e.boardId === 'theme') return;
+    e.related = themesOf(e).map(function (th) { return themeByName[th.name]; });
+  });
+  // 主题 → 成员词条（用于聚焦时环绕展示；复用词条作为作品主题时不覆盖其自身词条关联）
+  THEMES.forEach(function (th) {
+    var te = themeByName[th.name];
+    te.related = te.related || [];
+    entries.forEach(function (e) {
+      if (e.boardId === 'theme') return;
+      var inTheme = themesOf(e).some(function (t) { return t.name === th.name; });
+      if (inTheme && te.related.indexOf(e) === -1) te.related.push(e);
+    });
+  });
 
   var entriesByBoard = {};
   entries.forEach(function (e) {
@@ -137,6 +188,15 @@
         '<b>' + b.count + ' 条</b>';
       legend.appendChild(item);
     });
+    if (THEMES.length) {
+      var tItem = document.createElement('div');
+      tItem.className = 'graph-legend-item';
+      tItem.innerHTML =
+        '<span class="graph-legend-swatch" style="background:' + THEME_COLOR + '"></span>' +
+        '<span>主题节点（佛教/作品/板块）</span>' +
+        '<b>' + THEMES.length + ' 个</b>';
+      legend.appendChild(tItem);
+    }
   }
 
   /* ---------- 图谱渲染：纯 SVG 力导向（复用 db.js renderGraph 思路） ---------- */
@@ -253,13 +313,16 @@
           n.g.appendChild(t);
           gMain.appendChild(n.g);
         }
-        var color = BOARD_COLORS[n.e.boardId] || '#b07cf0';
+        var color = n.e.boardId === 'theme' ? THEME_COLOR : (BOARD_COLORS[n.e.boardId] || '#b07cf0');
+        var isTheme = n.e.boardId === 'theme';
         var w = Math.max(72, n.dispName.length * 12 + 30);
         n._w = w;
         n.rect.setAttribute('x', -w / 2); n.rect.setAttribute('y', -17);
         n.rect.setAttribute('width', w); n.rect.setAttribute('height', 34);
+        n.rect.setAttribute('rx', isTheme ? 17 : 8); n.rect.setAttribute('ry', isTheme ? 17 : 8);
         n.rect.setAttribute('fill', 'rgba(' + hexToRgb(color) + ', 0.13)');
         n.rect.setAttribute('stroke', color);
+        n.rect.setAttribute('stroke-dasharray', isTheme ? '6 3' : '');
         n.g.setAttribute('transform', 'translate(' + n.x + ',' + n.y + ')');
         var t = n.g.querySelector('text');
         t.setAttribute('x', 0); t.setAttribute('y', 5);
@@ -426,8 +489,13 @@
       if (!linkA) buildDetailLink();
       linkA.style.display = '';
       linkA.setAttribute('transform', 'translate(' + plan.root.x + ',' + (plan.root.y + 30) + ')');
-      linkA.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
-        'entry.html?t=' + encodeURIComponent(name));
+      if (byName[name] && byName[name].e.boardId === 'theme') {
+        // 主题节点无独立词条详情页：仅高亮其成员，隐藏「详情 ↗」入口
+        linkA.style.display = 'none';
+      } else {
+        linkA.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
+          'entry.html?t=' + encodeURIComponent(name));
+      }
       if (!exitBtn) buildExitBtn();
       exitBtn.style.display = '';
       applyFocusVisibility();
@@ -551,7 +619,7 @@
   function init() {
     renderLegend();
     setText('statBoard', boards.length);
-    setText('statNode', entries.length);
+    setText('statNode', entries.filter(function (e) { return e.boardId !== 'theme'; }).length);
     setText('statPhrase', (entriesByBoard.phrases || []).length);
     renderGraph();
   }

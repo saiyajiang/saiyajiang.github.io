@@ -47,7 +47,7 @@
   <header class="wiki-hero">
     <div class="wiki-hero-badge">KNOWLEDGE GRAPH</div>
     <h1 class="wiki-hero-title">词条图谱 <em>全库关联</em></h1>
-    <p class="wiki-hero-sub">11 个知识板块全部词条的力导向关联网 —— 节点按板块着色，连线表示显式关联与文本命中；拖拽节点 · 滚轮缩放 · 拖动画布平移，点击节点进入词条详情页。</p>
+    <p class="wiki-hero-sub">11 个知识板块全部词条的力导向关联网 —— 词条不再直接相连，凡同属佛教或同一作品的主题词条，经主题节点（紫色胶囊）间接关联；节点按板块着色，点击节点查看主题成员或词条详情页。</p>
     <div class="wiki-stats">
       <div class="wiki-stat"><span>板块</span><b id="statBoard">0</b></div>
       <div class="wiki-stat"><span>词条节点</span><b id="statNode">0</b></div>
@@ -79,6 +79,8 @@
 
 <!-- 数据：全知识库单一数据源（与 db 板块共用） -->
 <script src="../db/data/knowledge.js"></script>
+<!-- 主题节点映射（图谱 edges 与详情页共享） -->
+<script src="themes.js"></script>
 <!-- 图谱逻辑 -->
 <script src="graph.js"></script>
 <script>

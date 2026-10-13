@@ -63,20 +63,39 @@
     });
   });
 
-  function resolveRelated(e) {
-    var seen = {};
-    var list = [];
-    function add(t) {
-      if (!t || t === e || seen[t.name]) return;
-      seen[t.name] = true;
-      list.push(t);
-    }
-    (e.links || []).forEach(function (kw) {
-      entries.forEach(function (t) { if (nameMatches(t.name, kw)) add(t); });
+  // 词条 → 所属主题归属（与 graph.js 同款算法）：
+  //  ① 先收集精确命中主题（词条名 === 成员名，或去英文核心名相等）
+  //  ② 若存在精确命中 → 只返回精确命中的主题（避免包含误连，如「铜过量与精神疾病」不再因含「疾病」二字连取名礼俗）
+  //  ③ 若完全无精确命中（典型为 phrases 长句条目）→ 退回宽松 nameMatches 兜底，保证长句能归入对应作品主题
+  function themesOf(e) {
+    var themes = window.WIKI_THEMES || [];
+    var exact = [];
+    var ecore = coreNameOf(e.name);
+    themes.forEach(function (th) {
+      var hit = (th.members || []).some(function (m) {
+        return m && (e.name === m || (ecore && coreNameOf(m) && ecore === coreNameOf(m)));
+      });
+      if (hit) exact.push(th);
     });
+    if (exact.length) return exact;
+    var out = [];
+    themes.forEach(function (th) {
+      var hit = (th.members || []).some(function (m) { return nameMatches(e.name, m); });
+      if (hit) out.push(th);
+    });
+    return out;
+  }
+
+  function resolveThemes(e) {
+    return themesOf(e);
+  }
+
+  // 同主题其它词条（不含当前词条）
+  function themeSiblings(e, theme) {
+    var list = [];
     entries.forEach(function (t) {
       if (t === e) return;
-      if (textHits(e.text, t)) add(t);
+      if (themesOf(t).some(function (x) { return x.name === theme.name; })) list.push(t);
     });
     return list;
   }
@@ -100,27 +119,38 @@
     if (crumb) crumb.textContent = entry.name;
     document.title = entry.name + ' · ' + BOARD_TITLES[entry.boardId] + ' · 词条图谱 · Wiki · 悲歌';
 
-    var related = resolveRelated(entry);
+    var themes = resolveThemes(entry);
     var relatedHtml = '';
-    if (related.length) {
+    if (themes.length) {
       relatedHtml =
         '<div class="entry-related">' +
-        '<div class="entry-related-head">相关词条 <em>RELATED</em></div>' +
+        '<div class="entry-related-head">所属主题 <em>THEMES</em></div>' +
         '<div class="entry-related-list">' +
-        related.map(function (r) {
-          var cross = r.boardId !== entry.boardId
-            ? '<span class="entry-related-cross" title="跨板块 · ' + esc(BOARD_TITLES[r.boardId]) + '">↗</span>'
-            : '';
-          return '<a class="entry-related-item" href="entry.html?t=' + encodeURIComponent(r.name) + '">' +
-            '<span class="entry-related-name">' + esc(r.name) + '</span>' + cross +
-            '</a>';
+        themes.map(function (th) {
+          var siblings = themeSiblings(entry, th);
+          var sibHtml = siblings.length
+            ? siblings.map(function (r) {
+                var cross = r.boardId !== entry.boardId
+                  ? '<span class="entry-related-cross" title="跨板块 · ' + esc(BOARD_TITLES[r.boardId]) + '">↗</span>'
+                  : '';
+                return '<a class="entry-related-item" href="entry.html?t=' + encodeURIComponent(r.name) + '">' +
+                  '<span class="entry-related-name">' + esc(r.name) + '</span>' + cross +
+                  '</a>';
+              }).join('')
+            : '<span class="entry-sub" style="margin-top:4px">该主题暂无其它成员词条。</span>';
+          return '<div class="entry-theme-block">' +
+            '<a class="entry-theme-tag" href="index.html" title="在图谱中查看 ' + esc(th.name) + ' 主题">' +
+            esc(th.name) + '</a>' +
+            '<span class="entry-theme-desc">' + esc(th.desc || '') + '</span>' +
+            '<div class="entry-related-subs">' + sibHtml + '</div>' +
+            '</div>';
         }).join('') +
         '</div></div>';
     } else {
       relatedHtml =
         '<div class="entry-related">' +
-        '<div class="entry-related-head">相关词条 <em>RELATED</em></div>' +
-        '<p class="entry-sub" style="margin-top:8px">暂无显式关联，可在图谱中查看其位置。</p>' +
+        '<div class="entry-related-head">所属主题 <em>THEMES</em></div>' +
+        '<p class="entry-sub" style="margin-top:8px">暂无主题归属，可在图谱中查看其位置。</p>' +
         '</div>';
     }
 
