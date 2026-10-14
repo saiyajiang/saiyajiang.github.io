@@ -576,32 +576,50 @@
         n.rect.appendChild(titleEl);
         n.g.appendChild(n.rect);
         n.dispName = n.e.name.length > 8 ? n.e.name.slice(0, 8) + '…' : n.e.name;
+        // 双标签：短标签（默认/非邻居，可截断）+ 完整标签（聚焦根/邻居、悬浮时全名显示）
         var t = document.createElementNS(NS, 'text');
         t.textContent = n.dispName;
         t.setAttribute('class', 'graph-node-label');
+        n.labelShort = t;
+        var tf = document.createElementNS(NS, 'text');
+        tf.textContent = n.e.name;
+        tf.setAttribute('class', 'graph-node-label graph-node-label-full');
+        tf.style.display = 'none';
+        n.labelFull = tf;
         n.label = t;
         n.g.appendChild(t);
+        n.g.appendChild(tf);
         gMain.appendChild(n.g);
         var color = n.e.boardId === 'theme' ? THEME_COLOR : (BOARD_COLORS[n.e.boardId] || '#b07cf0');
         var isTheme = n.e.boardId === 'theme';
-        var w = Math.max(60, n.dispName.length * 11 + 22);
+        // 估算文字宽度：全角字符≈11px、半角≈6.5px（字号 11px），按实际宽度自适应 rect
+        function estW(s) {
+          var acc = 0, i;
+          for (i = 0; i < s.length; i++) acc += s.charCodeAt(i) > 127 ? 11 : 6.5;
+          return Math.max(60, Math.ceil(acc) + 22);
+        }
+        var w = estW(n.dispName);
         n._w = w;
+        n._dispW = w;
+        n._fullW = estW(n.e.name);
+        n._lastW = -1;
         n.rect.setAttribute('x', -w / 2); n.rect.setAttribute('y', -14);
         n.rect.setAttribute('width', w); n.rect.setAttribute('height', 28);
         n.rect.setAttribute('rx', isTheme ? 14 : 8); n.rect.setAttribute('ry', isTheme ? 14 : 8);
         n.rect.setAttribute('fill', 'rgba(' + hexToRgb(color) + ', 0.13)');
         n.rect.setAttribute('stroke', color);
         n.rect.setAttribute('stroke-dasharray', isTheme ? '6 3' : '');
-        var tt = n.g.querySelector('text');
-        tt.setAttribute('x', 0); tt.setAttribute('y', 4);
-        tt.setAttribute('text-anchor', 'middle');
-        // 悬浮时强制显示标签（即使处于远端隐藏区）
+        n.labelShort.setAttribute('x', 0); n.labelShort.setAttribute('y', 4);
+        n.labelShort.setAttribute('text-anchor', 'middle');
+        n.labelFull.setAttribute('x', 0); n.labelFull.setAttribute('y', 4);
+        n.labelFull.setAttribute('text-anchor', 'middle');
+        // 悬浮时强制显示标签（即使处于远端隐藏区），并保证完整名称
         n._hover = false;
         n.g.addEventListener('pointerenter', function () { n._hover = true; });
         n.g.addEventListener('pointerleave', function () { n._hover = false; });
       });
 
-      // 聚焦可见性：非聚焦全图按深度；聚焦时根节点最亮、邻居次之、其余轻度弱化但仍可辨
+      // 聚焦可见性：非聚焦全图按深度；聚焦时仅显示根节点与直接邻居，非邻居完全隐藏
       nodes.forEach(function (n) {
         var isRoot = focusName && n.e.name === focusName;
         var isNei = focusName && focusNeighbors && focusNeighbors[n.e.name];
@@ -614,12 +632,12 @@
         } else if (isNei) {
           op = Math.max(n._op, 0.72);
         } else {
-          op = 0.40 + 0.12 * n._op;   // 轻度弱化（约 0.43~0.52），整体图谱仍可浏览
+          op = 0;   // 非邻居完全隐藏
         }
         n.g.style.opacity = op;
         n.g.style.pointerEvents = vis ? 'auto' : 'none';
         // 标签显示策略：非聚焦按深度渐隐（背面/中后层标签隐藏，避免前后层文字互盖）；
-        // 聚焦时根/邻居标签全显、其余半透明显示；悬浮节点强制显示标签
+        // 聚焦时根/邻居标签全显、非邻居随节点整体隐藏；悬浮节点强制显示标签
         var lo;
         if (!focusName) {
           var dt = (n._pz + SPHERE_R) / (2 * SPHERE_R);   // 0=背面 1=正面
@@ -627,19 +645,36 @@
         } else if (isRoot || isNei) {
           lo = 1;
         } else {
-          lo = 0.5;
+          lo = 0;
         }
         if (n._hover) lo = 1;
-        if (n.label) n.label.style.opacity = lo;
+        if (n.labelShort) n.labelShort.style.opacity = lo;
+        if (n.labelFull) n.labelFull.style.opacity = lo;
+        // 标签完整/截断切换：聚焦根/邻居或悬浮 → 完整标签 + rect 按实际文字宽度自适应加宽；
+        // 否则截断标签 + 标准宽度（非邻居聚焦时保持截断、轻度弱化）
+        var showFull = n._hover || (focusName && (isRoot || isNei));
+        var lw = showFull ? n._fullW : n._dispW;
+        if (lw !== n._lastW) {
+          n._lastW = lw;
+          n.rect.setAttribute('x', -lw / 2);
+          n.rect.setAttribute('width', lw);
+        }
+        if (showFull) {
+          if (n.labelShort.style.display !== 'none') n.labelShort.style.display = 'none';
+          if (n.labelFull.style.display !== 'block') n.labelFull.style.display = 'block';
+        } else {
+          if (n.labelShort.style.display !== 'block') n.labelShort.style.display = 'block';
+          if (n.labelFull.style.display !== 'none') n.labelFull.style.display = 'none';
+        }
       });
-      // 连线：聚焦时根-邻居边高亮（稍加粗）、其余边轻度弱化细线（不再完全隐藏）；非聚焦按深度
+      // 连线：聚焦时仅保留根↔邻居连线（焦点边高亮），其余连线完全隐藏；非聚焦按深度
       edges.forEach(function (ed) {
         var dOp = 0.12 + 0.55 * (ed.depth + SPHERE_R) / (2 * SPHERE_R);
         var op, w;
         if (focusName) {
           var toTheme = ed.a.e.boardId === 'theme' || ed.b.e.boardId === 'theme';
           if (focusEdgeKeys[ed.key]) { op = Math.max(dOp, toTheme ? 0.45 : 0.55); w = toTheme ? 2.2 : 2.6; }
-          else { op = 0.08 + 0.18 * (ed.depth + SPHERE_R) / (2 * SPHERE_R); w = 1.2; }
+          else { op = 0; w = 0; }   // 非邻居连线完全隐藏
           ed.line.style.opacity = op;
           ed.line.style.strokeWidth = w;
         } else {
