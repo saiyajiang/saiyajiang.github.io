@@ -87,6 +87,15 @@
       <p class="mc-placeholder-desc">仿 BWIKI 深蓝科幻 + 个人站风格搭建。<br/>当前为占位空壳，后续将在此呈现共鸣者图鉴 / 武器图鉴 / 声骸图鉴等数据。</p>
     </div>
   </main>
+
+  <!-- ==================== 官方 Wiki 全量收录区块 ==================== -->
+  <section class="wiki-block" id="officialWiki">
+    <div class="wiki-block-head">
+      <h2 class="wiki-block-title">官方 Wiki · 全量收录</h2>
+      <p class="wiki-block-desc">库街区官方 wiki 文字内容（排除「玩家贡献」、不含图片），按官方顶层分类收录，点击进入分类浏览词条。</p>
+    </div>
+    <div class="wiki-official-cats" id="wikiOfficialCats"></div>
+  </section>
 </main>
 
 <!-- ==================== 底部 Dock ==================== -->
@@ -99,6 +108,7 @@
 </nav>
 
 <script src="data/mc-data.js"></script>
+<script src="data/wiki-meta.js"></script>
 <script src="mingchao.js"></script>
 <script>
   // 站点统一 Header 交互：移动端菜单 + 主题切换
@@ -117,6 +127,26 @@
         root.setAttribute('data-theme', root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
       });
     }
+  })();
+
+  // 官方 Wiki 区块：渲染顶层分类入口卡片
+  (function () {
+    var box = document.getElementById('wikiOfficialCats');
+    if (!box || !window.WIKI_META) return;
+    function escS(s) {
+      return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function fmtChars(n) {
+      if (n >= 10000) return (n / 10000).toFixed(1) + ' 万';
+      return String(n);
+    }
+    box.innerHTML = window.WIKI_META.map(function (m) {
+      return '<a class="wo-cat-card" href="wiki-official.html?cat=' + encodeURIComponent(m.key) + '">' +
+        '<span class="wo-cat-name">' + escS(m.name) + '</span>' +
+        '<span class="wo-cat-stat">' + m.count + ' 词条 · ' + fmtChars(m.chars) + ' 字</span>' +
+        '<span class="wo-cat-open">进入分类 ↗</span>' +
+        '</a>';
+    }).join('');
   })();
 </script>
 </body>

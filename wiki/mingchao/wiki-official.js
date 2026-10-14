@@ -1,0 +1,115 @@
+/* ============================================================
+   鸣潮 · 官方 Wiki 分类浏览页脚本（wiki-official.js）
+   按顶层分类加载 data/*.json，按子分类分组渲染词条列表；
+   词条链接进入 wiki-detail.html?cat=..&id=..
+   依赖：data/wiki-meta.js（window.WIKI_META）
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var META = window.WIKI_META || [];
+  var CATS = {};
+  META.forEach(function (m) { CATS[m.key] = m; });
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function fmtChars(n) {
+    if (n >= 10000) return (n / 10000).toFixed(1) + ' 万';
+    return String(n);
+  }
+
+  // ---- 渲染顶层分类导航 ----
+  var nav = document.getElementById('woCatNav');
+  if (nav) {
+    nav.innerHTML = META.map(function (m) {
+      return '<button class="chip" data-key="' + m.key + '">' + esc(m.name) +
+        '<span class="wo-nav-count">' + m.count + '</span></button>';
+    }).join('');
+  }
+
+  var params = new URLSearchParams(location.search);
+  var catKey = params.get('cat') || 'tujian';
+  var cur = CATS[catKey] || CATS['tujian'];
+
+  var title = document.getElementById('woTitle');
+  var count = document.getElementById('woCount');
+  var subCount = document.getElementById('woSubCount');
+  var chars = document.getElementById('woChars');
+  var crumb = document.getElementById('crumbCat');
+  var list = document.getElementById('woList');
+
+  function markActive() {
+    var chips = nav ? nav.querySelectorAll('.chip') : [];
+    chips.forEach(function (c) {
+      c.classList.toggle('active', c.getAttribute('data-key') === cur.key);
+    });
+  }
+  if (nav) {
+    nav.addEventListener('click', function (e) {
+      var chip = e.target.closest('.chip');
+      if (chip) location.href = 'wiki-official.html?cat=' + chip.getAttribute('data-key');
+    });
+  }
+
+  function renderNotFound() {
+    list.innerHTML = '<div class="mc-placeholder"><div class="mc-placeholder-icon">◈</div>' +
+      '<p class="mc-placeholder-title">数据加载失败</p>' +
+      '<p class="mc-placeholder-desc">请确认在 HTTP 环境访问（如 GitHub Pages / 本地静态服务器）。<br/>直接以 file:// 打开时浏览器会拦截 JSON 请求。</p></div>';
+  }
+
+  function render(items) {
+    if (!items || !items.length) {
+      list.innerHTML = '<p class="wiki-desc">该分类暂无正文词条。</p>';
+      return;
+    }
+    // 按子分类分组（保持出现顺序）
+    var groups = [];
+    var idx = {};
+    items.forEach(function (it) {
+      var g = (it['子分类'] || '综合').trim();
+      if (!idx[g]) {
+        idx[g] = groups.length;
+        groups.push({ name: g, items: [] });
+      }
+      groups[idx[g]].items.push(it);
+    });
+
+    var html = groups.map(function (g, gi) {
+      var rows = g.items.map(function (it) {
+        var u = it['最后更新'];
+        var meta = [];
+        meta.push('<span class="wo-item-chars">' + fmtChars(it['字符数'] || 0) + ' 字</span>');
+        if (u) meta.push('<span class="wo-item-date">' + esc(String(u).slice(0, 10)) + '</span>');
+        return '<li class="wo-item">' +
+          '<a href="wiki-detail.html?cat=' + encodeURIComponent(cur.key) + '&id=' + encodeURIComponent(it['词条id']) + '">' +
+          esc(it['标题'] || '（无标题）') + '</a>' +
+          '<span class="wo-item-meta">' + meta.join('') + '</span>' +
+          '</li>';
+      }).join('');
+      var open = gi === 0 ? ' open' : '';
+      return '<details class="wo-group"' + open + '>' +
+        '<summary>' + esc(g.name) + '<span class="wo-group-count">' + g.items.length + '</span></summary>' +
+        '<ul class="wo-rows">' + rows + '</ul>' +
+        '</details>';
+    }).join('');
+
+    list.innerHTML = html;
+    if (count) count.textContent = items.length;
+    if (subCount) subCount.textContent = groups.length;
+    var totalChars = items.reduce(function (n, it) { return n + (it['字符数'] || 0); }, 0);
+    if (chars) chars.textContent = fmtChars(totalChars);
+  }
+
+  if (title) title.textContent = cur.name + ' · 词条';
+  if (crumb) crumb.textContent = '官方 Wiki · ' + cur.name;
+  markActive();
+
+  fetch('data/' + cur.file)
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(render)
+    .catch(function () { renderNotFound(); });
+})();

@@ -237,3 +237,229 @@ body {
 .mc-detail-back a:hover {
   text-decoration: underline;
 }
+
+/* ============================================================
+   官方 Wiki 全量收录区块（追加，不改动既有规则）
+   ============================================================ */
+
+/* ---------- 首页区块 ---------- */
+.wiki-block {
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.wiki-block-head {
+  margin-bottom: 14px;
+}
+
+.wiki-block-title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-0);
+  letter-spacing: 0.02em;
+}
+
+.wiki-block-desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-1);
+}
+
+.wiki-official-cats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.wo-cat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(170deg, rgba(26, 44, 77, 0.55), rgba(12, 21, 36, 0.85));
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+[data-theme="light"] .wo-cat-card {
+  background: linear-gradient(170deg, rgba(204, 219, 233, 0.55), rgba(224, 233, 242, 0.85));
+}
+
+.wo-cat-card:hover {
+  border-color: var(--wiki-accent);
+  box-shadow: 0 10px 26px rgba(53, 214, 196, 0.16);
+  transform: translateY(-2px);
+}
+
+.wo-cat-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-0);
+}
+
+.wo-cat-stat {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.wo-cat-open {
+  font-size: 12px;
+  color: var(--wiki-accent);
+}
+
+/* ---------- 分类浏览页 ---------- */
+.wo-catnav {
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.wo-catnav .chip {
+  position: relative;
+}
+
+.wo-nav-count {
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.wo-catnav .chip.active .wo-nav-count {
+  color: var(--bg-0);
+}
+
+.wo-hero {
+  margin-bottom: 18px;
+}
+
+.wo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wo-group {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(170deg, rgba(26, 44, 77, 0.35), rgba(12, 21, 36, 0.7));
+  overflow: hidden;
+}
+
+[data-theme="light"] .wo-group {
+  background: linear-gradient(170deg, rgba(204, 219, 233, 0.35), rgba(224, 233, 242, 0.7));
+}
+
+.wo-group summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-0);
+  list-style: none;
+  user-select: none;
+}
+
+.wo-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.wo-group summary::before {
+  content: '▸';
+  color: var(--wiki-accent);
+  transition: transform 0.2s ease;
+}
+
+.wo-group[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.wo-group-count {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-2);
+  background: rgba(53, 214, 196, 0.12);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.wo-rows {
+  margin: 0;
+  padding: 0 16px 10px;
+  list-style: none;
+  border-top: 1px dashed var(--line);
+}
+
+.wo-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 2px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.wo-item:last-child {
+  border-bottom: 0;
+}
+
+.wo-item a {
+  color: var(--text-0);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.wo-item a:hover {
+  color: var(--wiki-accent);
+}
+
+.wo-item-meta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.wo-item-chars {
+  color: var(--wiki-accent);
+}
+
+.wo-item-date {
+  color: var(--text-2);
+}
+
+/* ---------- 词条详情页 ---------- */
+.wo-detail-hero {
+  margin-bottom: 18px;
+}
+
+.wd-body {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(170deg, rgba(26, 44, 77, 0.35), rgba(12, 21, 36, 0.7));
+  padding: 18px 20px;
+}
+
+[data-theme="light"] .wd-body {
+  background: linear-gradient(170deg, rgba(204, 219, 233, 0.35), rgba(224, 233, 242, 0.7));
+}
+
+.wd-text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--text-0);
+}
