@@ -190,12 +190,16 @@
     v.x /= l; v.y /= l; v.z /= l;
   }
 
-  var SPHERE_R = 260;              // 球半径（世界单位）
+  var SPHERE_R = 260;              // 球体半径（世界单位，外轮廓与主题锚点所在球面）
+  var R_MIN = SPHERE_R * 0.30;     // 词条径向半径下限（0.3R）
+  var R_MAX = SPHERE_R * 1.00;     // 词条径向半径上限（1.0R）
+  var LAYERS = 8;                  // 径向分层数：主题交错分配不同半径层，避免整簇落在同一壳面
   var THEME_PTS = {};              // 主题名 → 单位方向向量（Fibonacci 球面锚点）
+  var THEME_R = {};                // 主题名 → 目标径向半径
 
   (function layoutSphere() {
     var i;
-    // 1) 主题锚点：Fibonacci 球面均匀分布，主题间天然分散
+    // 1) 主题锚点：Fibonacci 球面均匀分布；径向层按主题序号交错分配
     var N = THEMES.length;
     var GA = Math.PI * (3 - Math.sqrt(5));
     THEMES.forEach(function (th, idx) {
@@ -203,8 +207,13 @@
       var r = Math.sqrt(Math.max(0, 1 - y * y));
       var tht = GA * idx;
       THEME_PTS[th.name] = { x: Math.cos(tht) * r, y: y, z: Math.sin(tht) * r };
+      var layer = idx % LAYERS;
+      THEME_R[th.name] = R_MIN + (layer / (LAYERS - 1)) * (R_MAX - R_MIN);
     });
-    // 2) 词条初始方向：所属主题锚点加权平均；无主题 → 基于名字的确定性伪随机
+    // 2) 词条初始：方向 = 所属主题锚点加权平均（多主题取折中）后加切向微扰，
+    //    让同主题成员一开始就散开在锚点周围的锥形内；无主题 → 名字哈希随机方向。
+    //    径向半径 = 所属主题目标层均值，叠加成员级抖动，避免同层同心重叠
+    var TANG_S = 0.22; // 切向微扰幅度（弧度量级）
     entries.forEach(function (e) {
       var v = { x: 0, y: 0, z: 0 };
       var rel = (e.related || []).filter(function (r) { return THEME_PTS[r.name]; });
@@ -213,6 +222,22 @@
           var p = THEME_PTS[r.name];
           v.x += p.x; v.y += p.y; v.z += p.z;
         });
+        norm3(v);
+        // 切平面正交基（u1, u2 ⊥ v），用于在锚点周围加确定性微扰
+        var ref = Math.abs(v.y) < 0.95 ? { x: 0, y: 1, z: 0 } : { x: 1, y: 0, z: 0 };
+        var u1 = {
+          x: v.y * ref.z - v.z * ref.y,
+          y: v.z * ref.x - v.x * ref.z,
+          z: v.x * ref.y - v.y * ref.x
+        };
+        norm3(u1);
+        var u2 = { x: v.y * u1.z - v.z * u1.y, y: v.z * u1.x - v.x * u1.z, z: v.x * u1.y - v.y * u1.x };
+        var ox = (hash01(e.name + '|tx') * 2 - 1) * TANG_S;
+        var oy = (hash01(e.name + '|ty') * 2 - 1) * TANG_S;
+        v.x += u1.x * ox + u2.x * oy;
+        v.y += u1.y * ox + u2.y * oy;
+        v.z += u1.z * ox + u2.z * oy;
+        norm3(v);
       } else {
         var a = hash01(e.name + '|a') * Math.PI * 2;
         var b = Math.acos(2 * hash01(e.name + '|b') - 1);
@@ -220,28 +245,45 @@
         v.y = Math.cos(b);
         v.z = Math.sin(b) * Math.sin(a);
       }
-      norm3(v);
       e._dir = v;
+      var rt = 0, cnt = 0;
+      rel.forEach(function (r) { rt += THEME_R[r.name]; cnt++; });
+      if (!cnt) rt = R_MIN + hash01(e.name + '|r') * (R_MAX - R_MIN);
+      else rt /= cnt;
+      e._targetR = rt;
+      e._r = rt * (0.90 + hash01(e.name + '|j') * 0.20); // 同层抖动 ±10%
+      e._r = clamp(e._r, R_MIN, R_MAX);
     });
-    // 主题节点（含复用词条）固定到各自锚点，只做引力源
+    // 主题节点固定在球面锚点（半径 = SPHERE_R），只作引力源与斥力源
     THEMES.forEach(function (th) {
       var te = themeByName[th.name];
       te._dir = THEME_PTS[th.name];
+      te._r = SPHERE_R;
       te._fixed = true;
     });
-    // 3) 球面力导向（一次性迭代收敛）：词条互相斥开 + 拉向所属主题锚点
-    var ITER = 300, REP_R = 0.36, REP_F = 0.05, GRAV = 0.05;
+    // 3) 球体积内力导向（一次性迭代收敛，坐标固定后不参与每帧计算）：
+    //    3D 斥力让节点在体积内互相散开；切向引力把词条拉回主题锚点方向；
+    //    径向弹簧把词条保持在目标半径层（0.3R~1.0R）
+    var ITER = 320;
+    var REP_R = SPHERE_R * 0.42;    // 斥力作用半径（≈ 期望节点间距）
+    var REP_F = 0.02;
+    var GRAV = 0.008;
+    var SPRING = 0.05;
     var i2;
     for (i2 = 0; i2 < ITER; i2++) {
       entries.forEach(function (a) {
         if (a._fixed) return;
+        var ax = a._dir.x * a._r, ay = a._dir.y * a._r, az = a._dir.z * a._r;
         var fx = 0, fy = 0, fz = 0;
         entries.forEach(function (b) {
           if (b === a) return;
-          var dx = a._dir.x - b._dir.x, dy = a._dir.y - b._dir.y, dz = a._dir.z - b._dir.z;
+          var bx = b._dir.x * b._r, by = b._dir.y * b._r, bz = b._dir.z * b._r;
+          var dx = ax - bx, dy = ay - by, dz = az - bz;
           var d2 = dx * dx + dy * dy + dz * dz;
           if (d2 >= REP_R * REP_R) return;
-          var f = REP_F * (1 - Math.sqrt(d2) / REP_R);
+          var dist = Math.sqrt(d2);
+          if (dist < 1e-3) dist = 1e-3;
+          var f = REP_F * (1 - dist / REP_R) / dist;
           fx += dx * f; fy += dy * f; fz += dz * f;
         });
         (a.related || []).forEach(function (r) {
@@ -251,19 +293,21 @@
           fy += (p.y - a._dir.y) * GRAV;
           fz += (p.z - a._dir.z) * GRAV;
         });
-        // 切平面投影（去掉径向分量）后重新归一，保证始终落在球面
+        var rForce = (a._targetR - a._r) * SPRING;
+        // 应用力：切平面投影（保持球面方向）+ 径向分量
         var dot = fx * a._dir.x + fy * a._dir.y + fz * a._dir.z;
         a._dir.x += fx - dot * a._dir.x;
         a._dir.y += fy - dot * a._dir.y;
         a._dir.z += fz - dot * a._dir.z;
         norm3(a._dir);
+        a._r = clamp(a._r + rForce, R_MIN, R_MAX);
       });
     }
     // 4) 写回世界坐标（固定，不再参与任何每帧计算）
     entries.forEach(function (e) {
-      e._x = e._dir.x * SPHERE_R;
-      e._y = e._dir.y * SPHERE_R;
-      e._z = e._dir.z * SPHERE_R;
+      e._x = e._dir.x * e._r;
+      e._y = e._dir.y * e._r;
+      e._z = e._dir.z * e._r;
     });
   })();
 
