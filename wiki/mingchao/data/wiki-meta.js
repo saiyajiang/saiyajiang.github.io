@@ -18,8 +18,8 @@ window.WIKI_META = [
     "key": "juqing",
     "name": "剧情合集",
     "file": "wiki-juqing.json",
-    "count": 62,
-    "chars": 958477
+    "count": 100,
+    "chars": 992999
   },
   {
     "key": "huodong",
