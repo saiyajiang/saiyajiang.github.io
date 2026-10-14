@@ -173,6 +173,7 @@ body {
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 clamp(16px, 4vw, 48px);
+  padding-bottom: 110px; /* 底部 Dock 遮挡补偿 */
 }
 
 /* ============================================================
