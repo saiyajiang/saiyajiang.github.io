@@ -33,3 +33,9 @@
 ## 本地预览
 
 双击 `index.html` 即可，无需构建步骤。
+
+## License
+
+[![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
+
+本站内容采用 [知识共享 署名-非商业性使用 4.0 国际 (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/) 协议授权，详见仓库根目录 [LICENSE](LICENSE) 文件与 [关于页](about.html#license)。
