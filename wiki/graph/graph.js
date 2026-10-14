@@ -480,7 +480,7 @@
       exitBtn.style.display = 'none';
     }
 
-    // 聚焦到指定词条（进入或切换）：平滑旋转使根朝前、邻居环绕、非邻居淡出
+    // 聚焦到指定词条（进入或切换）：平滑旋转使根朝前、邻居环绕、非邻居轻度弱化
     function focusTo(name) {
       if (anim) return; // 动画进行中忽略新请求
       var root = byName[name];
@@ -601,28 +601,51 @@
         n.g.addEventListener('pointerleave', function () { n._hover = false; });
       });
 
-      // 聚焦可见性（与深度透明度结合）
+      // 聚焦可见性：非聚焦全图按深度；聚焦时根节点最亮、邻居次之、其余轻度弱化但仍可辨
       nodes.forEach(function (n) {
-        var vis = !focusName || n.e.name === focusName || (focusNeighbors && focusNeighbors[n.e.name]);
-        n.g.style.opacity = vis ? n._op : 0.06;
+        var isRoot = focusName && n.e.name === focusName;
+        var isNei = focusName && focusNeighbors && focusNeighbors[n.e.name];
+        var vis = !focusName || isRoot || isNei;
+        var op;
+        if (!focusName) {
+          op = n._op;
+        } else if (isRoot) {
+          op = Math.max(n._op, 0.95);
+        } else if (isNei) {
+          op = Math.max(n._op, 0.72);
+        } else {
+          op = 0.40 + 0.12 * n._op;   // 轻度弱化（约 0.43~0.52），整体图谱仍可浏览
+        }
+        n.g.style.opacity = op;
         n.g.style.pointerEvents = vis ? 'auto' : 'none';
         // 标签显示策略：非聚焦按深度渐隐（背面/中后层标签隐藏，避免前后层文字互盖）；
-        // 聚焦时仅可视节点显示标签；悬浮节点强制显示标签
+        // 聚焦时根/邻居标签全显、其余半透明显示；悬浮节点强制显示标签
         var lo;
         if (!focusName) {
           var dt = (n._pz + SPHERE_R) / (2 * SPHERE_R);   // 0=背面 1=正面
           lo = dt < 0.30 ? 0 : (dt < 0.55 ? 0.25 + (dt - 0.30) / 0.25 * 0.75 : 1);
-          lo *= vis ? 1 : 0.06;
+        } else if (isRoot || isNei) {
+          lo = 1;
         } else {
-          lo = vis ? 1 : 0.06;
+          lo = 0.5;
         }
         if (n._hover) lo = 1;
         if (n.label) n.label.style.opacity = lo;
       });
+      // 连线：聚焦时根-邻居边高亮（稍加粗）、其余边轻度弱化细线（不再完全隐藏）；非聚焦按深度
       edges.forEach(function (ed) {
-        var vis = !focusName || focusEdgeKeys[ed.key];
-        var op = 0.12 + 0.55 * (ed.depth + SPHERE_R) / (2 * SPHERE_R);
-        ed.line.style.opacity = vis ? op : 0;
+        var dOp = 0.12 + 0.55 * (ed.depth + SPHERE_R) / (2 * SPHERE_R);
+        var op, w;
+        if (focusName) {
+          var toTheme = ed.a.e.boardId === 'theme' || ed.b.e.boardId === 'theme';
+          if (focusEdgeKeys[ed.key]) { op = Math.max(dOp, toTheme ? 0.45 : 0.55); w = toTheme ? 2.2 : 2.6; }
+          else { op = 0.08 + 0.18 * (ed.depth + SPHERE_R) / (2 * SPHERE_R); w = 1.2; }
+          ed.line.style.opacity = op;
+          ed.line.style.strokeWidth = w;
+        } else {
+          ed.line.style.opacity = dOp;
+          ed.line.style.removeProperty('stroke-width');   // 非聚焦恢复 CSS 默认宽度，保留 hover 加粗
+        }
       });
 
       // 深度排序重绘（远的先画，近的覆盖其上）
