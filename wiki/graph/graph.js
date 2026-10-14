@@ -264,8 +264,8 @@
     // 3) 球体积内力导向（一次性迭代收敛，坐标固定后不参与每帧计算）：
     //    3D 斥力让节点在体积内互相散开；切向引力把词条拉回主题锚点方向；
     //    径向弹簧把词条保持在目标半径层（0.3R~1.0R）
-    var ITER = 320;
-    var REP_R = SPHERE_R * 0.42;    // 斥力作用半径（≈ 期望节点间距）
+    var ITER = 360;
+    var REP_R = SPHERE_R * 0.47;    // 斥力作用半径（≈ 期望节点间距，略增大以提升节点间距）
     var REP_F = 0.02;
     var GRAV = 0.008;
     var SPRING = 0.05;
@@ -389,7 +389,7 @@
         x: cx + X * persp * scale,
         y: cy - Y2 * persp * scale,
         z: Z2,
-        sn: clamp(persp, 0.72, 1.55),
+        sn: clamp(persp, 0.66, 1.38),
         op: 0.30 + 0.70 * (Z2 + SPHERE_R) / (2 * SPHERE_R)
       };
     }
@@ -578,21 +578,27 @@
         n.dispName = n.e.name.length > 8 ? n.e.name.slice(0, 8) + '…' : n.e.name;
         var t = document.createElementNS(NS, 'text');
         t.textContent = n.dispName;
+        t.setAttribute('class', 'graph-node-label');
+        n.label = t;
         n.g.appendChild(t);
         gMain.appendChild(n.g);
         var color = n.e.boardId === 'theme' ? THEME_COLOR : (BOARD_COLORS[n.e.boardId] || '#b07cf0');
         var isTheme = n.e.boardId === 'theme';
-        var w = Math.max(72, n.dispName.length * 12 + 30);
+        var w = Math.max(60, n.dispName.length * 11 + 22);
         n._w = w;
-        n.rect.setAttribute('x', -w / 2); n.rect.setAttribute('y', -17);
-        n.rect.setAttribute('width', w); n.rect.setAttribute('height', 34);
-        n.rect.setAttribute('rx', isTheme ? 17 : 8); n.rect.setAttribute('ry', isTheme ? 17 : 8);
+        n.rect.setAttribute('x', -w / 2); n.rect.setAttribute('y', -14);
+        n.rect.setAttribute('width', w); n.rect.setAttribute('height', 28);
+        n.rect.setAttribute('rx', isTheme ? 14 : 8); n.rect.setAttribute('ry', isTheme ? 14 : 8);
         n.rect.setAttribute('fill', 'rgba(' + hexToRgb(color) + ', 0.13)');
         n.rect.setAttribute('stroke', color);
         n.rect.setAttribute('stroke-dasharray', isTheme ? '6 3' : '');
         var tt = n.g.querySelector('text');
-        tt.setAttribute('x', 0); tt.setAttribute('y', 5);
+        tt.setAttribute('x', 0); tt.setAttribute('y', 4);
         tt.setAttribute('text-anchor', 'middle');
+        // 悬浮时强制显示标签（即使处于远端隐藏区）
+        n._hover = false;
+        n.g.addEventListener('pointerenter', function () { n._hover = true; });
+        n.g.addEventListener('pointerleave', function () { n._hover = false; });
       });
 
       // 聚焦可见性（与深度透明度结合）
@@ -600,6 +606,18 @@
         var vis = !focusName || n.e.name === focusName || (focusNeighbors && focusNeighbors[n.e.name]);
         n.g.style.opacity = vis ? n._op : 0.06;
         n.g.style.pointerEvents = vis ? 'auto' : 'none';
+        // 标签显示策略：非聚焦按深度渐隐（背面/中后层标签隐藏，避免前后层文字互盖）；
+        // 聚焦时仅可视节点显示标签；悬浮节点强制显示标签
+        var lo;
+        if (!focusName) {
+          var dt = (n._pz + SPHERE_R) / (2 * SPHERE_R);   // 0=背面 1=正面
+          lo = dt < 0.30 ? 0 : (dt < 0.55 ? 0.25 + (dt - 0.30) / 0.25 * 0.75 : 1);
+          lo *= vis ? 1 : 0.06;
+        } else {
+          lo = vis ? 1 : 0.06;
+        }
+        if (n._hover) lo = 1;
+        if (n.label) n.label.style.opacity = lo;
       });
       edges.forEach(function (ed) {
         var vis = !focusName || focusEdgeKeys[ed.key];
