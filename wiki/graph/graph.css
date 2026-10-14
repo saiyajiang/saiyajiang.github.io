@@ -125,7 +125,13 @@ body {
   font-size: 11px;
   font-family: var(--mono);
   pointer-events: none;
+  /* 文字描边（halo）：完整标签展开后不与节点边框/其他元素粘连，始终可读 */
+  paint-order: stroke;
+  stroke: var(--bg-0);
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
+.graph-node-label-full { display: none; }
 .graph-hint {
   position: absolute;
   left: 12px;

@@ -1,5 +1,5 @@
 /* ============================================================
-   词条图谱板块逻辑 — graph.js（球体 3D 布局版）
+   词条图谱板块逻辑 — graph.js（球体 3D 布局版）v3.2
    依赖：wiki/db/data/knowledge.js（window.WIKI_DATA，11 板块全条目）
          themes.js（window.WIKI_THEMES，主题节点映射）
    职责：全库词条关联解析（links 显式 + 主题归属）、图例着色、
