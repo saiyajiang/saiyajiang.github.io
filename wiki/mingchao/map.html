@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>鸣潮地图 · 鸣潮 Wiki · 悲歌</title>
+  <link rel="stylesheet" href="../wiki-base.css" />
+  <link rel="stylesheet" href="mingchao.css" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <style>
+    /* ==================== 鸣潮地图页专用样式 ==================== */
+    .map-frame {
+      position: relative;
+      margin-top: 14px;
+      height: calc(100vh - 330px);
+      min-height: 430px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--bg-1);
+      overflow: hidden;
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.35);
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    @media (max-width: 720px) {
+      .map-frame { height: calc(100vh - 300px); min-height: 340px; }
+    }
+
+    /* 顶部信息栏 */
+    .map-info {
+      position: absolute;
+      top: 10px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: rgba(11, 17, 28, 0.72);
+      backdrop-filter: blur(10px);
+      color: var(--text-1);
+      font-size: 12px;
+      white-space: nowrap;
+      max-width: calc(100% - 20px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+    }
+    .map-info b { color: var(--wiki-accent); font-family: var(--mono); }
+    .map-info .map-hint { opacity: 0.75; }
+    @media (max-width: 720px) {
+      .map-info { font-size: 11px; padding: 6px 10px; }
+      .map-info .map-hint { display: none; }
+    }
+
+    /* 分组筛选栏 */
+    .map-filters {
+      position: absolute;
+      top: 52px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex; gap: 6px;
+      padding: 5px 6px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(11, 17, 28, 0.72);
+      backdrop-filter: blur(10px);
+      max-width: calc(100% - 20px);
+      overflow-x: auto;
+    }
+    .map-filters button {
+      border: none; background: transparent;
+      color: var(--text-2);
+      font-family: var(--font); font-size: 12px;
+      padding: 6px 12px; border-radius: 999px;
+      cursor: pointer; white-space: nowrap;
+      transition: all 0.18s;
+    }
+    .map-filters button .n { font-family: var(--mono); opacity: 0.7; margin-left: 3px; }
+    .map-filters button:hover { color: var(--text-0); background: var(--bg-3); }
+    .map-filters button.active {
+      background: linear-gradient(160deg, rgba(var(--wiki-accent-rgb), 0.25), rgba(var(--wiki-accent-rgb), 0.08));
+      color: var(--wiki-accent);
+      box-shadow: 0 0 10px rgba(var(--wiki-accent-rgb), 0.2);
+    }
+
+    /* 视口 + 世界容器 */
+    .map-viewport {
+      position: absolute; inset: 0;
+      overflow: hidden;
+      cursor: grab;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(var(--wiki-accent-rgb), 0.05), transparent 60%),
+        #0b111c;
+    }
+    .map-viewport.dragging { cursor: grabbing; }
+    .map-world {
+      position: absolute; left: 0; top: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+    .map-tile {
+      position: absolute;
+      background: #101827;
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      box-sizing: border-box;
+    }
+    .map-tile img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .map-tile.missing { background: repeating-linear-gradient(45deg, #0d1422 0, #0d1422 10px, #101a2c 10px, #101a2c 20px); }
+
+    /* 点位标记 */
+    .map-marker {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      z-index: 10;
+      display: flex; flex-direction: column; align-items: center;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+    .map-marker .dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.9);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .map-marker .lbl {
+      margin-top: 2px;
+      font-size: 10px; line-height: 1.2;
+      color: #eef2fa;
+      background: rgba(8, 14, 24, 0.72);
+      padding: 1px 5px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      white-space: nowrap;
+      max-width: 150px;
+      overflow: hidden; text-overflow: ellipsis;
+      pointer-events: none;
+    }
+    .map-marker:hover .dot { transform: scale(1.5); box-shadow: 0 0 10px rgba(var(--wiki-accent-rgb), 0.8); }
+    .map-marker.g-portal .dot { background: #35c4f0; }
+    .map-marker.g-shop   .dot { background: #ff9a3c; }
+    .map-marker.g-land   .dot { background: #c07bff; }
+    .map-marker.hidden { display: none; }
+
+    /* 气泡 */
+    .map-popover {
+      position: absolute;
+      z-index: 40;
+      min-width: 160px; max-width: 260px;
+      padding: 10px 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: rgba(13, 20, 33, 0.94);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+    .map-popover.show { display: block; }
+    .map-popover .t {
+      font-size: 14px; font-weight: 600; color: var(--text-0);
+      padding-right: 16px;
+    }
+    .map-popover .g { margin-top: 2px; font-size: 11px; color: var(--wiki-accent); font-family: var(--mono); }
+    .map-popover .d { margin-top: 6px; font-size: 12px; color: var(--text-2); line-height: 1.55; }
+    .map-popover .close {
+      position: absolute; top: 6px; right: 8px;
+      border: none; background: transparent; color: var(--text-2);
+      cursor: pointer; font-size: 14px; line-height: 1;
+    }
+    .map-popover .close:hover { color: var(--text-0); }
+
+    /* 缩放控件（真实地图式）+ 比例尺 */
+    .map-zoomctl {
+      position: absolute; right: 12px; bottom: 40px; z-index: 20;
+      display: flex; flex-direction: column; gap: 1px;
+      border-radius: 10px; overflow: hidden;
+      border: 1px solid var(--line);
+      background: rgba(11, 17, 28, 0.72);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    }
+    .map-zoomctl button {
+      width: 34px; height: 34px;
+      border: none; background: transparent;
+      color: var(--text-0); font-size: 17px; line-height: 1;
+      cursor: pointer;
+    }
+    .map-zoomctl button:hover { background: var(--bg-3); color: var(--wiki-accent); }
+    .map-scale {
+      position: absolute; left: 12px; bottom: 12px; z-index: 20;
+      color: var(--text-2); font-size: 10px;
+      font-family: var(--mono); line-height: 1;
+    }
+    .map-scale .bar {
+      display: block; height: 2px; margin-top: 4px;
+      background: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+    }
+
+    /* 加载/错误提示 */
+    .map-error {
+      position: absolute; inset: 0; z-index: 5;
+      display: none; align-items: center; justify-content: center;
+      text-align: center; padding: 24px; color: var(--text-2);
+      font-size: 13px; line-height: 1.8;
+    }
+    .map-error.show { display: flex; }
+  </style>
+</head>
+<body>
+
+<!-- ==================== 站点统一导航 ==================== -->
+<header class="site-header">
+  <div class="header-inner">
+    <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    <nav class="nav-menu" id="navMenu">
+      <a href="../../index.html">~/blog</a>
+      <a href="../../archive.html">~/archive</a>
+      <a href="../index.html">~/wiki</a>
+      <a href="../../about.html">~/about</a>
+      <a href="../../quotes.html">~/quotes</a>
+      <a href="../../changelog.html">~/changelog</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="切换深色/亮色" title="切换主题">&#9788;</button>
+  </div>
+</header>
+
+<!-- ==================== Wiki 子板块导航 ==================== -->
+<nav class="wiki-subnav" aria-label="Wiki 子板块导航">
+  <a href="../index.html">门户</a>
+  <a href="../taiwu/index.html">太吾绘卷</a>
+  <a href="index.html" class="active">鸣潮</a>
+  <a href="../db/index.html">数据库 · 知识库</a>
+  <a href="../graph/index.html">图谱 <span class="subnav-count">含短句</span></a>
+  <a href="../recommend/index.html">推荐与不推荐</a>
+</nav>
+
+<main class="wiki-main">
+
+  <!-- ==================== 面包屑 ==================== -->
+  <nav class="wiki-breadcrumb" aria-label="面包屑">
+    <a href="../index.html">Wiki</a><span class="crumb-sep">/</span><a href="index.html">鸣潮</a><span class="crumb-sep">/</span><span>鸣潮地图</span>
+  </nav>
+
+  <!-- ==================== Hero 标题区 + 统计 ==================== -->
+  <header class="wiki-hero">
+    <div class="wiki-hero-badge">MAP</div>
+    <h1 class="wiki-hero-title">鸣潮地图</h1>
+    <p class="wiki-hero-sub">整个鸣潮世界地图 · 仅标记建筑与地址，数据来源：库街区官方地图。</p>
+    <div class="wiki-stats">
+      <div class="wiki-stat"><span>点位</span><b id="mapPointCount">0</b></div>
+      <div class="wiki-stat"><span>分组</span><b id="mapGroupCount">0</b></div>
+      <div class="wiki-stat"><span>缩放级</span><b id="mapLevelCount">3</b></div>
+    </div>
+  </header>
+
+  <!-- ==================== 地图区域 ==================== -->
+  <div class="map-frame" id="mapFrame">
+    <div class="map-info" id="mapInfo">
+      <span>缩放 <b id="mapZoomText">—</b></span>
+      <span class="map-hint">拖拽移动 · 滚轮/捏合缩放 · 双击放大 · 点击标记查看详情</span>
+    </div>
+
+    <div class="map-zoomctl" id="mapZoomCtl">
+      <button data-d="1" aria-label="放大" title="放大">+</button>
+      <button data-d="-1" aria-label="缩小" title="缩小">−</button>
+    </div>
+    <div class="map-scale" id="mapScale">
+      <span id="mapScaleText"></span>
+      <span class="bar" id="mapScaleBar"></span>
+    </div>
+
+    <div class="map-filters" id="mapFilters" role="group" aria-label="分组筛选"></div>
+
+    <div class="map-viewport" id="mapViewport">
+      <div class="map-world" id="mapWorld"></div>
+    </div>
+
+    <div class="map-popover" id="mapPopover">
+      <button class="close" id="mapPopClose" aria-label="关闭">&#10005;</button>
+      <div class="t" id="popTitle"></div>
+      <div class="g" id="popGroup"></div>
+      <div class="d" id="popDesc"></div>
+    </div>
+
+    <div class="map-error" id="mapError"></div>
+  </div>
+
+  <div class="mc-detail-back"><a href="index.html">← 返回鸣潮板块首页</a></div>
+</main>
+
+<!-- ==================== 底部 Dock ==================== -->
+<nav class="wiki-dock" aria-label="分类快捷导航">
+  <a href="index.html">鸣潮首页</a>
+  <a href="wiki-official.html">官方 Wiki</a>
+  <a href="map.html" class="active">地图</a>
+  <a href="wiki-detail.html">词条详情</a>
+</nav>
+
+<script>
+(function () {
+  'use strict';
+
+  // 站点统一 Header 交互：移动端菜单 + 主题切换
+  (function () {
+    var menuBtn = document.getElementById('menuToggle');
+    var navMenu = document.getElementById('navMenu');
+    if (menuBtn && navMenu) {
+      menuBtn.addEventListener('click', function () {
+        navMenu.classList.toggle('open');
+      });
+    }
+    var themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function () {
+        var root = document.documentElement;
+        root.setAttribute('data-theme', root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+      });
+    }
+  })();
+
+  // ==================== 地图核心 ====================
+  var BASE_TILE = 850;                       // 基准瓦片像素（换算基准）
+  var ZOOM_MIN = 0.2, ZOOM_MAX = 3;          // 连续缩放范围（基准倍数，真实地图式）
+  // 瓦片分辨率档位：缩小时用低清图、放大用高清图（与真实地图瓦片金字塔同理）
+  var TILE_VARIANTS = [
+    { max: 280, url: '?x-oss-process=image/format,png/resize,w_256,h_256' },
+    { max: 560, url: '?x-oss-process=image/format,png/resize,w_512,h_512' },
+    { max: Infinity, url: '' }
+  ];
+  var GRID = { xMin: -12, xMax: 17, yMin: -17, yMax: 14 };   // 瓦片加载网格（存在瓦片至 yMin=-16，yMin=-17 仅占位）
+  // 容器范围：瓦片网格 ∪ 点位实际范围（东侧/北侧有超出部分网格的点位）
+  var BOUND = { xMin: -12, xMax: 17, yMin: -17, yMax: 14 };
+
+  var viewport = document.getElementById('mapViewport');
+  var world = document.getElementById('mapWorld');
+  var infoZoom = document.getElementById('mapZoomText');
+  var filterBar = document.getElementById('mapFilters');
+  var popover = document.getElementById('mapPopover');
+  var errBox = document.getElementById('mapError');
+
+  var points = [];                 // 全部点位
+  var markerEls = [];              // 标记 DOM 列表（与 points 对应）
+  var tiles = {};                  // 已挂载瓦片 key -> div
+  var zoom = 0.3;                  // 当前缩放倍数（0.2 ~ 3，连续变化）
+  var tileSize = BASE_TILE * zoom; // 当前瓦片显示尺寸
+  var scale = zoom;                // 像素缩放比（tileSize / BASE_TILE）
+  var pan = { x: 0, y: 0 };
+  var worldW = 0, worldH = 0;      // 世界容器像素尺寸（随缩放变化）
+  var activeGroup = '__all__';
+  var dragging = false;
+  var dragStart = null;
+  var dragMoved = false;           // 本次拖拽是否产生位移（区分点击/拖拽）
+  var dragVel = { x: 0, y: 0 };    // 拖拽末速度（惯性用）
+  var lastMoveT = 0;
+  var lastPan = null;
+  var suppressClickUntil = 0;      // 拖拽刚结束后短暂屏蔽点击
+
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+
+  // ---- 坐标换算（规格公式）----
+  function toWorld(x, y) {
+    var px = x / 100 + 850;
+    var py = y / 100;
+    var tileX = Math.floor(px / 850);
+    var tileY = Math.floor(-py / 850);
+    var ox = px - tileX * 850;
+    var oy = py + (tileY + 1) * 850;   // 850 基准，向下为正
+    return { tx: tileX, ty: tileY, ox: ox, oy: oy };
+  }
+  function toPixel(w) {
+    return {
+      left: (w.tx - BOUND.xMin) * tileSize + w.ox * scale,
+      top: (w.ty - BOUND.yMin) * tileSize + w.oy * scale
+    };
+  }
+
+  // ---- 瓦片 URL（3 级）----
+  function tileUrl(guid, tx, ty) {
+    var base = 'https://web-static.kurobbs.com/mcmap/tiles/' + guid + '/8/8_' + tx + '_' + ty + '.png';
+    return base + tileVariant();
+  }
+  // 当前缩放档位对应的瓦片分辨率参数
+  function tileVariant() {
+    for (var i = 0; i < TILE_VARIANTS.length; i++) {
+      if (tileSize <= TILE_VARIANTS[i].max) return TILE_VARIANTS[i].url;
+    }
+    return '';
+  }
+
+  // ---- 视口几何 ----
+  function vw() { return viewport.clientWidth; }
+  function vh() { return viewport.clientHeight; }
+
+  function clampPan() {
+    var minX = Math.min(0, vw() - worldW);
+    var maxX = Math.max(0, (vw() - worldW) / 2);
+    var minY = Math.min(0, vh() - worldH);
+    var maxY = Math.max(0, (vh() - worldH) / 2);
+    pan.x = clamp(pan.x, minX, maxX);
+    pan.y = clamp(pan.y, minY, maxY);
+  }
+
+  function applyPan() {
+    world.style.transform = 'translate(' + pan.x + 'px,' + pan.y + 'px)';
+  }
+
+  // ---- 瓦片懒加载：只渲染视口可见范围，增量增删 ----
+  function renderTiles(guid) {
+    var pad = 1; // 预载边缘 1 圈
+    var left = -pan.x / tileSize - pad;
+    var right = (-pan.x + vw()) / tileSize + pad;
+    var top = -pan.y / tileSize - pad;
+    var bottom = (-pan.y + vh()) / tileSize + pad;
+
+    // 可见瓦片范围（left/top 为容器内列/行数，需加 GRID 偏移换算成 tx/ty）
+    var tx0 = Math.max(GRID.xMin, GRID.xMin + Math.floor(left));
+    var tx1 = Math.min(GRID.xMax, GRID.xMin + Math.ceil(right) - 1);
+    var ty0 = Math.max(GRID.yMin, GRID.yMin + Math.floor(top));
+    var ty1 = Math.min(GRID.yMax, GRID.yMin + Math.ceil(bottom) - 1);
+
+    // 1) 移除不再可见的瓦片
+    var keep = {};
+    for (var tx = tx0; tx <= tx1; tx++) {
+      for (var ty = ty0; ty <= ty1; ty++) keep[tx + '_' + ty] = 1;
+    }
+    Object.keys(tiles).forEach(function (key) {
+      if (!keep[key]) {
+        tiles[key].el.remove();
+        delete tiles[key];
+      }
+    });
+
+    // 1.5) 连续缩放：更新已保留瓦片的尺寸，并按档位切换分辨率
+    for (var key in keep) {
+      var t = tiles[key];
+      if (!t) continue;
+      t.el.style.width = tileSize + 'px';
+      t.el.style.height = tileSize + 'px';
+      var img = t.el.querySelector('img');
+      if (img) {
+        var want = tileVariant();
+        if (img.getAttribute('data-v') !== want) {
+          img.setAttribute('data-v', want);
+          img.src = tileUrl(guid, key.split('_')[0], key.split('_')[1]);
+        }
+      }
+    }
+
+    // 2) 增量创建可见瓦片
+    for (var tx2 = tx0; tx2 <= tx1; tx2++) {
+      for (var ty2 = ty0; ty2 <= ty1; ty2++) {
+        var key = tx2 + '_' + ty2;
+        if (tiles[key]) continue;
+        var div = document.createElement('div');
+        div.className = 'map-tile';
+        div.style.left = ((tx2 - GRID.xMin) * tileSize) + 'px';
+        div.style.top = ((ty2 - GRID.yMin) * tileSize) + 'px';
+        div.style.width = tileSize + 'px';
+        div.style.height = tileSize + 'px';
+        var img = document.createElement('img');
+        img.alt = '';
+        img.draggable = false;
+        img.addEventListener('error', function () {
+          this.parentNode.classList.add('missing');
+          this.remove();
+        });
+        img.setAttribute('data-v', tileVariant());
+        img.src = tileUrl(guid, tx2, ty2);
+        div.appendChild(img);
+        world.appendChild(div);
+        tiles[key] = { el: div };
+      }
+    }
+  }
+
+  // ---- 点位标记 ----
+  function buildMarkers(guid) {
+    // 同名计数：显示序号便于区分（气泡保留原始名）
+    var seq = {};
+    points.forEach(function (p) {
+      seq[p.name] = (seq[p.name] || 0) + 1;
+    });
+
+    markerEls = points.map(function (p, i) {
+      var div = document.createElement('div');
+      div.className = 'map-marker g-' + (p.group === '传送/入口' ? 'portal' : (p.group === '建筑/商店' ? 'shop' : 'land'));
+      var n = seq[p.name];
+      var label = n > 1 ? p.name + '(' + n + ')' : p.name;
+      div.innerHTML = '<span class="dot"></span><span class="lbl"></span>';
+      div.querySelector('.lbl').textContent = label;
+      div.setAttribute('data-i', String(i));
+      div.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (Date.now() < suppressClickUntil) return; // 拖拽刚结束不弹气泡
+        showPopover(i);
+      });
+      world.appendChild(div);
+      return div;
+    });
+    positionMarkers();
+  }
+
+  function positionMarkers() {
+    for (var i = 0; i < points.length; i++) {
+      var px = toPixel(toWorld(points[i].x, points[i].y));
+      var el = markerEls[i];
+      el.style.left = px.left + 'px';
+      el.style.top = px.top + 'px';
+    }
+  }
+
+  // ---- 分组筛选 ----
+  function buildFilters() {
+    var groups = [];
+    var idx = {};
+    points.forEach(function (p) {
+      if (!idx[p.group]) { idx[p.group] = groups.length; groups.push({ name: p.group, count: 0 }); }
+      groups[idx[p.group]].count++;
+    });
+    groups.sort(function (a, b) { return b.count - a.count; });
+
+    var html = '<button class="active" data-g="__all__">全部<span class="n">' + points.length + '</span></button>';
+    groups.forEach(function (g) {
+      html += '<button data-g="' + g.name.replace(/"/g, '&quot;') + '">' + g.name.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
+        '<span class="n">' + g.count + '</span></button>';
+    });
+    filterBar.innerHTML = html;
+    filterBar.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      activeGroup = btn.getAttribute('data-g');
+      filterBar.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b === btn); });
+      applyFilter();
+    });
+  }
+
+  function applyFilter() {
+    markerEls.forEach(function (el, i) {
+      var show = activeGroup === '__all__' || points[i].group === activeGroup;
+      el.classList.toggle('hidden', !show);
+    });
+  }
+
+  // ---- 气泡 ----
+  function showPopover(i) {
+    var p = points[i];
+    document.getElementById('popTitle').textContent = p.name;
+    document.getElementById('popGroup').textContent = p.group;
+    var d = document.getElementById('popDesc');
+    d.textContent = p.desc || '';
+    d.style.display = p.desc ? '' : 'none';
+    var pos = toPixel(toWorld(p.x, p.y));
+    var x = pos.left + pan.x;
+    var y = pos.top + pan.y;
+    var w = popover.offsetWidth || 200;
+    var h = popover.offsetHeight || 80;
+    x = clamp(x, 8, vw() - w - 8);
+    y = clamp(y - 34, 8, vh() - h - 8);
+    popover.style.left = x + 'px';
+    popover.style.top = y + 'px';
+    popover.classList.add('show');
+  }
+  function hidePopover() { popover.classList.remove('show'); }
+
+  // ---- 缩放（连续，锚点保持在光标/捏合中心下）----
+  function zoomAt(factor, mx, my) {
+    var nz = clamp(zoom * factor, ZOOM_MIN, ZOOM_MAX);
+    if (nz === zoom) return;
+    var wx = (mx - pan.x) / zoom;
+    var wy = (my - pan.y) / zoom;
+    zoom = nz;
+    scale = zoom;
+    tileSize = BASE_TILE * zoom;
+    pan.x = mx - wx * zoom;
+    pan.y = my - wy * zoom;
+    layoutWorld();
+  }
+  // delta > 0 放大，< 0 缩小；指数步进实现滚轮连续缩放
+  function zoomBy(delta, mx, my) {
+    zoomAt(Math.pow(1.0016, delta), mx, my);
+  }
+  // 单级缩放（双击 / 缩放控件按钮）：每级 1.5 倍，效果明显
+  function zoomStepLevel(step, mx, my) {
+    zoomAt(step > 0 ? 1.5 : 1 / 1.5, mx, my);
+  }
+
+  function layoutWorld() {
+    worldW = (BOUND.xMax - BOUND.xMin + 1) * tileSize;
+    worldH = (BOUND.yMax - BOUND.yMin + 1) * tileSize;
+    world.style.width = worldW + 'px';
+    world.style.height = worldH + 'px';
+    clampPan();
+    applyPan();
+    renderTiles(dataGuid);
+    positionMarkers();
+    updateInfo();
+  }
+
+  function updateInfo() {
+    infoZoom.textContent = Math.round(zoom * 100) + '%';
+    var bar = document.getElementById('mapScaleBar');
+    var txt = document.getElementById('mapScaleText');
+    if (bar) bar.style.width = Math.min(160, Math.max(24, tileSize)) + 'px';
+    if (txt) txt.textContent = Math.round(tileSize) + 'px / 格';
+  }
+
+  // ---- 鼠标拖拽 + 滚轮 ----
+  viewport.addEventListener('mousedown', function (e) {
+    if (e.button !== 0) return;
+    dragging = true;
+    dragMoved = false;
+    dragVel = { x: 0, y: 0 };
+    lastMoveT = 0;
+    lastPan = null;
+    dragStart = { x: e.clientX, y: e.clientY, px: pan.x, py: pan.y };
+    viewport.classList.add('dragging');
+    hidePopover();
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', function (e) {
+    if (!dragging || !dragStart) return;
+    var dx = e.clientX - dragStart.x;
+    var dy = e.clientY - dragStart.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) dragMoved = true;
+    var now = Date.now();
+    if (lastMoveT && lastPan) {
+      var dt = Math.max(16, now - lastMoveT);
+      dragVel.x = (pan.x - lastPan.x) / dt * 16;
+      dragVel.y = (pan.y - lastPan.y) / dt * 16;
+    }
+    lastMoveT = now;
+    lastPan = { x: pan.x, y: pan.y };
+    pan.x = dragStart.px + dx;
+    pan.y = dragStart.py + dy;
+    clampPan();
+    applyPan();
+    renderTiles(dataGuid);
+  });
+  window.addEventListener('mouseup', function () {
+    dragging = false;
+    if (dragStart) {
+      var moved = dragMoved;
+      var vx = dragVel.x, vy = dragVel.y;
+      dragStart = null;
+      dragMoved = false;
+      viewport.classList.remove('dragging');
+      if (moved) suppressClickUntil = Date.now() + 350;
+      if (moved && Math.hypot(vx, vy) > 1.2) startInertia(vx, vy);
+    }
+  });
+
+  viewport.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    var rect = viewport.getBoundingClientRect();
+    var mx = e.clientX - rect.left;
+    var my = e.clientY - rect.top;
+    zoomBy(-e.deltaY, mx, my);
+  }, { passive: false });
+
+  // 双击放大（真实地图操作习惯）
+  viewport.addEventListener('dblclick', function (e) {
+    var rect = viewport.getBoundingClientRect();
+    zoomStepLevel(1, e.clientX - rect.left, e.clientY - rect.top);
+  });
+
+  // 松手惯性滑行（真实地图手感）
+  var inertiaRAF = null;
+  function startInertia(vx, vy) {
+    if (inertiaRAF) cancelAnimationFrame(inertiaRAF);
+    var step = function () {
+      if (Math.hypot(vx, vy) < 0.4) return;
+      vx *= 0.94; vy *= 0.94;
+      pan.x += vx; pan.y += vy;
+      var bx = pan.x, by = pan.y;
+      clampPan();
+      if (pan.x !== bx || pan.y !== by) return; // 撞到边界即停
+      applyPan();
+      renderTiles(dataGuid);
+      inertiaRAF = requestAnimationFrame(step);
+    };
+    inertiaRAF = requestAnimationFrame(step);
+  }
+
+  // ---- 触屏：单指拖动 / 双指捏合缩放 ----
+  var touchState = null;
+  viewport.addEventListener('touchstart', function (e) {
+    hidePopover();
+    if (e.touches.length === 1) {
+      var t = e.touches[0];
+      touchState = {
+        mode: 'drag', x: t.clientX, y: t.clientY, px: pan.x, py: pan.y,
+        moved: false, lastT: 0, lastPx: pan.x, lastPy: pan.y, vx: 0, vy: 0
+      };
+    } else if (e.touches.length === 2) {
+      var a = e.touches[0], b = e.touches[1];
+      touchState = {
+        mode: 'pinch',
+        d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY),
+        cx: (a.clientX + b.clientX) / 2,
+        cy: (a.clientY + b.clientY) / 2
+      };
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  viewport.addEventListener('touchmove', function (e) {
+    if (!touchState) return;
+    e.preventDefault();
+    if (touchState.mode === 'drag' && e.touches.length === 1) {
+      var t = e.touches[0];
+      var dx = t.clientX - touchState.x;
+      var dy = t.clientY - touchState.y;
+      if (Math.abs(dx) + Math.abs(dy) > 4) touchState.moved = true;
+      var now = Date.now();
+      if (touchState.lastT) {
+        var dt = Math.max(16, now - touchState.lastT);
+        touchState.vx = (pan.x - touchState.lastPx) / dt * 16;
+        touchState.vy = (pan.y - touchState.lastPy) / dt * 16;
+      }
+      touchState.lastT = now;
+      touchState.lastPx = pan.x;
+      touchState.lastPy = pan.y;
+      pan.x = touchState.px + dx;
+      pan.y = touchState.py + dy;
+      clampPan();
+      applyPan();
+      renderTiles(dataGuid);
+    } else if (touchState.mode === 'pinch' && e.touches.length >= 2) {
+      var a = e.touches[0], b = e.touches[1];
+      var d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+      if (touchState.d > 0 && d > 0) {
+        var rect = viewport.getBoundingClientRect();
+        var cx = (a.clientX + b.clientX) / 2 - rect.left;
+        var cy = (a.clientY + b.clientY) / 2 - rect.top;
+        zoomAt(d / touchState.d, cx, cy);
+      }
+      touchState.d = d;
+      touchState.cx = (a.clientX + b.clientX) / 2;
+      touchState.cy = (a.clientY + b.clientY) / 2;
+    }
+  }, { passive: false });
+
+  viewport.addEventListener('touchend', function (e) {
+    if (!touchState) return;
+    if (touchState.mode === 'drag' && touchState.moved) {
+      if (Math.hypot(touchState.vx, touchState.vy) > 1.2) startInertia(touchState.vx, touchState.vy);
+      suppressClickUntil = Date.now() + 350;
+    }
+    touchState = null;
+  });
+  viewport.addEventListener('touchcancel', function () { touchState = null; });
+
+  // 点击空白关闭气泡
+  viewport.addEventListener('click', function () { hidePopover(); });
+
+  // 缩放控件按钮
+  document.getElementById('mapZoomCtl').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    zoomStepLevel(parseInt(b.getAttribute('data-d'), 10), vw() / 2, vh() / 2);
+  });
+
+  // ---- 加载数据 ----
+  var dataGuid = 'C9D8F32B5FC7430A808FFCFCBE0ED9F8';
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function fail(msg) {
+    errBox.textContent = msg;
+    errBox.classList.add('show');
+  }
+
+  fetch('data/map-points.json')
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (d) {
+      if (!d || !d.points || !d.points.length) throw new Error('点位数据为空');
+      points = d.points;
+      dataGuid = d.guid || dataGuid;
+      document.getElementById('mapPointCount').textContent = points.length;
+      document.getElementById('mapGroupCount').textContent = 3;
+
+      buildFilters();
+      buildMarkers();
+      applyFilter();
+
+      // 初始居中
+      worldW = (BOUND.xMax - BOUND.xMin + 1) * tileSize;
+      worldH = (BOUND.yMax - BOUND.yMin + 1) * tileSize;
+      pan.x = (vw() - worldW) / 2;
+      pan.y = (vh() - worldH) / 2;
+      layoutWorld();
+    })
+    .catch(function (err) {
+      fail('点位数据加载失败（' + (err && err.message ? err.message : err) + '）。<br/>请确认在 HTTP 环境访问（如 GitHub Pages / 本地静态服务器），直接以 file:// 打开会被浏览器拦截。');
+    });
+
+  // 视口尺寸变化时重排
+  window.addEventListener('resize', function () {
+    clampPan();
+    applyPan();
+    renderTiles(dataGuid);
+    positionMarkers();
+  });
+})();
+</script>
+</body>
+</html>
