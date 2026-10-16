@@ -239,7 +239,7 @@ body {
 }
 
 /* ============================================================
-   官方 Wiki 全量收录区块（追加，不改动既有规则）
+   全量收录区块（追加，不改动既有规则）
    ============================================================ */
 
 /* ---------- 首页区块 ---------- */
@@ -247,6 +247,31 @@ body {
   margin-top: 30px;
   padding-top: 22px;
   border-top: 1px solid var(--line-strong);
+}
+
+/* ---------- 词条相关位置互链 ---------- */
+.wd-rel {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-strong);
+  font-size: 13px;
+}
+.wd-rel-label {
+  color: var(--text-2);
+  margin-right: 10px;
+  font-weight: 600;
+}
+.wd-rel-link {
+  color: var(--wiki-accent);
+  text-decoration: none;
+}
+.wd-rel-link:hover {
+  text-decoration: underline;
+}
+.wd-rel-sep {
+  color: var(--text-2);
+  opacity: 0.6;
+  margin: 0 4px;
 }
 
 .wiki-block-head {

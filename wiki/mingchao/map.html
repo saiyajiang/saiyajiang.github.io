@@ -295,7 +295,7 @@
 <!-- ==================== 底部 Dock ==================== -->
 <nav class="wiki-dock" aria-label="分类快捷导航">
   <a href="index.html">鸣潮首页</a>
-  <a href="wiki-official.html">官方 Wiki</a>
+  <a href="wiki-official.html">全量收录</a>
   <a href="map.html" class="active">地图</a>
   <a href="wiki-detail.html">词条详情</a>
 </nav>
@@ -434,10 +434,13 @@
       }
     });
 
-    // 1.5) 连续缩放：更新已保留瓦片的尺寸，并按档位切换分辨率
+    // 1.5) 连续缩放：更新已保留瓦片的位置与尺寸（left/top 步长必须随 tileSize 同步），并按档位切换分辨率
     for (var key in keep) {
       var t = tiles[key];
       if (!t) continue;
+      var kp = key.split('_');
+      t.el.style.left = ((+kp[0] - GRID.xMin) * tileSize) + 'px';
+      t.el.style.top = ((+kp[1] - GRID.yMin) * tileSize) + 'px';
       t.el.style.width = tileSize + 'px';
       t.el.style.height = tileSize + 'px';
       var img = t.el.querySelector('img');

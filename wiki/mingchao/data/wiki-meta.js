@@ -1,4 +1,4 @@
-/* 鸣潮 官方Wiki 分类元数据（自动生成） */
+/* 鸣潮 Wiki 分类元数据（自动生成） */
 window.WIKI_META = [
   {
     "key": "tujian",

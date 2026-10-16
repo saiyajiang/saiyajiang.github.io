@@ -1,5 +1,5 @@
 /* ============================================================
-   鸣潮 · 官方 Wiki 词条详情页脚本（wiki-detail.js）
+   鸣潮 · Wiki 全量收录词条详情页脚本（wiki-detail.js）
    根据 URL 参数 cat + id 加载对应 data/*.json，渲染正文纯文字。
    依赖：data/wiki-meta.js（window.WIKI_META）
    ============================================================ */
@@ -37,8 +37,8 @@
   var crumbTitle = document.getElementById('crumbTitle');
   var back = document.getElementById('wdBack');
 
-  if (wdCat) wdCat.textContent = 'OFFICIAL WIKI · ' + (cur ? cur.name : catKey);
-  if (crumbLink) crumbLink.textContent = '官方 Wiki · ' + (cur ? cur.name : catKey);
+  if (wdCat) wdCat.textContent = '全量收录 · ' + (cur ? cur.name : catKey);
+  if (crumbLink) crumbLink.textContent = '全量收录 · ' + (cur ? cur.name : catKey);
   if (back) back.href = 'wiki-official.html?cat=' + encodeURIComponent(catKey);
 
   function renderNotFound(msg) {
@@ -70,6 +70,16 @@
         wdBody.innerHTML = '<pre class="wd-text">' + esc(body) + '</pre>';
       } else {
         renderNotFound('该词条仅有标题、无正文文字。');
+      }
+
+      // 相关位置跳转（成就位置图等外部页面 → 双向互链）
+      var rel = item['相关位置'];
+      if (rel && rel.length) {
+        var links = rel.map(function (r) {
+          return '<a class="wd-rel-link" href="' + esc(r['链接']) + '">' + esc(r['名称']) + '</a>';
+        }).join('<span class="wd-rel-sep"> · </span>');
+        wdBody.insertAdjacentHTML('beforeend',
+          '<div class="wd-rel"><span class="wd-rel-label">相关位置</span>' + links + '</div>');
       }
     })
     .catch(function () {

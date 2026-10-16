@@ -1,5 +1,5 @@
 /* ============================================================
-   鸣潮 · 官方 Wiki 分类浏览页脚本（wiki-official.js）
+   鸣潮 · Wiki 全量收录分类浏览页脚本（wiki-official.js）
    按顶层分类加载 data/*.json，按子分类分组渲染词条列表；
    词条链接进入 wiki-detail.html?cat=..&id=..
    依赖：data/wiki-meta.js（window.WIKI_META）
@@ -105,7 +105,7 @@
   }
 
   if (title) title.textContent = cur.name + ' · 词条';
-  if (crumb) crumb.textContent = '官方 Wiki · ' + cur.name;
+  if (crumb) crumb.textContent = '全量收录 · ' + cur.name;
   markActive();
 
   fetch('data/' + cur.file)

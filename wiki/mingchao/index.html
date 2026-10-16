@@ -47,7 +47,6 @@
   <header class="wiki-hero">
     <div class="wiki-hero-badge">WUTHERING WAVES</div>
     <h1 class="wiki-hero-title">鸣潮 <em>图鉴 · 百科</em></h1>
-    <p class="wiki-hero-sub">共鸣者 · 武器 · 声骸 · 探索地图 —— 仿 BWIKI 深蓝科幻风格，探索点位数据已接入。</p>
     <div class="wiki-stats">
       <div class="wiki-stat"><span>板块</span><b>0</b></div>
       <div class="wiki-stat"><span>分类</span><b id="mcCatCount">0</b></div>
@@ -88,11 +87,24 @@
     </div>
   </main>
 
-  <!-- ==================== 官方 Wiki 全量收录区块 ==================== -->
+  <!-- ==================== 探索地图入口 ==================== -->
+  <section class="wiki-block" id="mcMapEntry">
+    <div class="wiki-block-head">
+      <h2 class="wiki-block-title">探索地图</h2>
+      <p class="wiki-block-desc">鸣潮全地图 · 传送入口与建筑地址点位，真实地图式缩放浏览。</p>
+    </div>
+    <a class="wo-cat-card" href="map.html">
+      <span class="wo-cat-name">打开探索地图</span>
+      <span class="wo-cat-stat">312 个点位 · 连续缩放 / 惯性拖拽 / 双击放大</span>
+      <span class="wo-cat-open">进入地图 ↗</span>
+    </a>
+  </section>
+
+  <!-- ==================== 全量收录区块 ==================== -->
   <section class="wiki-block" id="officialWiki">
     <div class="wiki-block-head">
-      <h2 class="wiki-block-title">官方 Wiki · 全量收录</h2>
-      <p class="wiki-block-desc">库街区官方 wiki 文字内容（排除「玩家贡献」、不含图片），按官方顶层分类收录，点击进入分类浏览词条。</p>
+      <h2 class="wiki-block-title">全量收录</h2>
+      <p class="wiki-block-desc">按官方顶层分类收录的纯文字词条，点击进入分类浏览。</p>
     </div>
     <div class="wiki-official-cats" id="wikiOfficialCats"></div>
   </section>
@@ -129,7 +141,7 @@
     }
   })();
 
-  // 官方 Wiki 区块：渲染顶层分类入口卡片
+  // 全量收录区块：渲染顶层分类入口卡片
   (function () {
     var box = document.getElementById('wikiOfficialCats');
     if (!box || !window.WIKI_META) return;
