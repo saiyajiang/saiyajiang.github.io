@@ -5,14 +5,7 @@ window.WIKI_META = [
     "name": "游戏图鉴",
     "file": "wiki-tujian.json",
     "count": 2146,
-    "chars": 822350
-  },
-  {
-    "key": "gonglue",
-    "name": "攻略合集",
-    "file": "wiki-gonglue.json",
-    "count": 68,
-    "chars": 115859
+    "chars": 821025
   },
   {
     "key": "juqing",
@@ -25,15 +18,15 @@ window.WIKI_META = [
     "key": "huodong",
     "name": "活动合集",
     "file": "wiki-huodong.json",
-    "count": 222,
-    "chars": 48032
+    "count": 219,
+    "chars": 41806
   },
   {
     "key": "renwu",
     "name": "任务合集",
     "file": "wiki-renwu.json",
-    "count": 366,
-    "chars": 145940
+    "count": 354,
+    "chars": 31232
   },
   {
     "key": "chengjiu",

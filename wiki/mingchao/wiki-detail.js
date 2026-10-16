@@ -67,19 +67,21 @@
       if (wdUpdate) wdUpdate.textContent = esc(String(item['最后更新'] || '-').slice(0, 10));
       if (crumbTitle) crumbTitle.textContent = item['标题'] || '词条';
 
-      // 成就条目：渲染 版本/合集 徽章 + 描述卡片（不含奖励）
+      // 成就条目：渲染 大类/版本/合集 徽章 + 描述卡片（不含奖励）
+      var cat = item['大类'];
       var ver = item['版本'];
       var hz = item['合集'];
       if (wdBadges) {
         var bhtml = '';
+        if (cat) bhtml += '<span class="wd-badge wd-badge-cat">' + esc(String(cat)) + '</span>';
         if (ver) bhtml += '<span class="wd-badge">版本 ' + esc(String(ver)) + '</span>';
         if (hz) bhtml += '<span class="wd-badge wd-badge-coll">' + esc(String(hz)) + '</span>';
         wdBadges.innerHTML = bhtml;
       }
       if (body) {
-        if (wdBadges && (ver || hz)) {
+        if (wdBadges && (cat || ver || hz)) {
           wdBody.innerHTML = '<div class="wd-card">' +
-            '<div class="wd-card-head">' + (hz ? '<span class="wd-card-coll">' + esc(String(hz)) + '</span>' : '') + (ver ? '<span class="wd-card-ver">版本 ' + esc(String(ver)) + '</span>' : '') + '</div>' +
+            '<div class="wd-card-head">' + (cat ? '<span class="wd-card-coll">' + esc(String(cat)) + '</span>' : '') + (hz ? '<span class="wd-card-coll">' + esc(String(hz)) + '</span>' : '') + (ver ? '<span class="wd-card-ver">版本 ' + esc(String(ver)) + '</span>' : '') + '</div>' +
             '<pre class="wd-text">' + esc(body) + '</pre>' +
             '</div>';
         } else {

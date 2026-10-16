@@ -61,14 +61,56 @@
       '<p class="mc-placeholder-desc">请确认在 HTTP 环境访问（如 GitHub Pages / 本地静态服务器）。<br/>直接以 file:// 打开时浏览器会拦截 JSON 请求。</p></div>';
   }
 
-  // 成就分类：每条成就一张卡片（名称/版本/合集/描述摘要）
-  function renderAchievementCards(items) {
-    var html = '<div class="wo-card-grid">' + items.map(function (it) {
+  // 成就游戏内分类层级（索拉漫行 / 长路留迹 / 铿锵刃鸣 / 诸音声轨）
+  var ACH_CATS = ['索拉漫行', '长路留迹', '铿锵刃鸣', '诸音声轨'];
+  var achAllItems = [];
+  var achActiveCat = '';
+  var achActiveColl = '';
+
+  // 该大类下合集（子分类）去重列表，保持出现顺序
+  function achCollsOf(cat) {
+    var seen = {}, out = [];
+    achAllItems.forEach(function (it) {
+      if (it['大类'] !== cat) return;
+      var c = it['合集'];
+      if (c && !seen[c]) { seen[c] = 1; out.push(c); }
+    });
+    return out;
+  }
+
+  // 成就分类：每条成就一张卡片（大类/版本/合集/描述摘要），顶部提供游戏内大类 + 合集二级筛选
+  function renderAchievementCards(items, filterCat, filterColl) {
+    if (filterCat) {
+      items = items.filter(function (it) { return it['大类'] === filterCat; });
+    }
+    if (filterColl) {
+      items = items.filter(function (it) { return it['合集'] === filterColl; });
+    }
+    var html = '<div class="wo-ach-filter">' +
+      '<button class="wo-ach-chip' + (!filterCat ? ' active' : '') + '" data-cat="">全部</button>' +
+      ACH_CATS.map(function (c) {
+        return '<button class="wo-ach-chip' + (filterCat === c ? ' active' : '') + '" data-cat="' + esc(c) + '">' + esc(c) + '</button>';
+      }).join('') +
+      '</div>';
+    if (filterCat) {
+      var colls = achCollsOf(filterCat);
+      if (colls.length) {
+        html += '<div class="wo-ach-filter wo-ach-filter-sub">' +
+          '<button class="wo-ach-chip' + (!filterColl ? ' active' : '') + '" data-coll="">全部合集</button>' +
+          colls.map(function (c) {
+            return '<button class="wo-ach-chip' + (filterColl === c ? ' active' : '') + '" data-coll="' + esc(c) + '">' + esc(c) + '</button>';
+          }).join('') +
+          '</div>';
+      }
+    }
+    html += '<div class="wo-card-grid">' + items.map(function (it) {
+      var cat = it['大类'];
       var v = it['版本'];
       var hz = it['合集'];
       var desc = it['正文文字'] || '';
       if (desc.length > 46) desc = desc.slice(0, 46) + '…';
       var badges = '';
+      if (cat) badges += '<span class="wo-card-badge wo-card-cat">' + esc(String(cat)) + '</span>';
       if (v) badges += '<span class="wo-card-badge">' + esc(String(v)) + '</span>';
       if (hz) badges += '<span class="wo-card-badge wo-card-coll">' + esc(String(hz)) + '</span>';
       return '<a class="wo-card" href="wiki-detail.html?cat=' + encodeURIComponent(cur.key) +
@@ -81,17 +123,45 @@
     return html;
   }
 
+  function renderAchStats(filterCat, filterColl) {
+    var shown = achAllItems.filter(function (it) {
+      if (filterCat && it['大类'] !== filterCat) return false;
+      if (filterColl && it['合集'] !== filterColl) return false;
+      return true;
+    });
+    if (count) count.textContent = shown.length;
+    if (subCount) {
+      if (!filterCat) subCount.textContent = ACH_CATS.length;
+      else if (filterColl) subCount.textContent = 1;
+      else subCount.textContent = achCollsOf(filterCat).length;
+    }
+    var totalChars = shown.reduce(function (n, it) { return n + (it['字符数'] || 0); }, 0);
+    if (chars) chars.textContent = fmtChars(totalChars);
+  }
+
   function render(items) {
     if (!items || !items.length) {
       list.innerHTML = '<p class="wiki-desc">该分类暂无正文词条。</p>';
       return;
     }
     if (cur.key === 'chengjiu') {
-      list.innerHTML = renderAchievementCards(items);
-      if (count) count.textContent = items.length;
-      if (subCount) subCount.textContent = 1;
-      var totalChars = items.reduce(function (n, it) { return n + (it['字符数'] || 0); }, 0);
-      if (chars) chars.textContent = fmtChars(totalChars);
+      achAllItems = items;
+      achActiveCat = '';
+      achActiveColl = '';
+      list.innerHTML = renderAchievementCards(items, '', '');
+      renderAchStats('', '');
+      list.addEventListener('click', function (e) {
+        var chip = e.target.closest('.wo-ach-chip');
+        if (!chip) return;
+        if (chip.hasAttribute('data-cat')) {
+          achActiveCat = chip.getAttribute('data-cat');
+          achActiveColl = '';
+        } else if (chip.hasAttribute('data-coll')) {
+          achActiveColl = chip.getAttribute('data-coll') || '';
+        }
+        list.innerHTML = renderAchievementCards(achAllItems, achActiveCat, achActiveColl);
+        renderAchStats(achActiveCat, achActiveColl);
+      });
       return;
     }
     // 按子分类分组（保持出现顺序）
