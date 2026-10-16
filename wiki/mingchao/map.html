@@ -325,18 +325,12 @@
     }
   })();
 
-  // ==================== 地图核心 ====================
-  var BASE_TILE = 850;                       // 基准瓦片像素（换算基准）
-  var ZOOM_MIN = 0.2, ZOOM_MAX = 3;          // 连续缩放范围（基准倍数，真实地图式）
-  // 瓦片分辨率档位：缩小时用低清图、放大用高清图（与真实地图瓦片金字塔同理）
-  var TILE_VARIANTS = [
-    { max: 280, url: '?x-oss-process=image/format,png/resize,w_256,h_256' },
-    { max: 560, url: '?x-oss-process=image/format,png/resize,w_512,h_512' },
-    { max: Infinity, url: '' }
-  ];
-  var GRID = { xMin: -12, xMax: 17, yMin: -17, yMax: 14 };   // 瓦片加载网格（存在瓦片至 yMin=-16，yMin=-17 仅占位）
-  // 容器范围：瓦片网格 ∪ 点位实际范围（东侧/北侧有超出部分网格的点位）
-  var BOUND = { xMin: -12, xMax: 17, yMin: -17, yMax: 14 };
+  // ==================== 地图核心（单张整图，天然无缝） ====================
+  var IMG_SRC = 'map-full.png';           // 合成整图底图
+  var IMG_W = 7680, IMG_H = 7936;         // 整图尺寸（每格 256px）
+  var FULL = { xMin: -12, xMax: 17, yMin: -16, yMax: 14 }; // 整图覆盖的瓦片网格
+  var K = 256 / 850;                       // 基准格 850px -> 合成图 256px
+  var ZOOM_MIN = 0.2, ZOOM_MAX = 3;        // 连续缩放范围
 
   var viewport = document.getElementById('mapViewport');
   var world = document.getElementById('mapWorld');
@@ -345,54 +339,49 @@
   var popover = document.getElementById('mapPopover');
   var errBox = document.getElementById('mapError');
 
-  var points = [];                 // 全部点位
-  var markerEls = [];              // 标记 DOM 列表（与 points 对应）
-  var tiles = {};                  // 已挂载瓦片 key -> div
-  var zoom = 0.3;                  // 当前缩放倍数（0.2 ~ 3，连续变化）
-  var tileSize = BASE_TILE * zoom; // 当前瓦片显示尺寸
-  var scale = zoom;                // 像素缩放比（tileSize / BASE_TILE）
+  var points = [];
+  var markerEls = [];
+  var zoom = 0.3;                          // 当前缩放倍数
   var pan = { x: 0, y: 0 };
-  var worldW = 0, worldH = 0;      // 世界容器像素尺寸（随缩放变化）
+  var worldW = 0, worldH = 0;
   var activeGroup = '__all__';
   var dragging = false;
   var dragStart = null;
-  var dragMoved = false;           // 本次拖拽是否产生位移（区分点击/拖拽）
-  var dragVel = { x: 0, y: 0 };    // 拖拽末速度（惯性用）
+  var dragMoved = false;
+  var dragVel = { x: 0, y: 0 };
   var lastMoveT = 0;
   var lastPan = null;
-  var suppressClickUntil = 0;      // 拖拽刚结束后短暂屏蔽点击
+  var suppressClickUntil = 0;
 
   function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
 
-  // ---- 坐标换算（规格公式）----
+  // ---- 坐标换算（库街区规格公式，结果再映射到合成图坐标） ----
   function toWorld(x, y) {
     var px = x / 100 + 850;
     var py = y / 100;
     var tileX = Math.floor(px / 850);
     var tileY = Math.floor(-py / 850);
     var ox = px - tileX * 850;
-    var oy = py + (tileY + 1) * 850;   // 850 基准，向下为正
+    var oy = py + (tileY + 1) * 850;
     return { tx: tileX, ty: tileY, ox: ox, oy: oy };
   }
   function toPixel(w) {
     return {
-      left: (w.tx - BOUND.xMin) * tileSize + w.ox * scale,
-      top: (w.ty - BOUND.yMin) * tileSize + w.oy * scale
+      left: ((w.tx - FULL.xMin) * 256 + w.ox * K) * zoom,
+      top: ((w.ty - FULL.yMin) * 256 + w.oy * K) * zoom
     };
   }
 
-  // ---- 瓦片 URL（3 级）----
-  function tileUrl(guid, tx, ty) {
-    var base = 'https://web-static.kurobbs.com/mcmap/tiles/' + guid + '/8/8_' + tx + '_' + ty + '.png';
-    return base + tileVariant();
-  }
-  // 当前缩放档位对应的瓦片分辨率参数
-  function tileVariant() {
-    for (var i = 0; i < TILE_VARIANTS.length; i++) {
-      if (tileSize <= TILE_VARIANTS[i].max) return TILE_VARIANTS[i].url;
-    }
-    return '';
-  }
+  // ---- 底图：单张整图 ----
+  var mapImg = document.createElement('img');
+  mapImg.alt = '';
+  mapImg.draggable = false;
+  mapImg.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;user-select:none;pointer-events:none;-webkit-user-drag:none;';
+  mapImg.addEventListener('error', function () {
+    fail('底图加载失败，请确认 map-full.png 已部署到同目录。');
+  });
+  mapImg.src = IMG_SRC;
+  world.appendChild(mapImg);
 
   // ---- 视口几何 ----
   function vw() { return viewport.clientWidth; }
@@ -406,106 +395,16 @@
     pan.x = clamp(pan.x, minX, maxX);
     pan.y = clamp(pan.y, minY, maxY);
   }
-
   function applyPan() {
     world.style.transform = 'translate(' + pan.x + 'px,' + pan.y + 'px)';
   }
 
-  // ---- 瓦片懒加载：只渲染视口可见范围，增量增删 ----
-  function renderTiles(guid) {
-    var pad = 1; // 预载边缘 1 圈
-    var left = -pan.x / tileSize - pad;
-    var right = (-pan.x + vw()) / tileSize + pad;
-    var top = -pan.y / tileSize - pad;
-    var bottom = (-pan.y + vh()) / tileSize + pad;
-
-    // 可见瓦片范围（left/top 为容器内列/行数，需加 GRID 偏移换算成 tx/ty）
-    var tx0 = Math.max(GRID.xMin, GRID.xMin + Math.floor(left));
-    var tx1 = Math.min(GRID.xMax, GRID.xMin + Math.ceil(right) - 1);
-    var ty0 = Math.max(GRID.yMin, GRID.yMin + Math.floor(top));
-    var ty1 = Math.min(GRID.yMax, GRID.yMin + Math.ceil(bottom) - 1);
-
-    // 1) 移除不再可见的瓦片
-    var keep = {};
-    for (var tx = tx0; tx <= tx1; tx++) {
-      for (var ty = ty0; ty <= ty1; ty++) keep[tx + '_' + ty] = 1;
-    }
-    Object.keys(tiles).forEach(function (key) {
-      if (!keep[key]) {
-        tiles[key].el.remove();
-        delete tiles[key];
-      }
-    });
-
-    // 1.5) 连续缩放：更新已保留瓦片的位置与尺寸（left/top 步长必须随 tileSize 同步）。
-    // 分辨率档位切换采用双缓冲：新图加载完成前保留旧图，避免切档瞬间整片瓦片重载出现黑缝/断裂。
-    for (var key in keep) {
-      var t = tiles[key];
-      if (!t) continue;
-      var kp = key.split('_');
-      t.el.style.left = ((+kp[0] - GRID.xMin) * tileSize) + 'px';
-      t.el.style.top = ((+kp[1] - GRID.yMin) * tileSize) + 'px';
-      t.el.style.width = tileSize + 'px';
-      t.el.style.height = tileSize + 'px';
-      var want = tileVariant();
-      var imgs = t.el.querySelectorAll('img');
-      var has = false;
-      for (var ii = 0; ii < imgs.length; ii++) {
-        if (imgs[ii].getAttribute('data-v') === want) { has = true; break; }
-      }
-      if (!has) {
-        var ni = document.createElement('img');
-        ni.alt = '';
-        ni.draggable = false;
-        ni.addEventListener('load', function () {
-          var all = t.el.querySelectorAll('img');
-          for (var j = 0; j < all.length; j++) if (all[j] !== ni) all[j].remove();
-        });
-        ni.addEventListener('error', function () {
-          ni.remove();
-          if (!t.el.querySelector('img')) t.el.classList.add('missing');
-        });
-        ni.setAttribute('data-v', want);
-        ni.src = tileUrl(guid, kp[0], kp[1]);
-        t.el.appendChild(ni);
-      }
-    }
-
-    // 2) 增量创建可见瓦片
-    for (var tx2 = tx0; tx2 <= tx1; tx2++) {
-      for (var ty2 = ty0; ty2 <= ty1; ty2++) {
-        var key = tx2 + '_' + ty2;
-        if (tiles[key]) continue;
-        var div = document.createElement('div');
-        div.className = 'map-tile';
-        div.style.left = ((tx2 - GRID.xMin) * tileSize) + 'px';
-        div.style.top = ((ty2 - GRID.yMin) * tileSize) + 'px';
-        div.style.width = tileSize + 'px';
-        div.style.height = tileSize + 'px';
-        var img = document.createElement('img');
-        img.alt = '';
-        img.draggable = false;
-        img.addEventListener('error', function () {
-          this.parentNode.classList.add('missing');
-          this.remove();
-        });
-        img.setAttribute('data-v', tileVariant());
-        img.src = tileUrl(guid, tx2, ty2);
-        div.appendChild(img);
-        world.appendChild(div);
-        tiles[key] = { el: div };
-      }
-    }
-  }
-
   // ---- 点位标记 ----
-  function buildMarkers(guid) {
-    // 同名计数：显示序号便于区分（气泡保留原始名）
+  function buildMarkers() {
     var seq = {};
     points.forEach(function (p) {
       seq[p.name] = (seq[p.name] || 0) + 1;
     });
-
     markerEls = points.map(function (p, i) {
       var div = document.createElement('div');
       div.className = 'map-marker g-' + (p.group === '传送/入口' ? 'portal' : (p.group === '建筑/商店' ? 'shop' : 'land'));
@@ -516,7 +415,7 @@
       div.setAttribute('data-i', String(i));
       div.addEventListener('click', function (e) {
         e.stopPropagation();
-        if (Date.now() < suppressClickUntil) return; // 拖拽刚结束不弹气泡
+        if (Date.now() < suppressClickUntil) return;
         showPopover(i);
       });
       world.appendChild(div);
@@ -587,36 +486,31 @@
   }
   function hidePopover() { popover.classList.remove('show'); }
 
-  // ---- 缩放（连续，锚点保持在光标/捏合中心下）----
+  // ---- 缩放（连续，锚点保持在光标/捏合中心下） ----
   function zoomAt(factor, mx, my) {
     var nz = clamp(zoom * factor, ZOOM_MIN, ZOOM_MAX);
     if (nz === zoom) return;
     var wx = (mx - pan.x) / zoom;
     var wy = (my - pan.y) / zoom;
     zoom = nz;
-    scale = zoom;
-    tileSize = BASE_TILE * zoom;
     pan.x = mx - wx * zoom;
     pan.y = my - wy * zoom;
     layoutWorld();
   }
-  // delta > 0 放大，< 0 缩小；指数步进实现滚轮连续缩放
   function zoomBy(delta, mx, my) {
     zoomAt(Math.pow(1.0016, delta), mx, my);
   }
-  // 单级缩放（双击 / 缩放控件按钮）：每级 1.5 倍，效果明显
   function zoomStepLevel(step, mx, my) {
     zoomAt(step > 0 ? 1.5 : 1 / 1.5, mx, my);
   }
 
   function layoutWorld() {
-    worldW = (BOUND.xMax - BOUND.xMin + 1) * tileSize;
-    worldH = (BOUND.yMax - BOUND.yMin + 1) * tileSize;
+    worldW = IMG_W * zoom;
+    worldH = IMG_H * zoom;
     world.style.width = worldW + 'px';
     world.style.height = worldH + 'px';
     clampPan();
     applyPan();
-    renderTiles(dataGuid);
     positionMarkers();
     updateInfo();
   }
@@ -625,8 +519,8 @@
     infoZoom.textContent = Math.round(zoom * 100) + '%';
     var bar = document.getElementById('mapScaleBar');
     var txt = document.getElementById('mapScaleText');
-    if (bar) bar.style.width = Math.min(160, Math.max(24, tileSize)) + 'px';
-    if (txt) txt.textContent = Math.round(tileSize) + 'px / 格';
+    if (bar) bar.style.width = Math.min(160, Math.max(24, 256 * zoom)) + 'px';
+    if (txt) txt.textContent = Math.round(256 * zoom) + 'px / 格';
   }
 
   // ---- 鼠标拖拽 + 滚轮 ----
@@ -659,7 +553,6 @@
     pan.y = dragStart.py + dy;
     clampPan();
     applyPan();
-    renderTiles(dataGuid);
   });
   window.addEventListener('mouseup', function () {
     dragging = false;
@@ -682,13 +575,12 @@
     zoomBy(-e.deltaY, mx, my);
   }, { passive: false });
 
-  // 双击放大（真实地图操作习惯）
   viewport.addEventListener('dblclick', function (e) {
     var rect = viewport.getBoundingClientRect();
     zoomStepLevel(1, e.clientX - rect.left, e.clientY - rect.top);
   });
 
-  // 松手惯性滑行（真实地图手感）
+  // 松手惯性滑行
   var inertiaRAF = null;
   function startInertia(vx, vy) {
     if (inertiaRAF) cancelAnimationFrame(inertiaRAF);
@@ -698,15 +590,14 @@
       pan.x += vx; pan.y += vy;
       var bx = pan.x, by = pan.y;
       clampPan();
-      if (pan.x !== bx || pan.y !== by) return; // 撞到边界即停
+      if (pan.x !== bx || pan.y !== by) return;
       applyPan();
-      renderTiles(dataGuid);
       inertiaRAF = requestAnimationFrame(step);
     };
     inertiaRAF = requestAnimationFrame(step);
   }
 
-  // ---- 触屏：单指拖动 / 双指捏合缩放 ----
+  // ---- 触屏：单指拖动 / 双指捏合 ----
   var touchState = null;
   viewport.addEventListener('touchstart', function (e) {
     hidePopover();
@@ -749,7 +640,6 @@
       pan.y = touchState.py + dy;
       clampPan();
       applyPan();
-      renderTiles(dataGuid);
     } else if (touchState.mode === 'pinch' && e.touches.length >= 2) {
       var a = e.touches[0], b = e.touches[1];
       var d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -775,10 +665,8 @@
   });
   viewport.addEventListener('touchcancel', function () { touchState = null; });
 
-  // 点击空白关闭气泡
   viewport.addEventListener('click', function () { hidePopover(); });
 
-  // 缩放控件按钮
   document.getElementById('mapZoomCtl').addEventListener('click', function (e) {
     var b = e.target.closest('button');
     if (!b) return;
@@ -786,7 +674,6 @@
   });
 
   // ---- 加载数据 ----
-  var dataGuid = 'C9D8F32B5FC7430A808FFCFCBE0ED9F8';
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -802,7 +689,6 @@
     .then(function (d) {
       if (!d || !d.points || !d.points.length) throw new Error('点位数据为空');
       points = d.points;
-      dataGuid = d.guid || dataGuid;
       document.getElementById('mapPointCount').textContent = points.length;
       document.getElementById('mapGroupCount').textContent = 3;
 
@@ -810,9 +696,8 @@
       buildMarkers();
       applyFilter();
 
-      // 初始居中
-      worldW = (BOUND.xMax - BOUND.xMin + 1) * tileSize;
-      worldH = (BOUND.yMax - BOUND.yMin + 1) * tileSize;
+      worldW = IMG_W * zoom;
+      worldH = IMG_H * zoom;
       pan.x = (vw() - worldW) / 2;
       pan.y = (vh() - worldH) / 2;
       layoutWorld();
@@ -821,11 +706,9 @@
       fail('点位数据加载失败（' + (err && err.message ? err.message : err) + '）。<br/>请确认在 HTTP 环境访问（如 GitHub Pages / 本地静态服务器），直接以 file:// 打开会被浏览器拦截。');
     });
 
-  // 视口尺寸变化时重排
   window.addEventListener('resize', function () {
     clampPan();
     applyPan();
-    renderTiles(dataGuid);
     positionMarkers();
   });
 })();
