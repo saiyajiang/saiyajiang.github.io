@@ -104,10 +104,13 @@
     .map-tile {
       position: absolute;
       background: #101827;
-      border: 1px solid rgba(255, 255, 255, 0.02);
       box-sizing: border-box;
     }
-    .map-tile img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .map-tile img {
+      position: absolute; left: 0; top: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
     .map-tile.missing { background: repeating-linear-gradient(45deg, #0d1422 0, #0d1422 10px, #101a2c 10px, #101a2c 20px); }
 
     /* 点位标记 */
@@ -434,7 +437,8 @@
       }
     });
 
-    // 1.5) 连续缩放：更新已保留瓦片的位置与尺寸（left/top 步长必须随 tileSize 同步），并按档位切换分辨率
+    // 1.5) 连续缩放：更新已保留瓦片的位置与尺寸（left/top 步长必须随 tileSize 同步）。
+    // 分辨率档位切换采用双缓冲：新图加载完成前保留旧图，避免切档瞬间整片瓦片重载出现黑缝/断裂。
     for (var key in keep) {
       var t = tiles[key];
       if (!t) continue;
@@ -443,13 +447,27 @@
       t.el.style.top = ((+kp[1] - GRID.yMin) * tileSize) + 'px';
       t.el.style.width = tileSize + 'px';
       t.el.style.height = tileSize + 'px';
-      var img = t.el.querySelector('img');
-      if (img) {
-        var want = tileVariant();
-        if (img.getAttribute('data-v') !== want) {
-          img.setAttribute('data-v', want);
-          img.src = tileUrl(guid, key.split('_')[0], key.split('_')[1]);
-        }
+      var want = tileVariant();
+      var imgs = t.el.querySelectorAll('img');
+      var has = false;
+      for (var ii = 0; ii < imgs.length; ii++) {
+        if (imgs[ii].getAttribute('data-v') === want) { has = true; break; }
+      }
+      if (!has) {
+        var ni = document.createElement('img');
+        ni.alt = '';
+        ni.draggable = false;
+        ni.addEventListener('load', function () {
+          var all = t.el.querySelectorAll('img');
+          for (var j = 0; j < all.length; j++) if (all[j] !== ni) all[j].remove();
+        });
+        ni.addEventListener('error', function () {
+          ni.remove();
+          if (!t.el.querySelector('img')) t.el.classList.add('missing');
+        });
+        ni.setAttribute('data-v', want);
+        ni.src = tileUrl(guid, kp[0], kp[1]);
+        t.el.appendChild(ni);
       }
     }
 
