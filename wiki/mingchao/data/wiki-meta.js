@@ -39,8 +39,8 @@ window.WIKI_META = [
     "key": "chengjiu",
     "name": "成就合集",
     "file": "wiki-chengjiu.json",
-    "count": 1,
-    "chars": 69117
+    "count": 1276,
+    "chars": 19189
   },
   {
     "key": "yingxiang",

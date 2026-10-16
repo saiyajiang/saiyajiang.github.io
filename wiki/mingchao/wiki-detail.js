@@ -33,6 +33,7 @@
   var wdChars = document.getElementById('wdChars');
   var wdUpdate = document.getElementById('wdUpdate');
   var wdBody = document.getElementById('wdBody');
+  var wdBadges = document.getElementById('wdBadges');
   var crumbLink = document.getElementById('crumbCatLink');
   var crumbTitle = document.getElementById('crumbTitle');
   var back = document.getElementById('wdBack');
@@ -66,8 +67,24 @@
       if (wdUpdate) wdUpdate.textContent = esc(String(item['最后更新'] || '-').slice(0, 10));
       if (crumbTitle) crumbTitle.textContent = item['标题'] || '词条';
 
+      // 成就条目：渲染 版本/合集 徽章 + 描述卡片（不含奖励）
+      var ver = item['版本'];
+      var hz = item['合集'];
+      if (wdBadges) {
+        var bhtml = '';
+        if (ver) bhtml += '<span class="wd-badge">版本 ' + esc(String(ver)) + '</span>';
+        if (hz) bhtml += '<span class="wd-badge wd-badge-coll">' + esc(String(hz)) + '</span>';
+        wdBadges.innerHTML = bhtml;
+      }
       if (body) {
-        wdBody.innerHTML = '<pre class="wd-text">' + esc(body) + '</pre>';
+        if (wdBadges && (ver || hz)) {
+          wdBody.innerHTML = '<div class="wd-card">' +
+            '<div class="wd-card-head">' + (hz ? '<span class="wd-card-coll">' + esc(String(hz)) + '</span>' : '') + (ver ? '<span class="wd-card-ver">版本 ' + esc(String(ver)) + '</span>' : '') + '</div>' +
+            '<pre class="wd-text">' + esc(body) + '</pre>' +
+            '</div>';
+        } else {
+          wdBody.innerHTML = '<pre class="wd-text">' + esc(body) + '</pre>';
+        }
       } else {
         renderNotFound('该词条仅有标题、无正文文字。');
       }

@@ -488,3 +488,100 @@ body {
   line-height: 1.9;
   color: var(--text-0);
 }
+
+/* ---------- 成就独立卡片（列表页） ---------- */
+.wo-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.wo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(170deg, rgba(26, 44, 77, 0.35), rgba(12, 21, 36, 0.7));
+  text-decoration: none;
+  color: var(--text-0);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+[data-theme="light"] .wo-card {
+  background: linear-gradient(170deg, rgba(204, 219, 233, 0.35), rgba(224, 233, 242, 0.7));
+}
+.wo-card:hover {
+  border-color: var(--wiki-accent);
+  transform: translateY(-2px);
+}
+.wo-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.wo-card-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.wo-card-badge {
+  font-size: 11px;
+  color: var(--text-2);
+  background: rgba(53, 214, 196, 0.12);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.wo-card-coll {
+  color: var(--wiki-accent);
+}
+.wo-card-desc {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-2);
+}
+
+/* ---------- 成就独立卡片（详情页） ---------- */
+.wd-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0;
+}
+.wd-badge {
+  font-size: 12px;
+  color: var(--text-2);
+  background: rgba(53, 214, 196, 0.12);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.wd-badge-coll {
+  color: var(--wiki-accent);
+}
+.wd-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wd-card-head {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line);
+}
+.wd-card-coll {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wiki-accent);
+}
+.wd-card-ver {
+  font-size: 12px;
+  color: var(--text-2);
+  background: rgba(53, 214, 196, 0.12);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 10px;
+}

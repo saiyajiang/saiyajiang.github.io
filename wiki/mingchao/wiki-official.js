@@ -61,9 +61,37 @@
       '<p class="mc-placeholder-desc">请确认在 HTTP 环境访问（如 GitHub Pages / 本地静态服务器）。<br/>直接以 file:// 打开时浏览器会拦截 JSON 请求。</p></div>';
   }
 
+  // 成就分类：每条成就一张卡片（名称/版本/合集/描述摘要）
+  function renderAchievementCards(items) {
+    var html = '<div class="wo-card-grid">' + items.map(function (it) {
+      var v = it['版本'];
+      var hz = it['合集'];
+      var desc = it['正文文字'] || '';
+      if (desc.length > 46) desc = desc.slice(0, 46) + '…';
+      var badges = '';
+      if (v) badges += '<span class="wo-card-badge">' + esc(String(v)) + '</span>';
+      if (hz) badges += '<span class="wo-card-badge wo-card-coll">' + esc(String(hz)) + '</span>';
+      return '<a class="wo-card" href="wiki-detail.html?cat=' + encodeURIComponent(cur.key) +
+        '&id=' + encodeURIComponent(it['词条id']) + '">' +
+        '<span class="wo-card-title">' + esc(it['标题'] || '（无标题）') + '</span>' +
+        '<span class="wo-card-badges">' + badges + '</span>' +
+        '<span class="wo-card-desc">' + esc(desc) + '</span>' +
+        '</a>';
+    }).join('') + '</div>';
+    return html;
+  }
+
   function render(items) {
     if (!items || !items.length) {
       list.innerHTML = '<p class="wiki-desc">该分类暂无正文词条。</p>';
+      return;
+    }
+    if (cur.key === 'chengjiu') {
+      list.innerHTML = renderAchievementCards(items);
+      if (count) count.textContent = items.length;
+      if (subCount) subCount.textContent = 1;
+      var totalChars = items.reduce(function (n, it) { return n + (it['字符数'] || 0); }, 0);
+      if (chars) chars.textContent = fmtChars(totalChars);
       return;
     }
     // 按子分类分组（保持出现顺序）
