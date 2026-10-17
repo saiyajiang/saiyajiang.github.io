@@ -355,14 +355,18 @@
 
   function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
 
-  // ---- 坐标换算（库街区规格公式，结果再映射到合成图坐标） ----
+  // ---- 坐标换算（游戏坐标 → 官方瓦片网格） ----
+  // 官方瓦片 URL：web-static.kurobbs.com/mcmap/tiles/{guid}/8/8_{tx}_{ty}.png
+  // 实测瓦片存在性：8_12_-5（残息海岸）、8_16_-14（列奥尼达）等 => 官方瓦 ty = -floor(py/850)，
+  // 即 ty 负值对应游戏 y 正值（向南）。原公式 floor(-py/850) 在 py/850 非整数时恒差 1 瓦，
+  // 导致标记整体落在北侧相邻瓦片（海洋/占位色）上；此处修正为 -floor(py/850)。
   function toWorld(x, y) {
     var px = x / 100 + 850;
     var py = y / 100;
     var tileX = Math.floor(px / 850);
-    var tileY = Math.floor(-py / 850);
+    var tileY = -Math.floor(py / 850);
     var ox = px - tileX * 850;
-    var oy = py + (tileY + 1) * 850;
+    var oy = py - Math.floor(py / 850) * 850;
     return { tx: tileX, ty: tileY, ox: ox, oy: oy };
   }
   function toPixel(w) {
