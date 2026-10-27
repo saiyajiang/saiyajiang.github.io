@@ -220,7 +220,8 @@
   <div class="header-inner">
     <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
     <nav class="nav-menu" id="navMenu">
-      <a href="../../index.html">~/blog</a>
+      <a href="../../index.html">~/home</a>
+      <a href="../../blog.html">~/blog</a>
       <a href="../../archive.html">~/archive</a>
       <a href="../index.html">~/wiki</a>
       <a href="../../about.html">~/about</a>
@@ -360,6 +361,8 @@
   // 实测瓦片存在性：8_12_-5（残息海岸）、8_16_-14（列奥尼达）等 => 官方瓦 ty = -floor(py/850)，
   // 即 ty 负值对应游戏 y 正值（向南）。原公式 floor(-py/850) 在 py/850 非整数时恒差 1 瓦，
   // 导致标记整体落在北侧相邻瓦片（海洋/占位色）上；此处修正为 -floor(py/850)。
+  // 底图合成（compose 脚本）按"北在上、南在下"排列：ty 越大行越靠上（row = maxTy - ty）。
+  // 因此标记垂直坐标必须与之一致：top = (FULL.yMax - ty) * 256 + oy * K。
   function toWorld(x, y) {
     var px = x / 100 + 850;
     var py = y / 100;
@@ -372,7 +375,7 @@
   function toPixel(w) {
     return {
       left: ((w.tx - FULL.xMin) * 256 + w.ox * K) * zoom,
-      top: ((w.ty - FULL.yMin) * 256 + w.oy * K) * zoom
+      top: ((FULL.yMax - w.ty) * 256 + w.oy * K) * zoom
     };
   }
 

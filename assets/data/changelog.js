@@ -1,6 +1,13 @@
 /* 更新日志数据 */
 window.CHANGELOG_DATA = [
   {
+    date: '2026-10-27',
+    hash: '',
+    title: '首页改版：新增简洁首页 + 博客迁移至 blog.html',
+    desc: '新增简洁首页 index.html 展示个人信息与六大板块入口，原博客首页迁移至 blog.html，全站导航新增 ~/home。',
+    tags: ['Feat', 'UI']
+  },
+  {
     date: '2026-10-14',
     hash: 'af2a7ca',
     title: '图谱球体 3D 改造：球面布局 + 径向分层 + 主题节点中转关联',

@@ -10,7 +10,8 @@ window.SITE_CONFIG = {
 
   /* 导航菜单 */
   nav: [
-    { label: "~/blog",     href: "index.html",         page: "blog" },
+    { label: "~/home",     href: "index.html",         page: "home" },
+    { label: "~/blog",     href: "blog.html",          page: "blog" },
     { label: "~/archive",  href: "archive.html",       page: "archive" },
     { label: "~/wiki",     href: "wiki/index.html",    page: "wiki" },
     { label: "~/about",    href: "about.html",         page: "about" },

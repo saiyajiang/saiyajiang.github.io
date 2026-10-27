@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wiki 本地控制台 · 悲歌</title>
+    <style>
+    :root {
+      --bg-0: #ffffff;
+      --bg-1: #ffffff;
+      --bg-2: #f7f7f5;
+      --bg-3: #efefec;
+      --hover: #f1f1ef;
+      --line: rgba(15, 15, 15, 0.07);
+      --line-strong: rgba(15, 15, 15, 0.13);
+      --text-0: #37352f;
+      --text-1: #6b6b6b;
+      --text-2: #9b9a97;
+      --accent: #2383e2;
+      --accent-2: #2383e2;
+      --ok: #0f7b6c;
+      --ok-bg: #e3f0ee;
+      --warn: #a16207;
+      --warn-bg: #f6ecd4;
+      --danger: #cf222e;
+      --danger-bg: #fae9ea;
+      --mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+      --font: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+      --radius: 6px;
+    }
+    [data-theme="dark"] {
+      --bg-0: #191919;
+      --bg-1: #202020;
+      --bg-2: #262626;
+      --bg-3: #2e2e2e;
+      --hover: #2a2a2a;
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.14);
+      --text-0: #e8e6e1;
+      --text-1: #b5b3ae;
+      --text-2: #83817c;
+      --accent: #4d9bf1;
+      --accent-2: #4d9bf1;
+      --ok: #4fb99a;
+      --ok-bg: rgba(79, 185, 154, 0.15);
+      --warn: #e2b15c;
+      --warn-bg: rgba(226, 177, 92, 0.15);
+      --danger: #e5534b;
+      --danger-bg: rgba(229, 83, 75, 0.15);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-0);
+      color: var(--text-1);
+      min-height: 100vh;
+      padding: 40px 24px 88px;
+      line-height: 1.6;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    header h1 { font-size: 26px; color: var(--text-0); font-weight: 700; letter-spacing: 0.2px; }
+    header h1 span { color: var(--text-2); }
+    header .sub { color: var(--text-2); font-size: 13px; margin-top: 6px; }
+    .stat { display: flex; gap: 8px; font-size: 13px; align-items: center; flex-wrap: wrap; }
+    .stat .pill {
+      background: var(--bg-1);
+      border: 1px solid var(--line);
+      padding: 5px 12px; border-radius: 6px; color: var(--text-1);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .stat .pill:hover { background: var(--hover); border-color: var(--line-strong); }
+    .stat .pill b { color: var(--text-0); font-family: var(--mono); margin-right: 4px; }
+    .stat .pill.pending b { color: var(--warn); }
+    .stat .pill.merged b { color: var(--ok); }
+
+    .panel {
+      background: var(--bg-1);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+    }
+    .panel h2 {
+      font-size: 14px; font-weight: 600; color: var(--text-0); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .panel h2::before { content: none; }
+
+    /* 输入区 */
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 720px) { .input-grid { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 12px; color: var(--text-2); font-weight: 500; }
+    .field input, .field select, .field textarea {
+      background: var(--bg-0);
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      color: var(--text-0);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 10px;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .field input:hover, .field select:hover, .field textarea:hover { border-color: rgba(15, 15, 15, 0.2); }
+    [data-theme="dark"] .field input:hover, [data-theme="dark"] .field select:hover, [data-theme="dark"] .field textarea:hover { border-color: rgba(255, 255, 255, 0.22); }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+    .field textarea { resize: vertical; min-height: 120px; line-height: 1.55; }
+    .row-btns { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    button {
+      font-family: inherit; font-size: 13px; cursor: pointer;
+      background: var(--bg-2); color: var(--text-0);
+      border: 1px solid var(--line-strong); border-radius: 4px;
+      padding: 7px 14px;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    button:hover { background: var(--bg-3); border-color: rgba(15, 15, 15, 0.2); }
+    [data-theme="dark"] button:hover { border-color: rgba(255, 255, 255, 0.24); }
+    button.primary { background: var(--accent); border-color: transparent; color: #ffffff; }
+    button.primary:hover { background: #1c6fc8; color: #ffffff; }
+    button.ghost { background: transparent; color: var(--text-2); border-color: transparent; }
+    button.ghost:hover { background: var(--bg-3); color: var(--text-0); border-color: transparent; }
+    button.danger:hover { background: var(--danger-bg); border-color: rgba(207, 34, 46, 0.35); color: var(--danger); }
+    button.ok:hover { background: var(--ok-bg); border-color: rgba(15, 123, 108, 0.35); color: var(--ok); }
+    button.warn:hover { background: var(--warn-bg); border-color: rgba(161, 98, 7, 0.35); color: var(--warn); }
+    button.sm { padding: 3px 9px; font-size: 12px; border-radius: 4px; }
+
+    /* 列表 */
+    .toolbar {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .filter-tabs { display: flex; gap: 4px; background: var(--bg-2); padding: 3px; border-radius: 6px; }
+    .filter-tabs button { background: transparent; border: none; padding: 5px 12px; border-radius: 4px; color: var(--text-1); }
+    .filter-tabs button:hover { background: var(--hover); color: var(--text-0); }
+    .filter-tabs button.active { background: var(--bg-0); color: var(--text-0); box-shadow: 0 0 0 1px rgba(15, 15, 15, 0.06); }
+    [data-theme="dark"] .filter-tabs button.active { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08); }
+    .toolbar .spacer { flex: 1; }
+    .list-empty {
+      text-align: center; color: var(--text-2); padding: 48px 0; font-size: 13px;
+    }
+    .rec {
+      display: flex; gap: 12px;
+      background: var(--bg-1);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .rec:hover { background: var(--hover); border-color: var(--line-strong); }
+    .rec.merged { opacity: 0.8; }
+    .rec-body { flex: 1; min-width: 0; }
+    .rec-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .rec-title { font-size: 14px; color: var(--text-0); font-weight: 600; }
+    .rec-meta { font-size: 12px; color: var(--text-2); display: flex; gap: 10px; flex-wrap: wrap; margin-top: 3px; }
+    .rec-meta .tag { background: var(--bg-2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; }
+    .rec-preview {
+      margin-top: 7px; font-size: 12.5px; color: var(--text-1);
+      max-height: 48px; overflow: hidden;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      white-space: pre-wrap;
+    }
+    .rec-time { font-size: 11px; color: var(--text-2); margin-top: 5px; font-family: var(--mono); }
+    .rec-actions { display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+    .badge {
+      display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px;
+      border: 1px solid transparent; font-weight: 500;
+    }
+    .badge.pending { color: var(--warn); background: var(--warn-bg); border-color: rgba(161, 98, 7, 0.18); }
+    .badge.merged { color: var(--ok); background: var(--ok-bg); border-color: rgba(15, 123, 108, 0.18); }
+
+    /* Wiki 原内容面板 */
+    .wiki-src { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .wiki-src select, .wiki-src input {
+      background: var(--bg-0); border: 1px solid var(--line-strong); border-radius: 4px;
+      color: var(--text-0); font-family: inherit; font-size: 13px; padding: 8px 10px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .wiki-src select:hover, .wiki-src input:hover { border-color: rgba(15, 15, 15, 0.2); }
+    .wiki-src select:focus, .wiki-src input:focus { border-color: var(--accent); }
+    .wiki-src .row-btns { margin-top: 4px; }
+    .wiki-hint { font-size: 11.5px; color: var(--text-2); }
+    .wiki-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .wiki-toolbar input, .wiki-toolbar select {
+      background: var(--bg-0); border: 1px solid var(--line-strong); border-radius: 4px;
+      color: var(--text-0); font-family: inherit; font-size: 13px; padding: 6px 9px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .wiki-toolbar input:hover, .wiki-toolbar select:hover { border-color: rgba(15, 15, 15, 0.2); }
+    .wiki-toolbar input:focus, .wiki-toolbar select:focus { border-color: var(--accent); }
+    .wiki-toolbar input#wikiSearch { flex: 1; min-width: 180px; }
+    .wiki-count { font-size: 12px; color: var(--text-2); }
+    .wiki-item {
+      display: flex; gap: 10px; background: var(--bg-1);
+      border: 1px solid var(--line); border-radius: 6px;
+      padding: 10px 12px; margin-bottom: 8px; align-items: flex-start;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .wiki-item:hover { background: var(--hover); border-color: var(--line-strong); }
+    .wiki-item .chk { margin-top: 4px; accent-color: var(--accent); width: 15px; height: 15px; flex: none; cursor: pointer; }
+    .wiki-item .wi-body { flex: 1; min-width: 0; }
+    .wiki-item .wi-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .wiki-item .wi-title { font-size: 13.5px; color: var(--text-0); font-weight: 600; }
+    .wiki-item .wi-cat {
+      font-size: 11.5px; color: var(--accent); background: rgba(35, 131, 226, 0.08);
+      border: 1px solid rgba(35, 131, 226, 0.22); border-radius: 4px; padding: 1px 7px;
+    }
+    .wiki-item .wi-id { font-size: 11px; color: var(--text-2); font-family: var(--mono); }
+    .wiki-item .wi-summary {
+      font-size: 12px; color: var(--text-1); margin-top: 4px; max-height: 36px; overflow: hidden;
+      white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    }
+    .wiki-item .wi-actions { display: flex; flex-direction: column; gap: 6px; }
+    .pager { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 10px; font-size: 12.5px; color: var(--text-2); }
+    .sup-target {
+      background: var(--bg-2); border: 1px solid var(--line); border-radius: 6px;
+      padding: 8px 10px; font-size: 12.5px; color: var(--text-1);
+      max-height: 150px; overflow-y: auto; white-space: pre-wrap; line-height: 1.55;
+    }
+    .sup-target b { color: var(--text-0); }
+
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--bg-1); border: 1px solid var(--line-strong);
+      color: var(--text-0); font-size: 13px;
+      padding: 9px 18px; border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(15, 15, 15, 0.08);
+      opacity: 0; transition: all 0.25s; z-index: 50;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    .modal-mask {
+      position: fixed; inset: 0; background: rgba(15, 15, 15, 0.4);
+      display: none; align-items: center; justify-content: center; z-index: 40;
+      backdrop-filter: blur(2px);
+    }
+    .modal-mask.show { display: flex; }
+    .modal {
+      background: var(--bg-1); border: 1px solid var(--line-strong);
+      border-radius: 8px; width: min(680px, 92vw); max-height: 86vh;
+      display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 0 4px 24px rgba(15, 15, 15, 0.12);
+    }
+    .modal-head {
+      padding: 14px 18px; border-bottom: 1px solid var(--line);
+      font-size: 14px; color: var(--text-0); display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-head button { background: transparent; border: none; font-size: 18px; color: var(--text-2); padding: 0 6px; border-radius: 4px; }
+    .modal-head button:hover { background: var(--bg-3); color: var(--text-0); }
+    .modal-body { padding: 16px 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .modal-body textarea { min-height: 220px; }
+    .modal-foot { padding: 12px 18px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 8px; }
+
+    /* ---- 表格批量填写 ---- */
+    .tbl-toolbar {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+      padding: 8px 12px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 6px; margin-bottom: 10px;
+    }
+    .tbl-toolbar .hint { font-size: 12px; color: var(--text-2); }
+    .tbl-wrap { overflow: auto; max-height: 460px; border: 1px solid var(--line); border-radius: 6px; }
+    table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.tbl th, table.tbl td { border: 1px solid var(--line); padding: 5px 8px; vertical-align: top; text-align: left; }
+    table.tbl th { background: var(--bg-2); color: var(--text-0); position: sticky; top: 0; z-index: 2; font-weight: 600; }
+    table.tbl tbody tr:hover { background: var(--hover); }
+    table.tbl td input, table.tbl td select {
+      width: 100%; box-sizing: border-box; background: transparent; border: 1px solid transparent;
+      color: var(--text-0); font-size: 13px; padding: 3px 4px; border-radius: 4px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    table.tbl td textarea {
+      width: 100%; min-height: 34px; box-sizing: border-box; background: transparent; border: 1px solid transparent;
+      color: var(--text-0); font-size: 13px; padding: 3px 4px; border-radius: 4px; resize: vertical;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    table.tbl td input:hover, table.tbl td select:hover, table.tbl td textarea:hover { border-color: var(--line-strong); }
+    table.tbl td input:focus, table.tbl td select:focus, table.tbl td textarea:focus { border-color: var(--accent); outline: none; background: var(--bg-0); }
+    table.tbl tr.row-invalid { background: rgba(207, 34, 46, 0.05); }
+    table.tbl td.col-check { width: 26px; text-align: center; }
+    table.tbl td.col-del { width: 34px; text-align: center; }
+    table.tbl .del-row { background: transparent; border: none; color: var(--text-2); cursor: pointer; font-size: 14px; }
+    table.tbl .del-row:hover { color: var(--danger); background: transparent; }
+    .tbl-batch { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .tbl-batch input, .tbl-batch select {
+      background: var(--bg-0); border: 1px solid var(--line-strong); border-radius: 4px;
+      color: var(--text-0); font-size: 13px; padding: 5px 8px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .tbl-batch input:hover, .tbl-batch select:hover { border-color: rgba(15, 15, 15, 0.2); }
+    .tbl-batch input:focus, .tbl-batch select:focus { border-color: var(--accent); }
+    .tbl-batch input { width: 110px; }
+    .tbl-batch select { width: 110px; }
+    .paste-modal textarea { min-height: 220px; font-family: Consolas, 'Courier New', monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Wiki 本地控制台<span>·</span>待汇入文本</h1>
+        <div class="sub">粘贴 / 导入文本，标注来源与类型，交给 AI 检查后汇入站点</div>
+      </div>
+      <div class="stat">
+        <span class="pill">全部 <b id="stAll">0</b></span>
+        <span class="pill pending">待AI检查 <b id="stPending">0</b></span>
+        <span class="pill merged">已汇入 <b id="stMerged">0</b></span>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h2>Wiki 原内容 · 加载 / 补充 / 关联</h2>
+      <div class="wiki-src">
+        <div class="field">
+          <label for="wikiPreset">数据源（站点内置已知文件，供 fetch 尝试；file:// 下请改用下方「选择本地文件」）</label>
+          <select id="wikiPreset"></select>
+        </div>
+        <div class="row-btns">
+          <button id="btnWikiFetch">加载选中数据源</button>
+          <button id="btnWikiFile">选择本地 JSON / JS 文件</button>
+          <input type="file" id="wikiFileInput" accept=".json,.js,application/json" style="display:none" />
+          <button class="ghost" id="btnWikiFetchUrl">尝试 fetch URL</button>
+          <input id="wikiUrl" placeholder="http://localhost:8000/wiki/mingchao/data/wiki-juqing.json" />
+        </div>
+        <div class="wiki-hint">提示：file:// 协议下 fetch 不可用。请使用「选择本地文件」，或用本地服务器访问（如 python -m http.server 8000 后访问 http://localhost:8000/wiki/...）。</div>
+      </div>
+      <div class="wiki-toolbar">
+        <input id="wikiSearch" placeholder="搜索标题 / 分类 / 摘要 / ID…" />
+        <select id="wikiCatFilter"><option value="">全部分类</option></select>
+        <span class="wiki-count" id="wikiCount"></span>
+        <div class="spacer"></div>
+        <button class="sm" id="btnWikiSelectAll">全选当前页</button>
+        <button class="sm" id="btnWikiClearSel">清空勾选</button>
+        <button class="sm ok" id="btnWikiLink">关联选中（<span id="wikiSelCount">0</span>）</button>
+      </div>
+      <div id="wikiListWrap">
+        <div class="list-empty" id="wikiListEmpty">尚未加载数据。选择一个数据源或本地文件开始。</div>
+        <div id="wikiList"></div>
+      </div>
+      <div class="pager" id="wikiPager" style="display:none">
+        <button class="sm" id="btnWikiPrev">上一页</button>
+        <span id="wikiPageInfo"></span>
+        <button class="sm" id="btnWikiNext">下一页</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>表格批量填写</h2>
+      <div class="tbl-toolbar">
+        <button class="sm ok" id="btnTblPaste">粘贴表格（TSV / CSV）</button>
+        <button class="sm" id="btnTblAdd">新增一行</button>
+        <button class="sm" id="btnTblDelSel">删除选中行</button>
+        <span class="hint">已选 <b id="tblSelCount">0</b> 行 · 共 <b id="tblRowCount">0</b> 行</span>
+        <span class="spacer" style="flex:1"></span>
+        <div class="tbl-batch">
+          <span class="hint">批量设置选中行：</span>
+          <input id="tblBatchSource" placeholder="来源" />
+          <input id="tblBatchType" placeholder="类型" />
+          <input id="tblBatchNote" placeholder="备注" />
+          <select id="tblBatchStatus">
+            <option value="">状态(不变)</option>
+            <option value="pending">待AI检查</option>
+            <option value="merged">已汇入</option>
+          </select>
+          <button class="sm" id="btnTblBatch">应用</button>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th class="col-check"><input type="checkbox" id="tblCheckAll" title="全选/全不选" /></th>
+              <th style="width:20%">标题</th>
+              <th style="width:16%">内容</th>
+              <th style="width:10%">来源</th>
+              <th style="width:9%">类型</th>
+              <th style="width:10%">备注</th>
+              <th style="width:9%">状态</th>
+              <th class="col-del"></th>
+            </tr>
+          </thead>
+          <tbody id="tblBody"></tbody>
+        </table>
+      </div>
+      <div class="tbl-toolbar" style="margin-top:10px;margin-bottom:0">
+        <span class="hint">粘贴格式：每行一条记录，用 Tab 或逗号分隔列；推荐 <b>标题\t内容</b>，可选 <b>标题\t内容\t来源\t类型\t备注\t状态</b>。含表头时自动按表头列名映射。</span>
+        <span class="spacer" style="flex:1"></span>
+        <button class="primary" id="btnTblSave">将表格全部保存到待审列表</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>导入 / 写入文本</h2>
+      <div class="input-grid">
+        <div class="field" style="grid-column:1/-1">
+          <label for="inTitle">标题（可选，留空则取内容首行）</label>
+          <input id="inTitle" placeholder="例如：活动剧情 · 星声巡礼第X期" />
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label for="inContent">文本内容（支持多段，可直接粘贴）</label>
+          <textarea id="inContent" placeholder="在此粘贴或写入待汇入文本…&#10;支持 Markdown 格式，后续 AI 会据此检查整理后汇入对应板块。"></textarea>
+        </div>
+        <div class="field">
+          <label for="inSource">来源</label>
+          <input id="inSource" placeholder="例如：用户提供 / 库街区 / B站wiki / 官网公告" />
+        </div>
+        <div class="field">
+          <label for="inType">类型</label>
+          <select id="inType">
+            <option>剧情</option>
+            <option>成就</option>
+            <option>图鉴</option>
+            <option>百科</option>
+            <option>任务</option>
+            <option>活动</option>
+            <option>新闻/资讯</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label for="inNote">备注（可选）</label>
+          <input id="inNote" placeholder="补充说明：待确认信息、注意事项、优先级等" />
+        </div>
+      </div>
+      <div class="row-btns">
+        <button class="primary" id="btnAdd">加入待审列表</button>
+        <button id="btnFile">导入 txt / md 文件</button>
+        <input type="file" id="fileInput" accept=".txt,.md,.markdown,text/plain" style="display:none" />
+        <button class="ghost" id="btnClearInput">清空输入</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>待审列表</h2>
+      <div class="toolbar">
+        <div class="filter-tabs">
+          <button class="active" data-f="all">全部</button>
+          <button data-f="pending">待AI检查</button>
+          <button data-f="merged">已汇入</button>
+        </div>
+        <div class="spacer"></div>
+        <button class="sm" id="btnExportPending">导出待汇入 JSON</button>
+        <button class="sm" id="btnExportAll">导出全部 JSON</button>
+        <button class="sm" id="btnImport">导入 JSON</button>
+        <input type="file" id="jsonInput" accept=".json,application/json" style="display:none" />
+      </div>
+      <div id="listWrap">
+        <div class="list-empty" id="listEmpty">暂无记录，从上方导入或写入文本开始。</div>
+        <div id="list"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 编辑弹窗 -->
+  <div class="modal-mask" id="modalMask">
+    <div class="modal">
+      <div class="modal-head"><span id="mTitle">编辑记录</span><button id="mClose">×</button></div>
+      <div class="modal-body">
+        <div class="field"><label>标题</label><input id="mFieldTitle" /></div>
+        <div class="field"><label>内容</label><textarea id="mFieldContent"></textarea></div>
+        <div class="input-grid">
+          <div class="field"><label>来源</label><input id="mFieldSource" /></div>
+          <div class="field"><label>类型</label>
+            <select id="mFieldType">
+              <option>剧情</option><option>成就</option><option>图鉴</option><option>百科</option>
+              <option>任务</option><option>活动</option><option>新闻/资讯</option><option>其他</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>备注</label><input id="mFieldNote" /></div>
+      </div>
+      <div class="modal-foot">
+        <button class="ghost" id="mCancel">取消</button>
+        <button class="primary" id="mSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 补充弹窗 -->
+  <div class="modal-mask" id="supModalMask">
+    <div class="modal">
+      <div class="modal-head"><span>补充 Wiki 条目</span><button id="supClose">×</button></div>
+      <div class="modal-body">
+        <div class="field"><label>目标条目</label><div class="sup-target" id="supTarget"></div></div>
+        <div class="field"><label>补充内容（必填）</label><textarea id="supContent" placeholder="写入需要补充到该词条的信息…"></textarea></div>
+        <div class="field"><label>备注（可选）</label><input id="supNote" placeholder="补充依据、待确认点等" /></div>
+      </div>
+      <div class="modal-foot">
+        <button class="ghost" id="supCancel">取消</button>
+        <button class="primary" id="supSave">生成补充记录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 关联弹窗 -->
+  <div class="modal-mask" id="linkModalMask">
+    <div class="modal">
+      <div class="modal-head"><span>生成关联记录</span><button id="linkClose">×</button></div>
+      <div class="modal-body">
+        <div class="field"><label>关联条目（已勾选 <span id="linkCount"></span> 条）</label><div class="sup-target" id="linkTargets"></div></div>
+        <div class="field"><label>关联说明（必填）</label><textarea id="linkContent" placeholder="说明这些条目之间的关联关系，如：同一活动、剧情前后续接、同一角色…"></textarea></div>
+        <div class="field"><label>备注（可选）</label><input id="linkNote" placeholder="补充说明" /></div>
+      </div>
+      <div class="modal-foot">
+        <button class="ghost" id="linkCancel">取消</button>
+        <button class="primary" id="linkSave">生成关联记录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 表格粘贴弹窗 -->
+  <div class="modal-mask paste-modal" id="pasteModalMask">
+    <div class="modal">
+      <div class="modal-head"><span>粘贴表格数据</span><button id="pasteClose">×</button></div>
+      <div class="modal-body">
+        <div class="field">
+          <label>粘贴多行文本（TSV 用 Tab 分隔；CSV 用逗号分隔）</label>
+          <textarea id="pasteText" placeholder="示例：&#10;标题1&#9;内容1&#10;标题2&#9;内容2&#10;&#10;也支持带表头：&#10;标题&#9;内容&#9;来源&#10;标题A&#9;内容A&#9;官网公告"></textarea>
+        </div>
+        <div class="field"><label>列顺序说明</label>
+          <div class="wiki-hint">无表头时按列位置映射：第1列=标题、第2列=内容、第3列=来源、第4列=类型、第5列=备注、第6列=状态；超过6列并入内容。含表头时优先按表头列名（标题/内容/来源/类型/备注/状态）自动映射。</div>
+        </div>
+        <div class="field"><label>默认来源（用于无来源列的记录）</label><input id="pasteDefSource" placeholder="例如：用户提供 / 库街区 / B站wiki / 官网公告" /></div>
+        <div class="field"><label>默认类型（用于无类型列的记录）</label>
+          <select id="pasteDefType">
+            <option value="">其他</option><option>剧情</option><option>成就</option><option>图鉴</option><option>百科</option>
+            <option>任务</option><option>活动</option><option>新闻/资讯</option><option>其他</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="ghost" id="pasteCancel">取消</button>
+        <button class="primary" id="pasteOk">解析并填入表格</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      'use strict';
+      var KEY = 'wiki_console_records_v1';
+      var records = [];
+      var currentFilter = 'all';
+      var editingId = null;
+
+      var $ = function (id) { return document.getElementById(id); };
+
+      // ---------- 持久化 ----------
+      function load() {
+        try {
+          var raw = localStorage.getItem(KEY);
+          records = raw ? JSON.parse(raw) : [];
+        } catch (e) { records = []; }
+        if (!Array.isArray(records)) records = [];
+      }
+      function save() {
+        try { localStorage.setItem(KEY, JSON.stringify(records)); } catch (e) { toast('保存失败：本地存储不可用'); }
+      }
+
+      // ---------- 工具 ----------
+      function now() { return new Date().toISOString(); }
+      function fmtTime(iso) {
+        var d = new Date(iso);
+        if (isNaN(d.getTime())) return '';
+        var p = function (n) { return (n < 10 ? '0' : '') + n; };
+        return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+      }
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+      function uid() { return 'rec-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8); }
+      function autoTitle(content) {
+        var t = (content || '').trim().split(/\r?\n/)[0] || '';
+        return t.slice(0, 40) || '未命名记录';
+      }
+      function toast(msg) {
+        var el = $('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toast._t);
+        toast._t = setTimeout(function () { el.classList.remove('show'); }, 2200);
+      }
+
+      // ---------- 渲染 ----------
+      function stat() {
+        var p = 0, m = 0;
+        records.forEach(function (r) { if (r.status === 'merged') m++; else p++; });
+        $('stAll').textContent = records.length;
+        $('stPending').textContent = p;
+        $('stMerged').textContent = m;
+      }
+      function render() {
+        stat();
+        var list = records.slice().sort(function (a, b) {
+          return (b.updatedAt || b.createdAt || '').localeCompare(a.updatedAt || a.createdAt || '');
+        });
+        if (currentFilter === 'pending') list = list.filter(function (r) { return r.status !== 'merged'; });
+        if (currentFilter === 'merged') list = list.filter(function (r) { return r.status === 'merged'; });
+
+        var wrap = $('list');
+        wrap.innerHTML = '';
+        $('listEmpty').style.display = list.length ? 'none' : '';
+
+        list.forEach(function (r) {
+          var div = document.createElement('div');
+          div.className = 'rec' + (r.status === 'merged' ? ' merged' : '');
+          var content = r.content || '';
+          var preview = content.replace(/\s+/g, ' ').trim();
+          if (preview.length > 120) preview = preview.slice(0, 120) + '…';
+          div.innerHTML =
+            '<div class="rec-body">' +
+              '<div class="rec-head">' +
+                '<span class="rec-title">' + esc(r.title || autoTitle(content)) + '</span>' +
+                '<span class="badge ' + (r.status === 'merged' ? 'merged' : 'pending') + '">' + (r.status === 'merged' ? '已汇入' : '待AI检查') + '</span>' +
+              '</div>' +
+              '<div class="rec-meta">' +
+                (r.source ? '<span class="tag">来源：' + esc(r.source) + '</span>' : '') +
+                (r.type ? '<span class="tag">类型：' + esc(r.type) + '</span>' : '') +
+                (r.note ? '<span class="tag">备注：' + esc(r.note) + '</span>' : '') +
+                (r.target ? '<span class="tag">目标：' + esc(targetLabel(r)) + '</span>' : '') +
+              '</div>' +
+              '<div class="rec-preview">' + esc(preview) + '</div>' +
+              '<div class="rec-time">' + fmtTime(r.createdAt) + (r.updatedAt !== r.createdAt ? ' · 更新 ' + fmtTime(r.updatedAt) : '') + '</div>' +
+            '</div>' +
+            '<div class="rec-actions">' +
+              '<button class="sm" data-act="edit">编辑</button>' +
+              (r.status === 'merged'
+                ? '<button class="sm warn" data-act="unmerge">标记待检查</button>'
+                : '<button class="sm ok" data-act="merge">标记已汇入</button>') +
+              '<button class="sm danger" data-act="del">删除</button>' +
+            '</div>';
+          div.addEventListener('click', function (e) {
+            var btn = e.target.closest('button');
+            if (!btn) return;
+            var act = btn.getAttribute('data-act');
+            if (act === 'edit') openEdit(r.id);
+            else if (act === 'merge') setStatus(r.id, 'merged');
+            else if (act === 'unmerge') setStatus(r.id, 'pending');
+            else if (act === 'del') removeRec(r.id);
+          });
+          wrap.appendChild(div);
+        });
+      }
+
+      // ---------- 记录操作 ----------
+      function addRecord(rec) {
+        records.push(rec);
+        save();
+        render();
+      }
+      function setStatus(id, status) {
+        var r = find(id);
+        if (!r) return;
+        r.status = status;
+        r.updatedAt = now();
+        save(); render();
+        toast(status === 'merged' ? '已标记为已汇入' : '已标记为待AI检查');
+      }
+      function removeRec(id) {
+        var r = find(id);
+        if (!r) return;
+        if (!confirm('确定删除这条记录？\n「' + (r.title || autoTitle(r.content)).slice(0, 30) + '」')) return;
+        records = records.filter(function (x) { return x.id !== id; });
+        save(); render();
+        toast('已删除');
+      }
+      function find(id) { for (var i = 0; i < records.length; i++) if (records[i].id === id) return records[i]; return null; }
+
+      // ---------- 输入区 ----------
+      function readInput() {
+        var title = $('inTitle').value.trim();
+        var content = $('inContent').value.trim();
+        if (!content) { toast('请输入文本内容'); return null; }
+        return {
+          id: uid(),
+          title: title || autoTitle(content),
+          content: content,
+          source: $('inSource').value.trim(),
+          type: $('inType').value,
+          note: $('inNote').value.trim(),
+          status: 'pending',
+          createdAt: now(),
+          updatedAt: now()
+        };
+      }
+      $('btnAdd').addEventListener('click', function () {
+        var rec = readInput();
+        if (!rec) return;
+        addRecord(rec);
+        toast('已加入待审列表（' + (records.length) + ' 条）');
+        $('inContent').value = '';
+        $('inTitle').value = '';
+        $('inNote').value = '';
+        $('inContent').focus();
+      });
+      $('btnClearInput').addEventListener('click', function () {
+        $('inTitle').value = ''; $('inContent').value = '';
+        $('inSource').value = ''; $('inNote').value = '';
+        toast('已清空输入');
+      });
+
+      // 文件导入
+      $('btnFile').addEventListener('click', function () { $('fileInput').click(); });
+      $('fileInput').addEventListener('change', function (e) {
+        var files = e.target.files;
+        if (!files || !files.length) return;
+        Array.prototype.forEach.call(files, function (f) {
+          var rd = new FileReader();
+          rd.onload = function () {
+            var content = String(rd.result || '').trim();
+            if (!content) { toast('文件为空：' + f.name); return; }
+            var base = f.name.replace(/\.(txt|md|markdown)$/i, '');
+            addRecord({
+              id: uid(),
+              title: base,
+              content: content,
+              source: '文件导入',
+              type: '其他',
+              note: '源文件：' + f.name,
+              status: 'pending',
+              createdAt: now(),
+              updatedAt: now()
+            });
+          };
+          rd.readAsText(f, 'utf-8');
+        });
+        e.target.value = '';
+        toast('文件已导入，可继续导入多个');
+      });
+
+      // ---------- 编辑弹窗 ----------
+      function openEdit(id) {
+        var r = find(id);
+        if (!r) return;
+        editingId = id;
+        $('mFieldTitle').value = r.title || '';
+        $('mFieldContent').value = r.content || '';
+        $('mFieldSource').value = r.source || '';
+        $('mFieldType').value = r.type || '其他';
+        $('mFieldNote').value = r.note || '';
+        $('modalMask').classList.add('show');
+      }
+      function closeEdit() {
+        editingId = null;
+        $('modalMask').classList.remove('show');
+      }
+      $('mClose').addEventListener('click', closeEdit);
+      $('mCancel').addEventListener('click', closeEdit);
+      $('modalMask').addEventListener('click', function (e) { if (e.target === $('modalMask')) closeEdit(); });
+      $('mSave').addEventListener('click', function () {
+        var r = find(editingId);
+        if (!r) return;
+        var c = $('mFieldContent').value.trim();
+        if (!c) { toast('内容不能为空'); return; }
+        r.title = $('mFieldTitle').value.trim() || autoTitle(c);
+        r.content = c;
+        r.source = $('mFieldSource').value.trim();
+        r.type = $('mFieldType').value;
+        r.note = $('mFieldNote').value.trim();
+        r.updatedAt = now();
+        save(); render();
+        closeEdit();
+        toast('已保存');
+      });
+
+      // ---------- 筛选 ----------
+      document.querySelectorAll('.filter-tabs button').forEach(function (b) {
+        b.addEventListener('click', function () {
+          document.querySelectorAll('.filter-tabs button').forEach(function (x) { x.classList.remove('active'); });
+          b.classList.add('active');
+          currentFilter = b.getAttribute('data-f');
+          render();
+        });
+      });
+
+      // ---------- 导出 / 导入 JSON ----------
+      function exportJson(onlyPending) {
+        var out = records.slice();
+        if (onlyPending) out = out.filter(function (r) { return r.status !== 'merged'; });
+        if (!out.length) { toast('没有可导出的记录'); return; }
+        var payload = {
+          app: 'wiki-console',
+          version: 1,
+          exportedAt: now(),
+          records: out.map(function (r) {
+            var base = { title: r.title, content: r.content, source: r.source, type: r.type, note: r.note, status: r.status, createdAt: r.createdAt, updatedAt: r.updatedAt };
+            if (r.target) base.target = r.target;
+            return base;
+          })
+        };
+        var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'wiki-pending-' + new Date().toISOString().slice(0, 10) + (onlyPending ? '-pending' : '-all') + '.json';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 300);
+        toast('已导出 ' + out.length + ' 条记录');
+      }
+      $('btnExportPending').addEventListener('click', function () { exportJson(true); });
+      $('btnExportAll').addEventListener('click', function () { exportJson(false); });
+
+      $('btnImport').addEventListener('click', function () { $('jsonInput').click(); });
+      $('jsonInput').addEventListener('change', function (e) {
+        var f = e.target.files && e.target.files[0];
+        if (!f) return;
+        var rd = new FileReader();
+        rd.onload = function () {
+          var data;
+          try { data = JSON.parse(rd.result); } catch (err) { toast('JSON 解析失败'); e.target.value = ''; return; }
+          var arr = Array.isArray(data) ? data : (data && Array.isArray(data.records) ? data.records : null);
+          if (!arr) { toast('格式不支持：应为记录数组或 {records:[...]}'); e.target.value = ''; return; }
+          var added = 0;
+          arr.forEach(function (it) {
+            if (!it || typeof it !== 'object') return;
+            var content = String(it.content || '').trim();
+            if (!content) return;
+            records.push({
+              id: uid(),
+              title: String(it.title || '').trim() || autoTitle(content),
+              content: content,
+              source: String(it.source || '').trim(),
+              type: String(it.type || '其他'),
+              note: String(it.note || '').trim(),
+              status: (it.status === 'merged') ? 'merged' : 'pending',
+              createdAt: it.createdAt || now(),
+              updatedAt: it.updatedAt || now(),
+              target: (it.target && typeof it.target === 'object') ? it.target : undefined
+            });
+            added++;
+          });
+          save(); render();
+          e.target.value = '';
+          toast('导入成功：新增 ' + added + ' 条');
+        };
+        rd.readAsText(f, 'utf-8');
+      });
+
+      // ---------- Wiki 原内容 ----------
+      function targetLabel(r) {
+        if (!r || !r.target) return '';
+        if (r.target.kind === 'relation') return '关联 ' + (r.target.items ? r.target.items.length : 0) + ' 条';
+        if (r.target.title) return r.target.title + '（' + (r.target.file || '') + '）';
+        return r.target.file || '';
+      }
+
+      // ===== 全站数据源清单（覆盖站内所有模块数据文件）=====
+      // url 相对 wiki-console.html 所在 wiki/ 目录；file:// 下 fetch 不可用，请用「选择本地文件」或本地服务器
+      var SITE_SOURCES = [
+        // 鸣潮板块
+        { name: '鸣潮 · 游戏图鉴', url: 'mingchao/data/wiki-tujian.json', cat: '图鉴' },
+        { name: '鸣潮 · 剧情合集', url: 'mingchao/data/wiki-juqing.json', cat: '剧情' },
+        { name: '鸣潮 · 活动合集', url: 'mingchao/data/wiki-huodong.json', cat: '活动' },
+        { name: '鸣潮 · 任务合集', url: 'mingchao/data/wiki-renwu.json', cat: '任务' },
+        { name: '鸣潮 · 成就合集', url: 'mingchao/data/wiki-chengjiu.json', cat: '成就' },
+        { name: '鸣潮 · 影像收录', url: 'mingchao/data/wiki-yingxiang.json', cat: '影像' },
+        { name: '鸣潮 · 热门资讯', url: 'mingchao/data/wiki-rezixun.json', cat: '新闻/资讯' },
+        { name: '鸣潮 · 资讯试点数据', url: 'mingchao/data/wiki-hot-news-pilot.json', cat: '新闻/资讯' },
+        { name: '鸣潮 · 游戏百科', url: 'mingchao/data/wiki-baike.json', cat: '百科' },
+        { name: '鸣潮 · 探索地图数据', url: 'mingchao/data/mc-data.js', cat: '探索' },
+        { name: '鸣潮 · 地图标记点', url: 'mingchao/data/map-points.json', cat: '地图' },
+        // 站点通用模块（assets/data）
+        { name: '全站 · 博客文章', url: '../assets/data/blog.js', cat: '博客' },
+        { name: '全站 · 更新日志', url: '../assets/data/changelog.js', cat: '更新日志' },
+        { name: '全站 · 语录', url: '../assets/data/quotes.js', cat: '语录' },
+        // 播放器模块（assets）
+        { name: '播放器 · 歌单数据', url: '../assets/playlist.js', cat: '歌单' },
+        { name: '播放器 · 歌单 JSON', url: '../assets/playlist.json', cat: '歌单' },
+        // wiki 板块数据库
+        { name: 'wikiDB · 游戏图鉴', url: 'db/data/games.js', cat: '图鉴' },
+        { name: 'wikiDB · 知识库', url: 'db/data/knowledge.js', cat: '知识库' },
+        { name: 'wikiDB · 推荐板块', url: 'db/data/recommend.js', cat: '推荐' },
+        // 图谱模块
+        { name: '图谱 · 主题与成员', url: 'graph/themes.js', cat: '图谱' },
+        // 推荐模块
+        { name: '推荐 · 影视', url: 'recommend/data/movies.js', cat: '推荐' },
+        { name: '推荐 · 文本', url: 'recommend/data/texts.js', cat: '推荐' },
+        // 太吾模块
+        { name: '太吾 · 门派剧情', url: 'taiwu/data/sects.js', cat: '太吾' }
+      ];
+      var WIKI_SOURCES = SITE_SOURCES; // 兼容旧引用
+      var wikiItems = [];
+      var wikiFile = '';
+      var wikiSel = {};
+      var wikiPage = 1;
+      var wikiPageSize = 50;
+      var wikiFilter = { q: '', cat: '' };
+      var supTarget = null;
+      var linkItems = [];
+
+      // 通用条目归一化：适配全站不同数据文件的字段命名
+      var TITLE_KEYS = ['标题', 'title', 'name', 'text'];
+      var CAT_KEYS = ['分类', 'cat', 'category', 'type', '板块'];
+      var BODY_KEYS = ['正文文字', 'desc', 'content', 'summary', 'excerpt', 'intro', 'reason'];
+      var SKIP_KEYS = ['词条id', 'id', '标题', 'title', 'name', 'text', '分类', 'cat', 'category', 'type', '板块',
+        '子分类', 'sub', 'img', 'image', 'icon', 'poster', 'pic', 'url', 'tvmao_url', 'readingTime', 'file',
+        'version', '合集'];
+
+      function pick(obj, keys) {
+        for (var i = 0; i < keys.length; i++) if (obj[keys[i]] != null && obj[keys[i]] !== '') return obj[keys[i]];
+        return '';
+      }
+
+      function normalizeWikiEntry(it, file) {
+        var o = it || {};
+        if (typeof o === 'string') o = { 标题: o };
+        var id = o['词条id'] != null ? String(o['词条id']) : (o.id != null ? String(o.id) : '');
+        var title = String(pick(o, TITLE_KEYS) || '（未命名）');
+        var category = String(pick(o, CAT_KEYS) || '其他');
+        var sub = String(pick(o, ['子分类', 'sub']) || '');
+        var body = String(pick(o, BODY_KEYS) || '');
+        if (o['版本']) body = ('版本：' + o['版本'] + '\n') + body;
+        if (o['合集']) body = ('合集：' + o['合集'] + '\n') + body;
+        // 其余有值字段拼入正文（适配无标准摘要字段的数据源）
+        var parts = [];
+        Object.keys(o).forEach(function (k) {
+          if (SKIP_KEYS.indexOf(k) >= 0) return;
+          var v = o[k];
+          if (v == null || v === '') return;
+          if (Array.isArray(v)) {
+            if (!v.length) return;
+            v = v.map(function (x) { return (x && typeof x === 'object') ? JSON.stringify(x) : x; }).join('；');
+          }
+          parts.push(k + '：' + String(v));
+        });
+        if (parts.length) body = (body ? body + '\n' : '') + parts.join('\n');
+        var s = String(body).replace(/\s+/g, ' ').trim();
+        return {
+          id: id, title: title, category: category, sub: sub,
+          summary: s.slice(0, 90) + (s.length > 90 ? '…' : ''),
+          body: body, file: file
+        };
+      }
+
+      function extractJsValue(text, name) {
+        var escName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        var m = new RegExp('(?:window\\.' + escName + '|var\\s+' + escName + '|const\\s+' + escName + '|let\\s+' + escName + ')\\s*=\\s*').exec(text);
+        if (!m) return null;
+        var i = m.index + m[0].length;
+        var depth = 0, quote = null, esc2 = false, lineComment = false, blockComment = false;
+        for (; i < text.length; i++) {
+          var c = text[i], n = text[i + 1];
+          if (lineComment) { if (c === '\n') lineComment = false; continue; }
+          if (blockComment) { if (c === '*' && n === '/') { blockComment = false; i++; } continue; }
+          if (quote) {
+            if (esc2) { esc2 = false; continue; }
+            if (c === '\\') { esc2 = true; continue; }
+            if (c === quote) quote = null;
+            continue;
+          }
+          if (c === '/' && n === '/') { lineComment = true; i++; continue; }
+          if (c === '/' && n === '*') { blockComment = true; i++; continue; }
+          if (c === '"' || c === "'" || c === '`') { quote = c; continue; }
+          if (c === '{' || c === '[' || c === '(') { depth++; continue; }
+          if (c === '}' || c === ']' || c === ')') { depth--; if (depth < 0) break; continue; }
+          if (depth === 0 && c === ';') break;
+        }
+        return text.slice(m.index + m[0].length, i).trim();
+      }
+
+      // 判定是否叶子条目：有 标题/内容 类字段；或有 name 且无任何对象数组容器字段
+      function isLeafEntry(n) {
+        if (!n || typeof n !== 'object') return false;
+        if (n['标题'] != null || n.title != null || n.text != null || n['text'] != null) return true;
+        if (n.name != null) {
+          var hasContainer = false;
+          Object.keys(n).forEach(function (k) {
+            var v = n[k];
+            if (Array.isArray(v) && v.some(function (x) { return x && typeof x === 'object'; })) hasContainer = true;
+          });
+          if (!hasContainer) return true;
+        }
+        return false;
+      }
+
+      // 深层遍历：兼容 {categories:[{name,items:[条目]}]} 等嵌套容器
+      function flattenEntries(node, out) {
+        if (Array.isArray(node)) {
+          node.forEach(function (x) { flattenEntries(x, out); });
+          return;
+        }
+        if (!node || typeof node !== 'object') return;
+        if (isLeafEntry(node)) {
+          out.push(node);
+          ['items', 'sections'].forEach(function (k) {
+            if (Array.isArray(node[k])) node[k].forEach(function (x) { flattenEntries(x, out); });
+          });
+          return;
+        }
+        Object.keys(node).forEach(function (k) {
+          var v = node[k];
+          if (Array.isArray(v) || (v && typeof v === 'object')) flattenEntries(v, out);
+        });
+      }
+
+      function stripJsComments(s) {
+        var out = '', i = 0, n = s.length, quote = null, esc = false;
+        while (i < n) {
+          var c = s[i], nxt = s[i + 1];
+          if (quote) {
+            out += c;
+            if (esc) esc = false;
+            else if (c === '\\') esc = true;
+            else if (c === quote) quote = null;
+            i++; continue;
+          }
+          if (c === '"' || c === "'" || c === '`') { quote = c; out += c; i++; continue; }
+          if (c === '/' && nxt === '/') { while (i < n && s[i] !== '\n') i++; continue; }
+          if (c === '/' && nxt === '*') { i += 2; while (i < n && !(s[i] === '*' && s[i + 1] === '/')) i++; i += 2; continue; }
+          out += c; i++;
+        }
+        return out;
+      }
+
+      function parseWikiText(text, fileName) {
+        var raw = (text || '').trim();
+        var data = null;
+        try { data = JSON.parse(raw); } catch (e) { data = null; }
+        if (!data) {
+          var cleaned = stripJsComments(raw);
+          var m = /window\.([A-Za-z0-9_]+)\s*=/.exec(cleaned);
+          var name = m ? m[1] : null;
+          if (!name) {
+            var mv = /(?:var|const|let)\s+([A-Za-z0-9_$]+)\s*=/.exec(cleaned);
+            if (mv) name = mv[1];
+          }
+          if (name) {
+            var expr = extractJsValue(cleaned, name);
+            if (expr) {
+              try { data = JSON.parse(expr); } catch (e2) { data = null; }
+              if (!data) {
+                try { data = new Function('return (' + expr + ');')(); } catch (e3) { data = null; }
+              }
+            }
+          }
+        }
+        if (data == null) return null;
+        var arr = [];
+        flattenEntries(data, arr);
+        return arr.map(function (it) { return normalizeWikiEntry(it, fileName); });
+      }
+
+      function loadWikiPresets() {
+        var sel = $('wikiPreset');
+        sel.innerHTML = '';
+        WIKI_SOURCES.forEach(function (s) {
+          var op = document.createElement('option');
+          op.value = s.url;
+          op.textContent = s.name + '（' + s.url + '）';
+          sel.appendChild(op);
+        });
+      }
+
+      function applyWikiItems(items) {
+        wikiItems = items; wikiSel = {}; wikiPage = 1;
+        var catSet = {};
+        items.forEach(function (it) { catSet[it.category] = 1; });
+        var sel = $('wikiCatFilter');
+        sel.innerHTML = '<option value="">全部分类</option>';
+        Object.keys(catSet).sort().forEach(function (c) {
+          var op = document.createElement('option');
+          op.value = c; op.textContent = c;
+          sel.appendChild(op);
+        });
+        if (wikiItems.length) toast('已加载 ' + wikiItems.length + ' 条条目：' + wikiFile);
+        renderWiki();
+      }
+
+      function filteredWiki() {
+        var q = wikiFilter.q.trim().toLowerCase();
+        var cat = wikiFilter.cat;
+        return wikiItems.filter(function (it) {
+          if (cat && it.category !== cat) return false;
+          if (!q) return true;
+          return (it.title + ' ' + it.category + ' ' + it.sub + ' ' + it.summary + ' ' + String(it.id)).toLowerCase().indexOf(q) !== -1;
+        });
+      }
+
+      function renderWiki() {
+        var list = filteredWiki();
+        var totalPages = Math.max(1, Math.ceil(list.length / wikiPageSize));
+        if (wikiPage > totalPages) wikiPage = totalPages;
+        var start = (wikiPage - 1) * wikiPageSize;
+        var page = list.slice(start, start + wikiPageSize);
+        $('wikiCount').textContent = '共 ' + list.length + ' 条' + (wikiItems.length ? '（已加载 ' + wikiItems.length + '）' : '');
+        var wrap = $('wikiList');
+        wrap.innerHTML = '';
+        var empty = $('wikiListEmpty');
+        empty.style.display = wikiItems.length ? 'none' : '';
+        empty.textContent = wikiItems.length ? '没有匹配条目。' : '尚未加载数据。选择一个数据源或本地文件开始。';
+        page.forEach(function (it) {
+          var key = it.file + '|' + it.id + '|' + it.title;
+          var checked = wikiSel[key] ? ' checked' : '';
+          var div = document.createElement('div');
+          div.className = 'wiki-item';
+          div.innerHTML =
+            '<input type="checkbox" class="chk" data-key="' + esc(key) + '"' + checked + ' />' +
+            '<div class="wi-body">' +
+              '<div class="wi-head">' +
+                '<span class="wi-title">' + esc(it.title) + '</span>' +
+                '<span class="wi-cat">' + esc(it.category) + (it.sub ? ' / ' + esc(it.sub) : '') + '</span>' +
+                (it.id ? '<span class="wi-id">' + esc(it.id) + '</span>' : '') +
+              '</div>' +
+              '<div class="wi-summary">' + esc(it.summary || '（无摘要）') + '</div>' +
+            '</div>' +
+            '<div class="wi-actions"><button class="sm primary" data-act="sup" data-key="' + esc(key) + '">补充</button></div>';
+          var chk = div.querySelector('.chk');
+          chk.addEventListener('change', function () {
+            if (chk.checked) wikiSel[key] = it; else delete wikiSel[key];
+            $('wikiSelCount').textContent = Object.keys(wikiSel).length;
+          });
+          div.querySelector('[data-act="sup"]').addEventListener('click', function () { openSup(it); });
+          wrap.appendChild(div);
+        });
+        $('wikiPager').style.display = list.length > wikiPageSize ? '' : 'none';
+        $('wikiPageInfo').textContent = '第 ' + wikiPage + ' / ' + totalPages + ' 页';
+        $('btnWikiPrev').disabled = wikiPage <= 1;
+        $('btnWikiNext').disabled = wikiPage >= totalPages;
+        $('wikiSelCount').textContent = Object.keys(wikiSel).length;
+      }
+
+      function doFetch(url, nameHint) {
+        fetch(url).then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.text();
+        }).then(function (t) {
+          wikiFile = String(nameHint || url).replace(/^\.\.\//, '').replace(/^\/+/, '');
+          var items = parseWikiText(t, wikiFile);
+          if (!items) { toast('解析失败：无法识别数据结构'); return; }
+          applyWikiItems(items);
+        }).catch(function (err) {
+          toast('fetch 失败（' + err.message + '）：file:// 下请改用「选择本地文件」或用本地服务器');
+          if (location.href.indexOf('file://') === 0) {
+            $('wikiUrl').value = /^\.\.\//.test(url) ? ('http://localhost:8000/' + url.replace(/^\.\.\//, '')) : ('http://localhost:8000/wiki/' + url);
+          }
+        });
+      }
+
+      $('btnWikiFetch').addEventListener('click', function () {
+        doFetch($('wikiPreset').value, $('wikiPreset').value);
+      });
+      $('btnWikiFetchUrl').addEventListener('click', function () {
+        var url = $('wikiUrl').value.trim();
+        if (!url) { toast('请输入 URL'); return; }
+        doFetch(url, url);
+      });
+      $('btnWikiFile').addEventListener('click', function () { $('wikiFileInput').click(); });
+      $('wikiFileInput').addEventListener('change', function (e) {
+        var f = e.target.files && e.target.files[0];
+        if (!f) return;
+        var rd = new FileReader();
+        rd.onload = function () {
+          wikiFile = f.name;
+          var items = parseWikiText(String(rd.result || ''), wikiFile);
+          if (!items) { toast('解析失败：无法识别数据结构'); return; }
+          applyWikiItems(items);
+        };
+        rd.readAsText(f, 'utf-8');
+        e.target.value = '';
+      });
+      $('wikiSearch').addEventListener('input', function () { wikiFilter.q = this.value; wikiPage = 1; renderWiki(); });
+      $('wikiCatFilter').addEventListener('change', function () { wikiFilter.cat = this.value; wikiPage = 1; renderWiki(); });
+      $('btnWikiPrev').addEventListener('click', function () { if (wikiPage > 1) { wikiPage--; renderWiki(); } });
+      $('btnWikiNext').addEventListener('click', function () {
+        if (wikiPage < Math.ceil(filteredWiki().length / wikiPageSize)) { wikiPage++; renderWiki(); }
+      });
+      $('btnWikiSelectAll').addEventListener('click', function () {
+        filteredWiki().slice((wikiPage - 1) * wikiPageSize, wikiPage * wikiPageSize).forEach(function (it) {
+          wikiSel[it.file + '|' + it.id + '|' + it.title] = it;
+        });
+        renderWiki();
+      });
+      $('btnWikiClearSel').addEventListener('click', function () { wikiSel = {}; renderWiki(); });
+      $('btnWikiLink').addEventListener('click', function () {
+        var arr = Object.keys(wikiSel).map(function (k) { return wikiSel[k]; });
+        if (arr.length < 2) { toast('关联至少勾选 2 个条目'); return; }
+        openLink(arr);
+      });
+
+      // 补充
+      function openSup(it) {
+        supTarget = it;
+        $('supTarget').innerHTML = '<b>' + esc(it.title) + '</b><br/>' + esc(it.category) + (it.sub ? ' / ' + esc(it.sub) : '') + '<br/>' + esc(it.file) + (it.id ? ' · ' + esc(it.id) : '');
+        $('supContent').value = '';
+        $('supNote').value = '';
+        $('supModalMask').classList.add('show');
+      }
+      function closeSup() { supTarget = null; $('supModalMask').classList.remove('show'); }
+      $('supClose').addEventListener('click', closeSup);
+      $('supCancel').addEventListener('click', closeSup);
+      $('supModalMask').addEventListener('click', function (e) { if (e.target === $('supModalMask')) closeSup(); });
+      $('supSave').addEventListener('click', function () {
+        if (!supTarget) return;
+        var add = $('supContent').value.trim();
+        if (!add) { toast('请填写补充内容'); return; }
+        var it = supTarget;
+        var content = '【目标文件】' + it.file + '\n【目标ID】' + (it.id || '无') + '\n【目标标题】' + it.title + '\n【分类】' + it.category + (it.sub ? ' / ' + it.sub : '') + '\n【补充内容】\n' + add;
+        addRecord({
+          id: uid(),
+          title: '补充 · ' + it.title,
+          content: content,
+          source: 'wiki补充',
+          type: it.category,
+          note: $('supNote').value.trim() || ('目标：' + it.title + '（' + it.file + '）'),
+          status: 'pending',
+          createdAt: now(),
+          updatedAt: now(),
+          target: { kind: 'supplement', file: it.file, id: it.id, title: it.title, category: it.category, sub: it.sub || '' }
+        });
+        closeSup();
+        toast('已生成补充记录：' + it.title);
+      });
+
+      // 关联
+      function openLink(arr) {
+        linkItems = arr;
+        $('linkCount').textContent = arr.length;
+        $('linkTargets').innerHTML = arr.map(function (it, i) {
+          return (i + 1) + '. <b>' + esc(it.title) + '</b>（' + esc(it.category) + (it.sub ? ' / ' + esc(it.sub) : '') + ' · ' + esc(it.file) + (it.id ? ' · ' + esc(it.id) : '') + '）';
+        }).join('<br/>');
+        $('linkContent').value = '';
+        $('linkNote').value = '';
+        $('linkModalMask').classList.add('show');
+      }
+      function closeLink() { linkItems = []; $('linkModalMask').classList.remove('show'); }
+      $('linkClose').addEventListener('click', closeLink);
+      $('linkCancel').addEventListener('click', closeLink);
+      $('linkModalMask').addEventListener('click', function (e) { if (e.target === $('linkModalMask')) closeLink(); });
+      $('linkSave').addEventListener('click', function () {
+        if (!linkItems.length) return;
+        var note = $('linkContent').value.trim();
+        if (!note) { toast('请填写关联说明'); return; }
+        var files = {};
+        linkItems.forEach(function (it) { files[it.file] = 1; });
+        var filesStr = Object.keys(files).join('、');
+        var listStr = linkItems.map(function (it, i) {
+          return (i + 1) + '. ' + it.title + '（' + it.category + (it.sub ? ' / ' + it.sub : '') + ' · ' + it.file + (it.id ? ' · ' + it.id : '') + '）';
+        }).join('\n');
+        var content = '【关联说明】' + note + '\n【关联条目】\n' + listStr;
+        addRecord({
+          id: uid(),
+          title: '关联 · ' + linkItems.map(function (it) { return it.title; }).join(' ↔ ').slice(0, 60),
+          content: content,
+          source: 'wiki关联',
+          type: '关联',
+          note: $('linkNote').value.trim() || ('关联 ' + linkItems.length + ' 条（' + filesStr + '）'),
+          status: 'pending',
+          createdAt: now(),
+          updatedAt: now(),
+          target: { kind: 'relation', file: filesStr, items: linkItems.map(function (it) { return { id: it.id, title: it.title, category: it.category, sub: it.sub || '' }; }) }
+        });
+        closeLink();
+        toast('已生成关联记录（' + linkItems.length + ' 条）');
+      });
+
+      // ===== 表格批量填写 =====
+      var tblRows = [];
+      var TBL_HEADERS = ['标题', '内容', '来源', '类型', '备注', '状态'];
+      var TBL_HDR_MAP = {
+        '标题': 'title', '内容': 'content', '来源': 'source', '类型': 'type', '备注': 'note', '状态': 'status',
+        'title': 'title', 'content': 'content', 'source': 'source', 'type': 'type', 'note': 'note', 'status': 'status'
+      };
+
+      function newTblRow() {
+        return {
+          _id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+          checked: false, title: '', content: '', source: '', type: '', note: '', status: 'pending'
+        };
+      }
+
+      function updateTblStats() {
+        var sel = 0;
+        tblRows.forEach(function (r) { if (r.checked) sel++; });
+        $('tblSelCount').textContent = sel;
+        $('tblRowCount').textContent = tblRows.length;
+        $('tblCheckAll').checked = tblRows.length > 0 && sel === tblRows.length;
+      }
+
+      function renderTbl() {
+        var tb = $('tblBody');
+        tb.innerHTML = '';
+        tblRows.forEach(function (r) {
+          var tr = document.createElement('tr');
+          if (!r.title.trim() && !r.content.trim()) tr.className = 'row-invalid';
+          // 勾选
+          var td0 = document.createElement('td'); td0.className = 'col-check';
+          var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = r.checked;
+          cb.addEventListener('change', function () { r.checked = cb.checked; updateTblStats(); });
+          td0.appendChild(cb); tr.appendChild(td0);
+          // 标题
+          var td1 = document.createElement('td');
+          var inT = document.createElement('input'); inT.value = r.title; inT.placeholder = '标题';
+          inT.addEventListener('input', function () {
+            r.title = inT.value;
+            tr.className = (r.title.trim() || r.content.trim()) ? '' : 'row-invalid';
+          });
+          td1.appendChild(inT); tr.appendChild(td1);
+          // 内容
+          var td2 = document.createElement('td');
+          var ta = document.createElement('textarea'); ta.value = r.content; ta.placeholder = '内容';
+          ta.addEventListener('input', function () {
+            r.content = ta.value;
+            tr.className = (r.title.trim() || r.content.trim()) ? '' : 'row-invalid';
+          });
+          td2.appendChild(ta); tr.appendChild(td2);
+          // 来源
+          var td3 = document.createElement('td');
+          var inS = document.createElement('input'); inS.value = r.source; inS.placeholder = '来源';
+          inS.addEventListener('input', function () { r.source = inS.value; });
+          td3.appendChild(inS); tr.appendChild(td3);
+          // 类型
+          var td4 = document.createElement('td');
+          var inTy = document.createElement('input'); inTy.value = r.type; inTy.placeholder = '类型';
+          inTy.addEventListener('input', function () { r.type = inTy.value; });
+          td4.appendChild(inTy); tr.appendChild(td4);
+          // 备注
+          var td5 = document.createElement('td');
+          var inN = document.createElement('input'); inN.value = r.note; inN.placeholder = '备注';
+          inN.addEventListener('input', function () { r.note = inN.value; });
+          td5.appendChild(inN); tr.appendChild(td5);
+          // 状态
+          var td6 = document.createElement('td');
+          var st = document.createElement('select');
+          var o1 = document.createElement('option'); o1.value = 'pending'; o1.textContent = '待AI检查';
+          var o2 = document.createElement('option'); o2.value = 'merged'; o2.textContent = '已汇入';
+          st.appendChild(o1); st.appendChild(o2); st.value = r.status;
+          st.addEventListener('change', function () { r.status = st.value; });
+          td6.appendChild(st); tr.appendChild(td6);
+          // 删除
+          var td7 = document.createElement('td'); td7.className = 'col-del';
+          var del = document.createElement('button'); del.className = 'del-row'; del.title = '删除此行'; del.textContent = '✕';
+          del.addEventListener('click', function () {
+            tblRows = tblRows.filter(function (x) { return x._id !== r._id; });
+            renderTbl();
+          });
+          td7.appendChild(del); tr.appendChild(td7);
+          tb.appendChild(tr);
+        });
+        updateTblStats();
+      }
+
+      function splitTblLine(line) {
+        var parts = line.split('\t');
+        if (parts.length < 2) {
+          // CSV（支持引号包裹）
+          var out = [], cur = '', inQ = false;
+          for (var i = 0; i < line.length; i++) {
+            var c = line[i];
+            if (inQ) {
+              if (c === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else inQ = false; }
+              else cur += c;
+            } else if (c === '"') inQ = true;
+            else if (c === ',') { out.push(cur); cur = ''; }
+            else cur += c;
+          }
+          out.push(cur);
+          parts = out;
+        }
+        return parts.map(function (p) { return p.trim(); });
+      }
+
+      function parsePasted(text, defSource, defType) {
+        var lines = (text || '').split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+        if (!lines.length) return [];
+        var rows = [];
+        var hdrMap = null;
+        var first = splitTblLine(lines[0]);
+        var hasHdr = first.some(function (h) { return TBL_HDR_MAP[h.trim()] != null; });
+        if (hasHdr) {
+          hdrMap = first.map(function (h) { return TBL_HDR_MAP[h.trim()] || null; });
+          lines.shift();
+        }
+        lines.forEach(function (line) {
+          var parts = splitTblLine(line);
+          var r = newTblRow();
+          if (hdrMap) {
+            hdrMap.forEach(function (field, idx) {
+              if (!field || idx >= parts.length) return;
+              var v = parts[idx];
+              if (field === 'title') r.title = v;
+              else if (field === 'content') r.content = v;
+              else if (field === 'source') r.source = v;
+              else if (field === 'type') r.type = v;
+              else if (field === 'note') r.note = v;
+              else if (field === 'status') r.status = /merged/i.test(v) || v === '已汇入' ? 'merged' : 'pending';
+            });
+          } else {
+            r.title = parts[0] || '';
+            r.content = parts[1] || '';
+            r.source = parts[2] || '';
+            r.type = parts[3] || '';
+            r.note = parts[4] || '';
+            if (parts.length >= 6 && parts[5]) r.status = /merged/i.test(parts[5]) || parts[5] === '已汇入' ? 'merged' : 'pending';
+            if (parts.length > 6) r.content = (r.content ? r.content + '\n' : '') + parts.slice(6).join(' ');
+          }
+          if (!r.source) r.source = defSource;
+          if (!r.type) r.type = defType;
+          rows.push(r);
+        });
+        return rows;
+      }
+
+      function openPasteModal() {
+        $('pasteText').value = '';
+        $('pasteModalMask').classList.add('show');
+      }
+      function closePasteModal() { $('pasteModalMask').classList.remove('show'); }
+      function applyPaste() {
+        var text = $('pasteText').value;
+        var rows = parsePasted(text, $('pasteDefSource').value.trim(), $('pasteDefType').value);
+        if (!rows.length) { toast('未解析到任何行'); return; }
+        tblRows = tblRows.concat(rows);
+        renderTbl();
+        closePasteModal();
+        toast('已填入 ' + rows.length + ' 行到表格');
+      }
+
+      $('btnTblPaste').addEventListener('click', openPasteModal);
+      $('pasteClose').addEventListener('click', closePasteModal);
+      $('pasteCancel').addEventListener('click', closePasteModal);
+      $('pasteModalMask').addEventListener('click', function (e) { if (e.target === $('pasteModalMask')) closePasteModal(); });
+      $('pasteOk').addEventListener('click', applyPaste);
+      $('btnTblAdd').addEventListener('click', function () { tblRows.push(newTblRow()); renderTbl(); });
+      $('btnTblDelSel').addEventListener('click', function () {
+        var n = 0;
+        tblRows.forEach(function (r) { if (r.checked) n++; });
+        if (!n) { toast('请先勾选要删除的行'); return; }
+        tblRows = tblRows.filter(function (r) { return !r.checked; });
+        renderTbl();
+        toast('已删除 ' + n + ' 行');
+      });
+      $('tblCheckAll').addEventListener('change', function () {
+        var v = $('tblCheckAll').checked;
+        tblRows.forEach(function (r) { r.checked = v; });
+        renderTbl();
+      });
+      $('btnTblBatch').addEventListener('click', function () {
+        var src = $('tblBatchSource').value.trim();
+        var ty = $('tblBatchType').value.trim();
+        var nt = $('tblBatchNote').value.trim();
+        var st = $('tblBatchStatus').value;
+        var n = 0;
+        tblRows.forEach(function (r) {
+          if (!r.checked) return;
+          n++;
+          if (src) r.source = src;
+          if (ty) r.type = ty;
+          if (nt) r.note = nt;
+          if (st) r.status = st;
+        });
+        if (!n) { toast('请先勾选要批量设置的行'); return; }
+        renderTbl();
+        toast('已批量应用到 ' + n + ' 行');
+        $('tblBatchSource').value = ''; $('tblBatchType').value = ''; $('tblBatchNote').value = ''; $('tblBatchStatus').value = '';
+      });
+      $('btnTblSave').addEventListener('click', function () {
+        var valid = tblRows.filter(function (r) { return r.title.trim() || r.content.trim(); });
+        if (!valid.length) { toast('表格为空，先新增行或粘贴数据'); return; }
+        var saved = 0;
+        valid.forEach(function (r) {
+          var title = r.title.trim();
+          var content = r.content.trim();
+          if (!title && content) title = content.split(/\r?\n/)[0].slice(0, 40);
+          if (!content && title) content = title;
+          addRecord({
+            id: uid(),
+            title: title,
+            content: content,
+            source: r.source.trim() || '未标注',
+            type: r.type.trim() || '其他',
+            note: r.note.trim(),
+            status: r.status,
+            createdAt: now(),
+            updatedAt: now()
+          });
+          saved++;
+        });
+        var skipped = tblRows.length - valid.length;
+        tblRows = [];
+        renderTbl();
+        toast('已保存 ' + saved + ' 条到待审列表' + (skipped ? '（跳过 ' + skipped + ' 行空记录）' : ''));
+      });
+
+      // ---------- 启动 ----------
+      loadWikiPresets();
+      load();
+      render();
+    })();
+  </script>
+</body>
+</html>
